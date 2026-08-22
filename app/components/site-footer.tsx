@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PRODUCT } from "../../lib/site-data";
+import { assetPath, PRODUCT } from "../../lib/site-data";
 
 export function SiteFooter() {
   return (
@@ -8,7 +8,7 @@ export function SiteFooter() {
       <div className="container">
         <div className="footer-grid">
           <div>
-            <Link href="/" className="footer-brand"><Image src="/assets/branding/icon-192.png" width={42} height={42} alt="" /><span><strong>{PRODUCT.name}</strong><small>Gestão para assistência técnica</small></span></Link>
+            <Link href="/" className="footer-brand"><Image src={assetPath("/assets/branding/icon-192.png")} width={42} height={42} alt="" /><span><strong>{PRODUCT.name}</strong><small>Gestão para assistência técnica</small></span></Link>
             <p>Organização da entrada do aparelho à retirada, com histórico, documentos e controle da operação.</p>
             <span className="version-chip">Versão atual {PRODUCT.version}</span>
           </div>

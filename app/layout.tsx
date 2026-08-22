@@ -5,15 +5,21 @@ import "./globals.css";
 import { BackToTop } from "./components/back-to-top";
 import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
+import { assetPath } from "../lib/site-data";
+
+export const dynamic = "force-static";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://orcamentos-simplificados.bielzinhovale.chatgpt.site";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Orçamentos Simplificados | Gestão para assistência técnica",
   description: "Organize orçamentos, clientes, aparelhos, serviços, peças, garantias e documentos em um aplicativo Windows feito para assistências técnicas.",
-  icons: { icon: "/assets/branding/icon-192.png" },
+  icons: { icon: assetPath("/assets/branding/icon-192.png") },
   openGraph: {
     title: "Orçamentos Simplificados",
     description: "Mais organização da entrada do aparelho até a entrega.",
-    images: ["/og.png"],
+    images: [assetPath("/og.png")],
     locale: "pt_BR",
     type: "website",
   },

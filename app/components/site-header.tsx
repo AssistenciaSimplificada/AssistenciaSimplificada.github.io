@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { PRODUCT } from "../../lib/site-data";
+import { assetPath, PRODUCT } from "../../lib/site-data";
 
 const links = [
   ["/", "Início"], ["/recursos", "Recursos"], ["/guia", "Guia"], ["/planos", "Planos"], ["/faq", "FAQ"],
@@ -18,7 +18,7 @@ export function SiteHeader() {
       <nav className="navbar navbar-expand-lg" aria-label="Navegação principal">
         <div className="container">
           <Link className="navbar-brand d-flex align-items-center gap-2" href="/" onClick={() => setOpen(false)}>
-            <Image src="/assets/branding/icon-192.png" width={42} height={42} alt="" />
+            <Image src={assetPath("/assets/branding/icon-192.png")} width={42} height={42} alt="" />
             <span><strong>Orçamentos</strong><small>Simplificados</small></span>
           </Link>
           <button className="navbar-toggler" type="button" aria-expanded={open} aria-controls="site-menu" aria-label="Abrir menu" onClick={() => setOpen((value) => !value)}>

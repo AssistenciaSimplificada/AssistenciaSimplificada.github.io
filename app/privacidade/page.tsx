@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { SiteLink as Link } from "../components/site-link";
 import { PageHero } from "../components/page-hero";
 
 export const metadata: Metadata = { title: "Política de Privacidade | Orçamentos Simplificados", description: "Como o Orçamentos Simplificados armazena e protege dados de lojas, clientes e aparelhos.", alternates: { canonical: "/privacidade" } };

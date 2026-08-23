@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { SiteLink as Link } from "../components/site-link";
 import { PageHero } from "../components/page-hero";
 
 export const metadata: Metadata = { title: "Termos de uso | Orçamentos Simplificados", description: "Condições gerais de uso do site e do aplicativo Orçamentos Simplificados.", alternates: { canonical: "/termos" } };

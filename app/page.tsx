@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { SiteLink as Link } from "./components/site-link";
 import { MediaGallery } from "./components/media-gallery";
 import { ProductPreview } from "./components/product-preview";
 import { ScrollMotion } from "./components/scroll-motion";

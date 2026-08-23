@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { SiteLink as Link } from "./site-link";
 import { assetPath, PRODUCT } from "../../lib/site-data";
 
 export function SiteFooter() {

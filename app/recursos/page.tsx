@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { SiteLink as Link } from "../components/site-link";
 import { PageHero } from "../components/page-hero";
 import { ProductPreview } from "../components/product-preview";
 import { PRODUCT, resourceGroups } from "../../lib/site-data";

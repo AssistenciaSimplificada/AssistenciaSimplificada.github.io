@@ -2,14 +2,27 @@ export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export const assetPath = (path: string) => `${BASE_PATH}${path}`;
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://gabrielschmeisk.github.io/orcamentos-simplificados-site";
 
-const WHATSAPP_NUMBER = "5516994241388";
+export const SITE_CONFIG = {
+  whatsappNumber: "5516994241388",
+  whatsappDisplay: "(16) 99424-1388",
+  productVersion: "8.1.0",
+  platform: "Windows 10 ou 11, 64 bits",
+  trialDays: 1,
+  plans: {
+    monthly: "R$ 27,99",
+    semiannual: "R$ 47,99",
+    annual: "R$ 77,99",
+    permanent: "R$ 119,99",
+  },
+} as const;
+
 export const whatsappLink = (message: string) =>
-  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
 export const PRODUCT = {
   name: "Orçamentos Simplificados",
-  version: "8.0.3",
-  platform: "Windows 10 ou 11, 64 bits",
+  version: SITE_CONFIG.productVersion,
+  platform: SITE_CONFIG.platform,
   purchaseLink: "/planos",
   contactLink: whatsappLink(
     "Olá! Quero conhecer melhor o Orçamentos Simplificados para minha assistência técnica.",
@@ -17,43 +30,43 @@ export const PRODUCT = {
   trialLink: whatsappLink(
     "Olá! Quero solicitar o teste grátis de 1 dia do Orçamentos Simplificados. Pode me ajudar com a ativação?",
   ),
-  whatsappDisplay: "(16) 99424-1388",
+  whatsappDisplay: SITE_CONFIG.whatsappDisplay,
   supportLink: "/faq#suporte",
 };
 
 export const plans = [
   {
     name: "1 mês",
-    price: "R$ 59,90",
+    price: SITE_CONFIG.plans.monthly,
     description: "Para começar com baixo compromisso e usar o sistema completo.",
     purchaseLink: whatsappLink(
-      "Olá! Quero adquirir a licença mensal (1 mês) do Orçamentos Simplificados por R$ 59,90. Pode me orientar sobre a ativação?",
+      `Olá! Quero adquirir a licença mensal (1 mês) do Orçamentos Simplificados por ${SITE_CONFIG.plans.monthly}. Pode me orientar sobre a ativação?`,
     ),
   },
   {
     name: "6 meses",
-    price: "R$ 299,90",
-    description: "Economize R$ 59,50 em relação à renovação mensal.",
+    price: SITE_CONFIG.plans.semiannual,
+    description: "Seis meses de acesso ao sistema completo por um valor único.",
     purchaseLink: whatsappLink(
-      "Olá! Quero adquirir a licença semestral (6 meses) do Orçamentos Simplificados por R$ 299,90. Pode me orientar sobre a ativação?",
+      `Olá! Quero adquirir a licença semestral (6 meses) do Orçamentos Simplificados por ${SITE_CONFIG.plans.semiannual}. Pode me orientar sobre a ativação?`,
     ),
   },
   {
     name: "1 ano",
-    price: "R$ 499,90",
-    description: "Economize R$ 218,90 e mantenha a operação tranquila por um ano.",
+    price: SITE_CONFIG.plans.annual,
+    description: "Doze meses para manter toda a operação organizada e atualizada.",
     featured: true,
     badge: "Melhor custo-benefício",
     purchaseLink: whatsappLink(
-      "Olá! Quero adquirir a licença anual (1 ano) do Orçamentos Simplificados por R$ 499,90. Pode me orientar sobre a ativação?",
+      `Olá! Quero adquirir a licença anual (1 ano) do Orçamentos Simplificados por ${SITE_CONFIG.plans.annual}. Pode me orientar sobre a ativação?`,
     ),
   },
   {
     name: "Permanente",
-    price: "R$ 999,90",
+    price: SITE_CONFIG.plans.permanent,
     description: "Licença sem vencimento para esta instalação, com pagamento único.",
     purchaseLink: whatsappLink(
-      "Olá! Quero adquirir a licença permanente do Orçamentos Simplificados por R$ 999,90. Pode me orientar sobre a ativação?",
+      `Olá! Quero adquirir a licença permanente do Orçamentos Simplificados por ${SITE_CONFIG.plans.permanent}. Pode me orientar sobre a ativação?`,
     ),
   },
 ];
@@ -154,7 +167,7 @@ export const faqs = [
   { q: "O que acontece quando a licença vence?", a: "Os dados permanecem preservados no computador. As funções comerciais ficam bloqueadas até que uma renovação válida seja importada." },
   { q: "A licença permanente vence?", a: "A modalidade permanente não possui data de vencimento. Ela continua sujeita à validação da instalação e aos termos de uso aplicáveis." },
   { q: "Todos os planos possuem os mesmos recursos?", a: "Sim. A diferença entre 1 mês, 6 meses, 1 ano e permanente é o período da licença; não existem módulos escondidos por modalidade." },
-  { q: "Quanto custa a licença?", a: "A licença mensal custa R$ 59,90; a semestral, R$ 299,90; a anual, R$ 499,90; e a permanente, R$ 999,90. A compra é combinada diretamente pelo WhatsApp, sem cobrança automática no site." },
+  { q: "Quanto custa a licença?", a: `A licença mensal custa ${SITE_CONFIG.plans.monthly}; a semestral, ${SITE_CONFIG.plans.semiannual}; a anual, ${SITE_CONFIG.plans.annual}; e a permanente, ${SITE_CONFIG.plans.permanent}. A compra é combinada diretamente pelo WhatsApp, sem cobrança automática no site.` },
   { q: "Posso testar antes de comprar?", a: "Sim. O teste grátis libera o aplicativo por 1 dia para conhecer os recursos e o modo demonstração. A solicitação é feita pelo WhatsApp e não exige pagamento." },
   { q: "O sistema gera documentos e permite impressão?", a: "Sim. O sistema prepara orçamento, ordem de serviço, comprovante de retirada, ficha técnica, garantia, etiquetas, compra e venda de aparelhos, transferência de dados, pós-formatação e relatórios. Os arquivos são baixados automaticamente e podem ser impressos conforme o fluxo." },
   { q: "Como funciona a garantia?", a: "A garantia é aberta a partir de um orçamento finalizado. Ela mantém cliente, aparelho e origem do atendimento, registra avaliação, decisão, andamento e responsável, e permite gerar comprovante. Exclusões exigem permissão e confirmação." },

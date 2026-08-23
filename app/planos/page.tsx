@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { SiteLink as Link } from "../components/site-link";
 import { PageHero } from "../components/page-hero";
 import { PRODUCT, plans } from "../../lib/site-data";
 

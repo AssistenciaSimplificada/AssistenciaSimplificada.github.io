@@ -8,7 +8,7 @@ export const whatsappLink = (message: string) =>
 
 export const PRODUCT = {
   name: "Orçamentos Simplificados",
-  version: "8.0.2",
+  version: "8.0.3",
   platform: "Windows 10 ou 11, 64 bits",
   purchaseLink: "/planos",
   contactLink: whatsappLink(

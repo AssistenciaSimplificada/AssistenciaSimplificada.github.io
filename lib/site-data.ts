@@ -1,19 +1,61 @@
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export const assetPath = (path: string) => `${BASE_PATH}${path}`;
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://gabrielschmeisk.github.io/orcamentos-simplificados-site";
+
+const WHATSAPP_NUMBER = "5516994241388";
+export const whatsappLink = (message: string) =>
+  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
 export const PRODUCT = {
   name: "Orçamentos Simplificados",
-  version: "8.0.1",
+  version: "8.0.2",
   platform: "Windows 10 ou 11, 64 bits",
-  purchaseLink: "https://wa.me/5516994241388?text=Ol%C3%A1%21%20Tenho%20interesse%20no%20Or%C3%A7amentos%20Simplificados.",
+  purchaseLink: "/planos",
+  contactLink: whatsappLink(
+    "Olá! Quero conhecer melhor o Orçamentos Simplificados para minha assistência técnica.",
+  ),
+  trialLink: whatsappLink(
+    "Olá! Quero solicitar o teste grátis de 1 dia do Orçamentos Simplificados. Pode me ajudar com a ativação?",
+  ),
+  whatsappDisplay: "(16) 99424-1388",
   supportLink: "/faq#suporte",
 };
 
 export const plans = [
-  { name: "1 mês", price: "R$ --,--", description: "Para começar e validar a rotina na loja." },
-  { name: "6 meses", price: "R$ --,--", description: "Mais tranquilidade para uma operação em crescimento." },
-  { name: "1 ano", price: "R$ --,--", description: "A melhor relação entre prazo e continuidade.", featured: true, badge: "Melhor custo-benefício" },
-  { name: "Permanente", price: "R$ --,--", description: "Licença sem vencimento para esta instalação." },
+  {
+    name: "1 mês",
+    price: "R$ 59,90",
+    description: "Para começar com baixo compromisso e usar o sistema completo.",
+    purchaseLink: whatsappLink(
+      "Olá! Quero adquirir a licença mensal (1 mês) do Orçamentos Simplificados por R$ 59,90. Pode me orientar sobre a ativação?",
+    ),
+  },
+  {
+    name: "6 meses",
+    price: "R$ 299,90",
+    description: "Economize R$ 59,50 em relação à renovação mensal.",
+    purchaseLink: whatsappLink(
+      "Olá! Quero adquirir a licença semestral (6 meses) do Orçamentos Simplificados por R$ 299,90. Pode me orientar sobre a ativação?",
+    ),
+  },
+  {
+    name: "1 ano",
+    price: "R$ 499,90",
+    description: "Economize R$ 218,90 e mantenha a operação tranquila por um ano.",
+    featured: true,
+    badge: "Melhor custo-benefício",
+    purchaseLink: whatsappLink(
+      "Olá! Quero adquirir a licença anual (1 ano) do Orçamentos Simplificados por R$ 499,90. Pode me orientar sobre a ativação?",
+    ),
+  },
+  {
+    name: "Permanente",
+    price: "R$ 999,90",
+    description: "Licença sem vencimento para esta instalação, com pagamento único.",
+    purchaseLink: whatsappLink(
+      "Olá! Quero adquirir a licença permanente do Orçamentos Simplificados por R$ 999,90. Pode me orientar sobre a ativação?",
+    ),
+  },
 ];
 
 export type ResourceGroup = {
@@ -97,6 +139,8 @@ export const documents = [
   { src: assetPath("/assets/img/documentos/orcamento-detalhes.png"), title: "Condições, aprovação e assinatura", caption: "Valores, forma de pagamento, aprovação do cliente, garantias e assinaturas no fechamento do orçamento." },
   { src: assetPath("/assets/img/documentos/comprovante-retirada.png"), title: "Comprovante de retirada", caption: "Serviços realizados, valores, declaração de entrega e responsáveis em uma página clara." },
   { src: assetPath("/assets/img/documentos/compra-usado.png"), title: "Comprovante de compra de usado", caption: "Procedência, identificadores, testes, valor e assinaturas." },
+  { src: assetPath("/assets/img/documentos/ficha-tecnica.png"), title: "Ficha técnica", caption: "Diagnóstico, testes e informações do aparelho organizados para a bancada." },
+  { src: assetPath("/assets/img/documentos/pasta-garantia.png"), title: "Pasta de garantia", caption: "Produtos vinculados reunidos para a entrega, mantendo cada serviço identificado separadamente." },
 ];
 
 export const visualGallery = documents;
@@ -110,7 +154,9 @@ export const faqs = [
   { q: "O que acontece quando a licença vence?", a: "Os dados permanecem preservados no computador. As funções comerciais ficam bloqueadas até que uma renovação válida seja importada." },
   { q: "A licença permanente vence?", a: "A modalidade permanente não possui data de vencimento. Ela continua sujeita à validação da instalação e aos termos de uso aplicáveis." },
   { q: "Todos os planos possuem os mesmos recursos?", a: "Sim. A diferença entre 1 mês, 6 meses, 1 ano e permanente é o período da licença; não existem módulos escondidos por modalidade." },
-  { q: "O sistema gera documentos e permite impressão?", a: "Sim. Entre os documentos confirmados estão orçamento, ordem de serviço, comprovante de retirada, ficha técnica, garantia, etiquetas, compra e venda de aparelhos, transferência de dados, pós-formatação e relatórios. Eles são baixados automaticamente e podem ser impressos conforme o fluxo." },
+  { q: "Quanto custa a licença?", a: "A licença mensal custa R$ 59,90; a semestral, R$ 299,90; a anual, R$ 499,90; e a permanente, R$ 999,90. A compra é combinada diretamente pelo WhatsApp, sem cobrança automática no site." },
+  { q: "Posso testar antes de comprar?", a: "Sim. O teste grátis libera o aplicativo por 1 dia para conhecer os recursos e o modo demonstração. A solicitação é feita pelo WhatsApp e não exige pagamento." },
+  { q: "O sistema gera documentos e permite impressão?", a: "Sim. O sistema prepara orçamento, ordem de serviço, comprovante de retirada, ficha técnica, garantia, etiquetas, compra e venda de aparelhos, transferência de dados, pós-formatação e relatórios. Os arquivos são baixados automaticamente e podem ser impressos conforme o fluxo." },
   { q: "Como funciona a garantia?", a: "A garantia é aberta a partir de um orçamento finalizado. Ela mantém cliente, aparelho e origem do atendimento, registra avaliação, decisão, andamento e responsável, e permite gerar comprovante. Exclusões exigem permissão e confirmação." },
   { q: "Como funciona a transferência de dados?", a: "Atendimentos compatíveis recebem uma ficha própria para identificar aparelho de origem e destino, contas, números, autorizações e conferências. Campos vazios não aparecem no PDF, e credenciais digitadas não são salvas no cadastro, banco, backup ou nuvem." },
   { q: "As atualizações são automáticas?", a: "O aplicativo verifica atualizações assinadas. Quando uma versão estável aplicável é encontrada, ela pode ser baixada automaticamente e instalada no fechamento. O canal beta também é suportado, e a passagem de beta para estável foi tratada na versão atual." },
@@ -131,9 +177,9 @@ export const guideArticles: GuideArticle[] = [
   { id: "manutencao", category: "Operação", title: "Controlar manutenção e painel técnico", summary: "Registre o trabalho real e deixe o técnico atualizar somente o que precisa.", body: ["O tempo começa quando o orçamento entra em Em manutenção e termina ao passar para Pronto para retirada. Durações inferiores a 15 minutos não entram nos indicadores; serviços que pulam a manutenção também não contam.", "O painel técnico funciona na rede local. Mantenha o aplicativo principal aberto, copie o endereço em Configurações e entre com uma conta autorizada."], steps: ["Registrar aprovação", "Alterar para Em manutenção", "Atualizar diagnóstico, observações e prazo", "Concluir em Pronto para retirada"] },
   { id: "pecas", category: "Operação", title: "Peças procuradas e estoque", summary: "Acompanhe demandas sem estoque e movimentações das peças reais.", body: ["Em Peças, registre cliente, item, modelo compatível, fornecedor e urgência. Enquanto estiver Procurando, use Pesquisei hoje para agendar nova conferência em sete dias.", "Quando encontrar, use Encontrada / avisar. Ao terminar, registre Venda ou Desistência. O estoque real controla saldos, custos e movimentações sem permitir quantidade negativa."], steps: ["Cadastrar a procura ou peça", "Revisar lembretes", "Registrar pesquisa ou entrada", "Avisar o cliente", "Finalizar o resultado"] },
   { id: "clientes", category: "Relacionamento", title: "Clientes e aparelhos", summary: "Consulte cadastros, histórico e vínculos comerciais sem perder o nome completo.", body: ["A busca aceita dados pessoais e identificadores do aparelho. Nomes longos aparecem abreviados apenas nos cartões; o perfil e os documentos mantêm o nome completo.", "Compras e vendas de aparelhos aparecem no perfil como Comprado ou Vendido. Remover um aparelho do perfil não altera documentos antigos."], tips: ["Possíveis duplicados apenas sinaliza cadastros semelhantes; o sistema nunca une clientes automaticamente."] },
-  { id: "compra-venda", category: "Aparelhos", title: "Comprar e vender aparelhos", summary: "Documente procedência, estoque, estado e comprador.", body: ["Na compra de usado, selecione um vendedor existente ou cadastre seus dados. Registre IMEIs, série, estado, acessórios, testes e valor.", "Disponível para venda envia o item ao estoque. Ao vender, selecione o aparelho para preencher seus identificadores, informe o comprador e gere o comprovante."], steps: ["Cadastrar compra e procedência", "Conferir identidade e IMEI", "Definir o estado do aparelho", "Disponibilizar no estoque", "Registrar a venda"], image: { src: assetPath("/assets/img/documentos/compra-usado.png"), alt: "Comprovante real de compra de aparelho usado", caption: "Documento de teste com procedência, identificadores, avaliação e assinaturas." } },
+  { id: "compra-venda", category: "Aparelhos", title: "Comprar e vender aparelhos", summary: "Documente procedência, estoque, estado e comprador.", body: ["Na compra de usado, selecione um vendedor existente ou cadastre seus dados. Registre IMEIs, série, estado, acessórios, testes e valor.", "Disponível para venda envia o item ao estoque. Ao vender, selecione o aparelho para preencher seus identificadores, informe o comprador e gere o comprovante."], steps: ["Cadastrar compra e procedência", "Conferir identidade e IMEI", "Definir o estado do aparelho", "Disponibilizar no estoque", "Registrar a venda"], image: { src: assetPath("/assets/img/documentos/compra-usado.png"), alt: "Comprovante de compra de aparelho usado", caption: "Procedência, identificadores, avaliação e assinaturas em um só documento." } },
   { id: "garantias", category: "Pós-atendimento", title: "Abrir e concluir uma garantia", summary: "Vincule o retorno ao serviço original e registre a decisão técnica.", body: ["A garantia nasce de um orçamento finalizado. Localize por cliente, aparelho, IMEI, orçamento ou número da garantia.", "Registre avaliação, decisão e serviços realizados. O andamento guarda responsáveis e mudanças. Uma conta autorizada pode excluir uma garantia criada incorretamente, removendo também a mensagem correspondente do Histórico e preservando somente a auditoria necessária."], steps: ["Abrir a partir do atendimento finalizado", "Avaliar prazo e problema", "Registrar decisão", "Concluir e gerar comprovante"], image: { src: assetPath("/assets/img/documentos/comprovante-retirada.png"), alt: "Comprovante de retirada gerado pelo aplicativo", caption: "Entrega, serviços, valores e responsáveis reunidos de forma clara." } },
-  { id: "documentos", category: "Documentos", title: "Gerar PDFs, fichas e mensagens", summary: "Baixe automaticamente cada documento e escolha o contato correto.", body: ["PDFs, comprovantes, fichas, etiquetas e relatórios são gravados automaticamente em Downloads. Administradores podem escolher outra pasta.", "Quando o cliente possui vários números, selecione qual contato receberá a mensagem. O aplicativo confere se o texto preparado chegou ao endereço do WhatsApp; o atendente confirma o envio no WhatsApp."], tips: ["Produtos vinculados geram uma pasta única de retirada e garantia, mas cada produto mantém serviços, valores e obrigações separados."], image: { src: assetPath("/assets/img/documentos/orcamento.png"), alt: "Orçamento real em PDF gerado pelo aplicativo", caption: "PDF real com dados do cliente, aparelho, avaliação técnica e valores." } },
+  { id: "documentos", category: "Documentos", title: "Gerar PDFs, fichas e mensagens", summary: "Baixe automaticamente cada documento e escolha o contato correto.", body: ["PDFs, comprovantes, fichas, etiquetas e relatórios são gravados automaticamente em Downloads. Administradores podem escolher outra pasta.", "Quando o cliente possui vários números, selecione qual contato receberá a mensagem. O aplicativo confere se o texto preparado chegou ao endereço do WhatsApp; o atendente confirma o envio no WhatsApp."], tips: ["Produtos vinculados geram uma pasta única de retirada e garantia, mas cada produto mantém serviços, valores e obrigações separados."], image: { src: assetPath("/assets/img/documentos/orcamento.png"), alt: "Orçamento em PDF", caption: "Cliente, aparelho, avaliação técnica e valores apresentados com clareza." } },
   { id: "transferencia", category: "Documentos", title: "Transferência de dados e pós-formatação", summary: "Crie checklists temporários sem gravar credenciais no cadastro.", body: ["Em serviços de transferência, identifique origem, destino, números, contas e tipos de dados autorizados. Campos vazios não aparecem no PDF.", "Após formatação, gere um guia com contas novas, recuperação, telefone, PIN e Wi-Fi. As credenciais existem apenas enquanto a ficha está aberta e não são salvas no orçamento, banco, backup ou nuvem."], tips: ["O PDF pode conter senhas legíveis. Entregue somente ao cliente e apague cópias quando não forem mais necessárias."] },
   { id: "indicadores", category: "Gestão", title: "Ler indicadores e relatórios", summary: "Entenda o que entra em faturamento, tempos, funil e previsão.", body: ["Faturamento e ticket médio consideram atendimentos finalizados no período. Valores ativos, cancelados, rejeitados ou expirados não entram.", "O funil usa a data de criação do orçamento. A previsão de demanda é local e pondera os três meses mais recentes. Relatórios contábeis podem incluir serviços finalizados, vendas e compras de usados."], tips: ["O painel de exceções sinaliza situações; ele não altera registros automaticamente."] },
   { id: "usuarios", category: "Administração", title: "Usuários, permissões e auditoria", summary: "Entregue a cada pessoa somente as funções necessárias.", body: ["Administradores criam operadores com perfis de atendente, técnico, gerente ou personalizado. Grupos sensíveis, como restauração, exclusão, vendas e auditoria, podem ser liberados separadamente.", "A matriz auditável resume acessos efetivos e pode ser recolhida. Mudanças importantes guardam responsável, estado anterior e novo estado."], steps: ["Criar uma conta individual", "Escolher o perfil", "Ajustar permissões adicionais", "Entregar senha temporária", "Revisar logs periodicamente"] },

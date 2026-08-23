@@ -14,9 +14,9 @@ export function SiteFooter() {
           </div>
           <div><h2>Conheça</h2><Link href="/recursos">Recursos</Link><Link href="/planos">Planos</Link><Link href="/faq">Perguntas frequentes</Link></div>
           <div><h2>Aprenda</h2><Link href="/guia">Guia completo</Link><Link href="/guia#novo-orcamento">Criar orçamento</Link><Link href="/guia#backup">Backup e segurança</Link></div>
-          <div><h2>Informações</h2><Link href="/termos">Termos de uso</Link><Link href="/privacidade">Privacidade</Link><Link href="/faq#suporte">Suporte</Link></div>
+          <div><h2>Informações</h2><Link href="/termos">Termos de uso</Link><Link href="/privacidade">Privacidade</Link><Link href="/faq#suporte">Suporte</Link><a href={PRODUCT.trialLink}>Teste grátis de 1 dia</a></div>
         </div>
-        <div className="footer-bottom"><span>© 2026 {PRODUCT.name}</span><span>Aplicativo para Windows 64 bits</span></div>
+        <div className="footer-bottom"><span>© 2026 {PRODUCT.name}</span><a href={PRODUCT.contactLink}><i className="bi bi-whatsapp" /> {PRODUCT.whatsappDisplay}</a><span>Aplicativo para Windows 64 bits</span></div>
       </div>
     </footer>
   );

@@ -18,6 +18,9 @@
 
 # misc
 .DS_Store
+*.tsbuildinfo
+/.openai/package-stage-*/
+/.openai/site-build*.tar.gz
 *.pem
 
 # debug

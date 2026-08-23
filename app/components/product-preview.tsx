@@ -1,36 +1,77 @@
-import type { CSSProperties } from "react";
+"use client";
 
-const menuGroups = [
-  { label: "OPERAÇÃO", items: [["bi-house-door", "Início", true], ["bi-clock-history", "Histórico"], ["bi-search", "Peças"]] },
-  { label: "NEGÓCIO", items: [["bi-box-seam", "Estoque de peças"], ["bi-phone", "Aparelhos"], ["bi-shield-check", "Garantias"], ["bi-people", "Clientes"]] },
-  { label: "GESTÃO", items: [["bi-cloud-arrow-up", "Backup"], ["bi-sliders", "Administração"], ["bi-gear", "Configurações"]] },
-] as const;
+import Image from "next/image";
+import { useState } from "react";
+import { assetPath } from "../../lib/site-data";
 
-const metrics = [
-  ["bi-cash-stack", "Faturamento do mês", "R$ 18.740", "+12% no período"],
-  ["bi-receipt", "Ticket médio", "R$ 468", "40 atendimentos"],
-  ["bi-stopwatch", "Tempo médio", "1h 35min", "na manutenção"],
-  ["bi-tools", "Em andamento", "12", "orçamentos ativos"],
-  ["bi-phone", "Estoque disponível", "8", "aparelhos"],
-  ["bi-shield-check", "Garantias abertas", "3", "em acompanhamento"],
-] as const;
+type PreviewView = "inicio" | "historico" | "clientes" | "novo";
+type TourArea = "inicio" | "novo" | "historico" | "clientes" | "aparelhos" | "estoque" | "garantias" | "relatorios" | "configuracoes";
+
+const previews: Record<PreviewView, { src: string; title: string; description: string }> = {
+  inicio: { src: "/assets/img/app/inicio-real.png", title: "Visão geral", description: "Indicadores, alertas e prioridades da operação." },
+  historico: { src: "/assets/img/app/historico-real.png", title: "Histórico", description: "Atendimentos, filtros, vínculos e andamento em uma única tela." },
+  clientes: { src: "/assets/img/app/clientes-real.png", title: "Clientes", description: "Pesquisa, aparelhos e histórico de cada cliente." },
+  novo: { src: "/assets/img/app/novo-orcamento-real.png", title: "Novo orçamento", description: "Cadastro guiado do cliente, aparelho, serviço e condições." },
+};
+
+const tourAreas: Array<{ id: TourArea; view: PreviewView; label: string; icon: string; group: string; description: string }> = [
+  { id: "inicio", view: "inicio", label: "Visão geral", icon: "bi-speedometer2", group: "Rotina", description: "Acompanhe prioridades, valores e alertas logo ao abrir o sistema." },
+  { id: "novo", view: "novo", label: "Novo orçamento", icon: "bi-plus-circle", group: "Rotina", description: "Cadastre cliente, aparelho, relato, serviços e condições em uma sequência clara." },
+  { id: "historico", view: "historico", label: "Histórico", icon: "bi-clock-history", group: "Rotina", description: "Encontre atendimentos por status, período, cliente, aparelho ou responsável." },
+  { id: "clientes", view: "clientes", label: "Clientes", icon: "bi-people", group: "Atendimento", description: "Consulte contatos, aparelhos e todo o relacionamento de cada cliente." },
+  { id: "aparelhos", view: "clientes", label: "Aparelhos", icon: "bi-phone", group: "Atendimento", description: "Veja aparelhos atendidos, comprados e vendidos dentro do perfil do cliente." },
+  { id: "estoque", view: "inicio", label: "Estoque de peças", icon: "bi-box-seam", group: "Atendimento", description: "Controle entradas, usos, saldos mínimos, custos e compatibilidade das peças." },
+  { id: "garantias", view: "historico", label: "Garantias", icon: "bi-shield-check", group: "Gestão", description: "Acompanhe garantias abertas e mantenha o retorno ligado ao serviço original." },
+  { id: "relatorios", view: "inicio", label: "Relatórios", icon: "bi-bar-chart", group: "Gestão", description: "Reúna indicadores comerciais e operacionais para entender o desempenho da loja." },
+  { id: "configuracoes", view: "inicio", label: "Configurações", icon: "bi-gear", group: "Gestão", description: "Ajuste empresa, equipe, documentos, mensagens, notificações e segurança." },
+];
+
+const hotspots: Array<{ area: TourArea; label: string; className: string }> = [
+  { area: "novo", label: "Abrir novo orçamento", className: "hotspot-new" },
+  { area: "inicio", label: "Abrir visão geral", className: "hotspot-home" },
+  { area: "historico", label: "Abrir histórico", className: "hotspot-history" },
+  { area: "clientes", label: "Abrir clientes", className: "hotspot-clients" },
+];
 
 export function ProductPreview() {
-  return <div className="product-console" aria-label="Demonstração do aplicativo com os menus reais e dados fictícios">
-    <aside className="console-sidebar">
-      <div className="console-brand"><span><i className="bi bi-file-earmark-text" /></span><div><strong>LOJA TESTE</strong><small>Assistência técnica</small></div></div>
-      <button className="console-new"><i className="bi bi-plus-lg" /> Novo orçamento</button>
-      <nav aria-label="Menus demonstrativos do aplicativo">{menuGroups.map((group) => <div className="console-menu-group" key={group.label}><small>{group.label}</small>{group.items.map(([icon, label, active]) => <span className={active ? "active" : ""} key={label}><i className={`bi ${icon}`} /> {label}</span>)}</div>)}</nav>
-      <div className="console-user"><span>GS</span><div><strong>Gabriel</strong><small>Administrador</small></div></div>
-    </aside>
-    <div className="console-main">
-      <header><div><small>GESTÃO E FATURAMENTO</small><strong>Visão geral</strong></div><button><i className="bi bi-question-circle" /> Ajuda</button></header>
-      <div className="console-content">
-        <div className="console-title"><div><small>INÍCIO</small><h3>A operação da loja, sem pontos cegos.</h3><p>Indicadores financeiros e operacionais com dados de demonstração.</p></div><button><i className="bi bi-plus-lg" /> Novo orçamento</button></div>
-        <div className="console-periods"><span className="active">Este mês</span><span>Últimos 6 meses</span><span>Último ano</span></div>
-        <div className="console-metrics">{metrics.map(([icon,label,value,detail], index) => <article style={{"--delay": `${index * 80}ms`} as CSSProperties} key={label}><i className={`bi ${icon}`} /><small>{label}</small><strong>{value}</strong><em>{detail}</em></article>)}</div>
-        <div className="console-panels"><article><div><strong>Precisam de atenção agora</strong><small>Ações prioritárias reunidas em um só lugar</small></div><ul><li><span className="warning">4</span> aguardando aprovação</li><li><span className="info">3</span> aparelhos para análise</li><li><span className="success">2</span> prontos para retirada</li></ul></article><article><div><strong>Resumo da operação</strong><small>O que está acontecendo hoje</small></div><div className="console-status"><span><b>7</b>Em manutenção</span><span><b>5</b>Peças procuradas</span><span><b>8</b>Aparelhos à venda</span><span><b>3</b>Garantias</span></div></article></div>
+  const [active, setActive] = useState<TourArea>("inicio");
+  const area = tourAreas.find((item) => item.id === active) ?? tourAreas[0];
+  const preview = previews[area.view];
+  const groups = ["Rotina", "Atendimento", "Gestão"];
+
+  return (
+    <section className="authentic-product-preview" aria-label="Passeio pelas principais áreas do aplicativo">
+      <div className="authentic-preview-toolbar">
+        <span><i className="bi bi-grid" /> Conheça o sistema</span>
+        <strong>{area.label}</strong>
       </div>
-    </div>
-  </div>;
+      <div className="authentic-preview-frame">
+        <Image key={preview.src} src={assetPath(preview.src)} width={1440} height={816} priority loading="eager" sizes="(max-width: 991px) 100vw, 58vw" alt={`Tela do aplicativo: ${preview.title}`} />
+        <span className="preview-demo-brand" aria-hidden="true"><strong>LOJA TESTE</strong><small>Ambiente demonstrativo</small></span>
+        {hotspots.map((hotspot) => (
+          <button key={hotspot.area} type="button" className={`preview-hotspot ${hotspot.className} ${active === hotspot.area ? "active" : ""}`} aria-label={hotspot.label} aria-pressed={active === hotspot.area} onClick={() => setActive(hotspot.area)}>
+            <span>{hotspot.label}</span>
+          </button>
+        ))}
+      </div>
+      <div className="authentic-preview-caption" aria-live="polite">
+        <span><i className="bi bi-cursor" /> Escolha uma área para conhecer.</span>
+        <p><strong>{area.label}</strong> — {area.description}</p>
+        <div className="preview-tour-menu" aria-label="Áreas do aplicativo">
+          {groups.map((group) => (
+            <div className="preview-tour-group" key={group}>
+              <small>{group}</small>
+              <div>
+                {tourAreas.filter((item) => item.group === group).map((item) => (
+                  <button key={item.id} type="button" className={active === item.id ? "active" : ""} aria-pressed={active === item.id} onClick={() => setActive(item.id)}>
+                    <i className={`bi ${item.icon}`} />{item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

@@ -5,6 +5,7 @@ import { SiteLink as Link } from "./site-link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { assetPath, PRODUCT } from "../../lib/site-data";
+import { DownloadAppButton } from "./download-app-button";
 
 const links = [
   ["/", "Início"],
@@ -53,7 +54,8 @@ export function SiteHeader() {
           <div id="site-menu" className={`navbar-collapse ${open ? "is-open" : ""}`} aria-hidden={!open ? undefined : false}>
             <div className="navbar-nav ms-auto align-items-lg-center gap-lg-1">
               {links.map(([href, label]) => <Link key={href} className={`nav-link ${normalizedPathname === href ? "active" : ""}`} href={href} aria-current={normalizedPathname === href ? "page" : undefined} onClick={() => setOpen(false)}>{label}</Link>)}
-              <a className="btn btn-trial ms-lg-3" href={PRODUCT.trialLink} onClick={() => setOpen(false)}><i className="bi bi-clock" /> Teste grátis</a>
+              <DownloadAppButton className="btn btn-download ms-lg-3" compact onNavigate={() => setOpen(false)} />
+              <a className="btn btn-trial" href={PRODUCT.trialLink} onClick={() => setOpen(false)}><i className="bi bi-clock" /> Teste grátis</a>
               <Link className="btn btn-primary" href={PRODUCT.purchaseLink} onClick={() => setOpen(false)}>Ver planos</Link>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { PageHero } from "../components/page-hero";
 import { ProductPreview } from "../components/product-preview";
 import { PRODUCT, resourceGroups } from "../../lib/site-data";
 
-export const metadata: Metadata = { title: "Recursos | Orçamentos Simplificados", description: "Conheça os recursos do aplicativo para assistência técnica.", alternates: { canonical: "/recursos" } };
+export const metadata: Metadata = { title: "Recursos da versão 8.2 | Orçamentos Simplificados", description: "Conheça Atendimentos, clientes, peças, aparelhos, garantias, gestão, documentos, backup e segurança no aplicativo.", alternates: { canonical: "/recursos" } };
 
 const guideLinks: Record<string, string> = { orcamentos: "novo-orcamento", clientes: "clientes", operacao: "manutencao", garantias: "garantias", aparelhos: "compra-venda", documentos: "documentos", gestao: "indicadores", seguranca: "backup" };
 

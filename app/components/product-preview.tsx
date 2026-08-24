@@ -5,53 +5,50 @@ import { useState } from "react";
 import { assetPath } from "../../lib/site-data";
 
 type PreviewView =
-  | "inicio"
-  | "historico"
+  | "dashboard"
+  | "atendimentos"
   | "clientes"
-  | "novo"
+  | "novo-orcamento"
   | "aparelhos"
-  | "estoque"
+  | "pecas"
   | "garantias"
-  | "relatorios"
   | "configuracoes";
-type TourArea = "inicio" | "novo" | "historico" | "clientes" | "aparelhos" | "estoque" | "garantias" | "relatorios" | "configuracoes";
+type TourArea = "dashboard" | "novo-orcamento" | "atendimentos" | "pecas" | "clientes" | "aparelhos" | "garantias" | "configuracoes";
 
 const previews: Record<PreviewView, { src: string; title: string; description: string }> = {
-  inicio: { src: "/assets/img/app/inicio-real.png", title: "Visão geral", description: "Indicadores, alertas e prioridades da operação." },
-  historico: { src: "/assets/img/app/historico-real.png", title: "Histórico", description: "Atendimentos, filtros, vínculos e andamento em uma única tela." },
-  clientes: { src: "/assets/img/app/clientes-real.png", title: "Clientes", description: "Pesquisa, aparelhos e histórico de cada cliente." },
-  novo: { src: "/assets/img/app/novo-orcamento-real.png", title: "Novo orçamento", description: "Cadastro guiado do cliente, aparelho, serviço e condições." },
-  aparelhos: { src: "/assets/img/app/aparelhos-real.png", title: "Aparelhos", description: "Compras, estoque, vendas e imagens reunidos em uma central." },
-  estoque: { src: "/assets/img/app/estoque-real.png", title: "Estoque de peças", description: "Saldos, custos, compatibilidade e movimentações de peças." },
-  garantias: { src: "/assets/img/app/garantias-real.png", title: "Garantias", description: "Retornos, prazos e histórico ligados ao atendimento original." },
-  relatorios: { src: "/assets/img/app/relatorios-real.png", title: "Relatórios", description: "Exportação contábil e indicadores da operação." },
-  configuracoes: { src: "/assets/img/app/configuracoes-real.png", title: "Configurações", description: "Aparência, inicialização, ajuda e preferências do aplicativo." },
+  dashboard: { src: "/assets/img/app/current/dashboard-principal.webp", title: "Visão geral", description: "Faturamento, alertas, estoque, garantias e prioridades logo na abertura." },
+  atendimentos: { src: "/assets/img/app/current/atendimentos.webp", title: "Atendimentos", description: "Orçamentos, serviços, retiradas, vínculos e filtros em uma central." },
+  clientes: { src: "/assets/img/app/current/clientes.webp", title: "Clientes", description: "Pesquisa, indicadores, aparelhos e relacionamento de cada cliente." },
+  "novo-orcamento": { src: "/assets/img/app/current/novo-orcamento.webp", title: "Novo orçamento", description: "Cadastro guiado com revisão permanente do documento e número público." },
+  aparelhos: { src: "/assets/img/app/current/aparelhos.webp", title: "Aparelhos", description: "Compras, estoque, vendas e resultados comerciais em uma central." },
+  pecas: { src: "/assets/img/app/current/pesquisa-de-pecas.webp", title: "Pesquisa de peças", description: "Demandas, prioridades, fornecedores e oportunidades de atendimento." },
+  garantias: { src: "/assets/img/app/current/garantias.webp", title: "Garantias", description: "Retornos, prazos e serviços ligados ao atendimento original." },
+  configuracoes: { src: "/assets/img/app/current/configuracoes.webp", title: "Configurações", description: "Aparência, inicialização, tutoriais, ajuda e diagnóstico do aplicativo." },
 };
 
 const tourAreas: Array<{ id: TourArea; view: PreviewView; label: string; icon: string; group: string; description: string }> = [
-  { id: "inicio", view: "inicio", label: "Visão geral", icon: "bi-speedometer2", group: "Rotina", description: "Acompanhe prioridades, valores e alertas logo ao abrir o sistema." },
-  { id: "novo", view: "novo", label: "Novo orçamento", icon: "bi-plus-circle", group: "Rotina", description: "Cadastre cliente, aparelho, relato, serviços e condições em uma sequência clara." },
-  { id: "historico", view: "historico", label: "Histórico", icon: "bi-clock-history", group: "Rotina", description: "Encontre atendimentos por status, período, cliente, aparelho ou responsável." },
-  { id: "clientes", view: "clientes", label: "Clientes", icon: "bi-people", group: "Atendimento", description: "Consulte contatos, aparelhos e todo o relacionamento de cada cliente." },
-  { id: "aparelhos", view: "aparelhos", label: "Aparelhos", icon: "bi-phone", group: "Atendimento", description: "Veja compras, estoque, vendas e imagens de aparelhos em uma única central." },
-  { id: "estoque", view: "estoque", label: "Estoque de peças", icon: "bi-box-seam", group: "Atendimento", description: "Controle entradas, usos, saldos mínimos, custos e compatibilidade das peças." },
+  { id: "dashboard", view: "dashboard", label: "Visão geral", icon: "bi-grid-1x2", group: "Rotina", description: "Acompanhe prioridades, faturamento, estoque e alertas logo ao abrir o sistema." },
+  { id: "novo-orcamento", view: "novo-orcamento", label: "Novo orçamento", icon: "bi-plus-circle", group: "Rotina", description: "Cadastre cliente, aparelho, relato, serviços e condições em uma sequência clara." },
+  { id: "atendimentos", view: "atendimentos", label: "Atendimentos", icon: "bi-clock-history", group: "Rotina", description: "Encontre orçamentos e serviços por status, período, cliente, aparelho ou responsável." },
+  { id: "pecas", view: "pecas", label: "Pesquisa de peças", icon: "bi-search", group: "Rotina", description: "Acompanhe peças procuradas, urgência, pesquisa e contato com o cliente." },
+  { id: "clientes", view: "clientes", label: "Clientes", icon: "bi-people", group: "Cadastros", description: "Consulte contatos, aparelhos e todo o relacionamento de cada cliente." },
+  { id: "aparelhos", view: "aparelhos", label: "Aparelhos", icon: "bi-phone", group: "Cadastros", description: "Veja compras, estoque e vendas de aparelhos em uma única central." },
   { id: "garantias", view: "garantias", label: "Garantias", icon: "bi-shield-check", group: "Gestão", description: "Acompanhe garantias abertas e mantenha o retorno ligado ao serviço original." },
-  { id: "relatorios", view: "relatorios", label: "Relatórios", icon: "bi-bar-chart", group: "Gestão", description: "Exporte dados contábeis e reúna indicadores para entender o desempenho da loja." },
   { id: "configuracoes", view: "configuracoes", label: "Configurações", icon: "bi-gear", group: "Gestão", description: "Ajuste aparência, inicialização, ajuda e preferências do aplicativo." },
 ];
 
 const hotspots: Array<{ area: TourArea; label: string; className: string }> = [
-  { area: "novo", label: "Abrir novo orçamento", className: "hotspot-new" },
-  { area: "inicio", label: "Abrir visão geral", className: "hotspot-home" },
-  { area: "historico", label: "Abrir histórico", className: "hotspot-history" },
+  { area: "novo-orcamento", label: "Abrir novo orçamento", className: "hotspot-new" },
+  { area: "dashboard", label: "Abrir visão geral", className: "hotspot-home" },
+  { area: "atendimentos", label: "Abrir atendimentos", className: "hotspot-history" },
   { area: "clientes", label: "Abrir clientes", className: "hotspot-clients" },
 ];
 
 export function ProductPreview() {
-  const [active, setActive] = useState<TourArea>("inicio");
+  const [active, setActive] = useState<TourArea>("dashboard");
   const area = tourAreas.find((item) => item.id === active) ?? tourAreas[0];
   const preview = previews[area.view];
-  const groups = ["Rotina", "Atendimento", "Gestão"];
+  const groups = ["Rotina", "Cadastros", "Gestão"];
 
   return (
     <section className="authentic-product-preview" aria-label="Passeio pelas principais áreas do aplicativo">

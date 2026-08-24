@@ -9,8 +9,8 @@ export function SiteFooter() {
         <div className="footer-grid">
           <div>
             <Link href="/" className="footer-brand"><Image src={assetPath("/assets/branding/icon-192.png")} width={42} height={42} alt="" /><span><strong>{PRODUCT.name}</strong><small>Gestão para assistência técnica</small></span></Link>
-            <p>Organização da entrada do aparelho à retirada, com histórico, documentos e controle da operação.</p>
-            <span className="version-chip">Versão atual {PRODUCT.version}</span>
+            <p>Organização da entrada do aparelho à retirada, com Atendimentos, peças, aparelhos, documentos e controle da operação.</p>
+            <span className="version-chip">Site atualizado para {PRODUCT.version}</span>
           </div>
           <div><h2>Conheça</h2><Link href="/recursos">Recursos</Link><Link href="/planos">Planos</Link><Link href="/faq">Perguntas frequentes</Link></div>
           <div><h2>Aprenda</h2><Link href="/guia">Guia completo</Link><Link href="/guia#novo-orcamento">Criar orçamento</Link><Link href="/guia#backup">Backup e segurança</Link></div>

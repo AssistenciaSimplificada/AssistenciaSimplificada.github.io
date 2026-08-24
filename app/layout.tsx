@@ -11,7 +11,7 @@ export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Orçamentos Simplificados | Atendimentos para assistência técnica",
+  title: "Assistência Simplificada | Gestão para assistência técnica",
   description: "Organize Atendimentos, clientes, aparelhos, peças, pagamentos, garantias e documentos em um aplicativo Windows para assistências técnicas.",
   alternates: { canonical: "/" },
   referrer: "strict-origin-when-cross-origin",
@@ -20,17 +20,17 @@ export const metadata: Metadata = {
     apple: [{ url: assetPath("/assets/branding/icon-512.png"), sizes: "512x512", type: "image/png" }],
   },
   openGraph: {
-    title: "Orçamentos Simplificados",
+    title: "Assistência Simplificada",
     description: "Atendimentos, peças, aparelhos, garantias e gestão em um aplicativo Windows para assistência técnica.",
     url: "/",
-    siteName: "Orçamentos Simplificados",
+    siteName: "Assistência Simplificada",
     images: [assetPath("/og.png")],
     locale: "pt_BR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Orçamentos Simplificados",
+    title: "Assistência Simplificada",
     description: "Atendimentos, peças, aparelhos, garantias e gestão em um aplicativo Windows para assistência técnica.",
     images: [assetPath("/og.png")],
   },

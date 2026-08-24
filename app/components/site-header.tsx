@@ -46,7 +46,7 @@ export function SiteHeader() {
         <div className="container" ref={menuRef}>
           <Link className="navbar-brand d-flex align-items-center gap-2" href="/" onClick={() => setOpen(false)}>
             <Image src={assetPath("/assets/branding/icon-192.png")} width={42} height={42} alt="" />
-            <span><strong>Orçamentos</strong><small>Simplificados</small></span>
+            <span><strong>Assistência</strong><small>Simplificada</small></span>
           </Link>
           <button ref={toggleRef} className="navbar-toggler" type="button" aria-expanded={open} aria-controls="site-menu" aria-label={open ? "Fechar menu" : "Abrir menu"} onClick={() => setOpen((value) => !value)}>
             <i className={open ? "bi bi-x-lg" : "bi bi-list"} />

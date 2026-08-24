@@ -15,14 +15,14 @@ type LatestRelease = {
 const ALLOWED_DOWNLOAD_HOSTS = new Set([
   "github.com",
 ]);
-const OFFICIAL_RELEASE_PATH = /^\/GabrielSchmeisk\/Orcamentos-Atualizacoes\/releases\/download\/[^/]+\/Orcamentos-Simplificados-Setup-[\w.-]+\.exe$/i;
+const OFFICIAL_RELEASE_PATH = /^\/GabrielSchmeisk\/Orcamentos-Atualizacoes\/releases\/download\/[^/]+\/(?:Assistencia|Orcamentos)-Simplificados-Setup-[\w.-]+\.exe$/i;
 
 function findInstaller(payload: LatestRelease) {
   if (!Array.isArray(payload.assets)) return null;
 
   for (const rawAsset of payload.assets as ReleaseAsset[]) {
     if (typeof rawAsset.name !== "string" || typeof rawAsset.browser_download_url !== "string") continue;
-    const isMainInstaller = /^Orcamentos-Simplificados-Setup-[\w.-]+\.exe$/i.test(rawAsset.name)
+    const isMainInstaller = /^(?:Assistencia|Orcamentos)-Simplificados-Setup-[\w.-]+\.exe$/i.test(rawAsset.name)
       && !/(emissor|license|licen[cç]a)/i.test(rawAsset.name);
     if (!isMainInstaller) continue;
 

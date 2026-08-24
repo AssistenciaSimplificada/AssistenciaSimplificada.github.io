@@ -24,15 +24,15 @@ export const whatsappLink = (message: string) =>
   `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
 export const PRODUCT = {
-  name: "Orçamentos Simplificados",
+  name: "Assistência Simplificada",
   version: SITE_CONFIG.productVersion,
   platform: SITE_CONFIG.platform,
   purchaseLink: "/planos",
   contactLink: whatsappLink(
-    "Olá! Quero conhecer melhor o Orçamentos Simplificados para minha assistência técnica.",
+    "Olá! Quero conhecer melhor a Assistência Simplificada para minha assistência técnica.",
   ),
   trialLink: whatsappLink(
-    "Olá! Quero solicitar o teste grátis de 1 dia do Orçamentos Simplificados. Pode me ajudar com a ativação?",
+    "Olá! Quero solicitar o teste grátis de 1 dia da Assistência Simplificada. Pode me ajudar com a ativação?",
   ),
   whatsappDisplay: SITE_CONFIG.whatsappDisplay,
   supportLink: "/faq#suporte",
@@ -44,7 +44,7 @@ export const plans = [
     price: SITE_CONFIG.plans.monthly,
     description: "Para começar com baixo compromisso e usar o sistema completo.",
     purchaseLink: whatsappLink(
-      `Olá! Quero adquirir a licença mensal (1 mês) do Orçamentos Simplificados por ${SITE_CONFIG.plans.monthly}. Pode me orientar sobre a ativação?`,
+      `Olá! Quero adquirir a licença mensal (1 mês) da Assistência Simplificada por ${SITE_CONFIG.plans.monthly}. Pode me orientar sobre a ativação?`,
     ),
   },
   {
@@ -52,7 +52,7 @@ export const plans = [
     price: SITE_CONFIG.plans.semiannual,
     description: "Seis meses de acesso ao sistema completo por um valor único.",
     purchaseLink: whatsappLink(
-      `Olá! Quero adquirir a licença semestral (6 meses) do Orçamentos Simplificados por ${SITE_CONFIG.plans.semiannual}. Pode me orientar sobre a ativação?`,
+      `Olá! Quero adquirir a licença semestral (6 meses) da Assistência Simplificada por ${SITE_CONFIG.plans.semiannual}. Pode me orientar sobre a ativação?`,
     ),
   },
   {
@@ -62,7 +62,7 @@ export const plans = [
     featured: true,
     badge: "Melhor custo-benefício",
     purchaseLink: whatsappLink(
-      `Olá! Quero adquirir a licença anual (1 ano) do Orçamentos Simplificados por ${SITE_CONFIG.plans.annual}. Pode me orientar sobre a ativação?`,
+      `Olá! Quero adquirir a licença anual (1 ano) da Assistência Simplificada por ${SITE_CONFIG.plans.annual}. Pode me orientar sobre a ativação?`,
     ),
   },
   {
@@ -70,7 +70,7 @@ export const plans = [
     price: SITE_CONFIG.plans.permanent,
     description: "Licença sem vencimento para esta instalação, com pagamento único.",
     purchaseLink: whatsappLink(
-      `Olá! Quero adquirir a licença permanente do Orçamentos Simplificados por ${SITE_CONFIG.plans.permanent}. Pode me orientar sobre a ativação?`,
+      `Olá! Quero adquirir a licença permanente da Assistência Simplificada por ${SITE_CONFIG.plans.permanent}. Pode me orientar sobre a ativação?`,
     ),
   },
 ];

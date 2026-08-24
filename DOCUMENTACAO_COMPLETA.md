@@ -1,4 +1,4 @@
-# Documentação completa — site comercial Orçamentos Simplificados
+# Documentação completa — site comercial Assistência Simplificada
 
 > ← Voltar para [DOCUMENTACAO_MESTRE.md](../DOCUMENTACAO_MESTRE.md)
 

@@ -22,7 +22,7 @@ Esta source é o site público de apresentação, download, planos, guia e docum
 | Framework de autoria | Next.js App Router 16.2.11 + React 19.2.6 |
 | Runtime/build usado | Vinext 1.0.0-beta.3 + Vite 8.0.13, integração Cloudflare/OpenAI Sites |
 | Renderização | `dynamic = "force-static"`; páginas estáticas |
-| Versão documentada localmente | `8.3.0` em `lib/site-data.ts` |
+| Versão documentada localmente | `9.0.0-beta.1` em `lib/site-data.ts` |
 | Download público | release estável mais recente de `GabrielSchmeisk/Orcamentos-Atualizacoes` |
 | Compra | contato assistido por `wa.me`; nenhuma cobrança no site |
 | Dados coletados | nenhum formulário ou endpoint de coleta identificado |

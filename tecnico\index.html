@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; connect-src https://nbyezzdvxjcmlcejiiak.supabase.co; style-src 'self'; script-src 'self'">
+  <title>Avaliação técnica | Assistência Simplificada</title>
+  <link rel="stylesheet" href="page.css">
+  <script src="page.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">ASSISTÊNCIA SIMPLIFICADA</p>
+      <h1>Avaliação técnica</h1>
+      <p class="muted">Acesso protegido e temporário. O envio ficará aguardando conferência da assistência.</p>
+    </header>
+    <section id="loading" class="card notice">Carregando atendimento…</section>
+    <section id="error" class="card notice error" hidden>
+      <h2>Link indisponível</h2>
+      <p id="error-text">Este link expirou ou já foi utilizado.</p>
+    </section>
+    <form id="form" hidden novalidate>
+      <section class="card facts">
+        <div><span>Assistência</span><strong id="store"></strong></div>
+        <div><span>Atendimento</span><strong id="number"></strong></div>
+        <div><span>Aparelho</span><strong id="device"></strong></div>
+        <div><span>Relato recebido</span><strong id="reported"></strong></div>
+        <small id="expiry"></small>
+      </section>
+      <section class="card">
+        <label for="diagnosis">Defeito constatado pelo técnico</label>
+        <textarea id="diagnosis" maxlength="2000" minlength="3" required placeholder="Descreva o que foi constatado nos testes."></textarea>
+      </section>
+      <section class="card">
+        <h2>Valores de cada serviço</h2>
+        <p class="muted">Informe o preço unitário de todos os serviços.</p>
+        <div id="services"></div>
+      </section>
+      <button id="submit" type="submit">Enviar para conferência</button>
+    </form>
+    <section id="success" class="card notice success" hidden>
+      <h2>Valores enviados</h2>
+      <p>A assistência recebeu sua avaliação. O orçamento ainda não foi alterado e ficará aguardando conferência no computador principal.</p>
+    </section>
+  </main>
+</body>
+</html>

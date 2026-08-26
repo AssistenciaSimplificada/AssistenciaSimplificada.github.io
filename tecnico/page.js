@@ -2,10 +2,11 @@
   "use strict";
   const API_URL = "https://nbyezzdvxjcmlcejiiak.supabase.co/functions/v1/technician-quote";
   const $ = (id) => document.getElementById(id);
-  const state = { token: "", services: [] };
+  const state = { token: "", pin: "", services: [] };
   const fail = (message) => {
     $("loading").hidden = true;
     $("form").hidden = true;
+    $("pin-form").hidden = true;
     $("error-text").textContent = message;
     $("error").hidden = false;
   };
@@ -19,7 +20,12 @@
       body: JSON.stringify(body),
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.message || "Este link expirou ou já foi utilizado.");
+    if (!response.ok) {
+      const error = new Error(data.message || "Este link expirou ou já foi utilizado.");
+      error.code = data.error || "request_failed";
+      error.requiresPin = data.requiresPin === true;
+      throw error;
+    }
     return data;
   };
   const cents = (value) => {
@@ -119,6 +125,39 @@
     $("loading").hidden = true;
     $("form").hidden = false;
   };
+  const showPinGate = (message = "") => {
+    $("loading").hidden = true;
+    $("error").hidden = true;
+    $("form").hidden = true;
+    $("pin-form").hidden = false;
+    $("pin-error").textContent = message;
+    $("pin-error").hidden = !message;
+    $("pin").focus();
+  };
+  $("pin").addEventListener("input", (event) => {
+    event.target.value = event.target.value.replace(/\D/g, "").slice(0, 12);
+    $("pin-error").hidden = true;
+  });
+  $("pin-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const pin = $("pin").value.trim();
+    if (!/^\d{4,12}$/.test(pin)) return showPinGate("Digite de 4 a 12 números.");
+    $("pin-submit").disabled = true;
+    $("pin-submit").textContent = "Verificando…";
+    try {
+      const data = await api({ action: "read", token: state.token, pin });
+      state.pin = pin;
+      $("pin").value = "";
+      $("pin-form").hidden = true;
+      render(data.invite);
+    } catch (error) {
+      if (error.code === "pin_invalid") showPinGate(error.message);
+      else fail(error.message);
+    } finally {
+      $("pin-submit").disabled = false;
+      $("pin-submit").textContent = "Abrir atendimento";
+    }
+  });
   $("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const diagnosis = $("diagnosis").value.trim();
@@ -155,9 +194,10 @@
     $("submit").disabled = true;
     $("submit").textContent = "Enviando…";
     try {
-      await api({ action: "submit", token: state.token, diagnosedDefect: diagnosis, evaluationResult, serviceValues: values });
+      await api({ action: "submit", token: state.token, pin: state.pin, diagnosedDefect: diagnosis, evaluationResult, serviceValues: values });
       $("form").hidden = true;
       $("success").hidden = false;
+      state.pin = "";
       history.replaceState(null, "", location.pathname);
     } catch (error) {
       fail(error instanceof Error ? error.message : "Não foi possível enviar agora.");
@@ -167,5 +207,10 @@
   state.token = params.get("token") || "";
   history.replaceState(null, "", location.pathname);
   if (!/^[A-Za-z0-9_-]{43}$/.test(state.token)) return fail("O endereço está incompleto ou inválido.");
-  api({ action: "read", token: state.token }).then((data) => render(data.invite)).catch((error) => fail(error.message));
+  api({ action: "read", token: state.token })
+    .then((data) => render(data.invite))
+    .catch((error) => {
+      if (error.code === "pin_required") showPinGate();
+      else fail(error.message);
+    });
 })();

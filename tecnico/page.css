@@ -31,5 +31,10 @@ button:disabled{opacity:.55;cursor:wait}
 .notice{border-left:4px solid var(--brand)}
 .notice.error{border-left-color:var(--danger)}
 .notice.success{border-left-color:var(--ok)}
+.pin-gate{display:grid;gap:10px;position:relative;padding-top:22px}
+.pin-gate h2,.pin-gate p{margin:0}
+.pin-gate label{margin:6px 0 0}
+.pin-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#0d2d34;color:var(--brand);font-size:1.35rem;border:1px solid #22515c}
+.field-error{margin:0;color:#ffabb0;font-size:.9rem;font-weight:700}
 [hidden]{display:none!important}
 @media(max-width:560px){.service-option-fields{grid-template-columns:1fr}}

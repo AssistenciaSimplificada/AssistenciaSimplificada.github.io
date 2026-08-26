@@ -9,9 +9,9 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; connect-src https://nbyezzdvxjcmlcejiiak.supabase.co; img-src 'self'; style-src 'self'; script-src 'self'">
   <title>Avaliação técnica | Assistência Simplificada</title>
   <link rel="canonical" href="https://assistenciasimplificada.site/tecnico/">
-  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="page.css">
-  <script src="page.js" defer></script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/tecnico/page.css">
+  <script src="/tecnico/page.js" defer></script>
 </head>
 <body>
   <main>
@@ -25,6 +25,17 @@
       <h2>Link indisponível</h2>
       <p id="error-text">Este link expirou ou já foi utilizado.</p>
     </section>
+    <form id="pin-form" class="card pin-gate" hidden novalidate>
+      <span class="pin-icon" aria-hidden="true">⌨</span>
+      <div>
+        <h2>Este atendimento exige senha</h2>
+        <p class="muted">Digite os números informados pela assistência. A senha não faz parte do endereço.</p>
+      </div>
+      <label for="pin">Senha do link</label>
+      <input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" minlength="4" maxlength="12" autocomplete="one-time-code" required placeholder="4 a 12 dígitos">
+      <p id="pin-error" class="field-error" role="alert" hidden></p>
+      <button id="pin-submit" type="submit">Abrir atendimento</button>
+    </form>
     <form id="form" hidden novalidate>
       <section class="card facts">
         <div><span>Assistência</span><strong id="store"></strong></div>

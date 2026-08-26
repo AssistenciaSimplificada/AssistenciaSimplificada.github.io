@@ -1,4 +1,4 @@
-# Site comercial — Assistência Simplificada 9.1.1
+# Site comercial — Assistência Simplificada 9.1.2
 
 Source privada do site oficial do produto. A publicação usa GitHub Pages e envia somente a saída estática de `dist/client`; código-fonte, dependências, ferramentas, configurações locais e arquivos do servidor nunca entram no repositório público.
 

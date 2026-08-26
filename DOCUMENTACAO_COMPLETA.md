@@ -1,6 +1,6 @@
 # Documentação completa — site comercial Assistência Simplificada
 
-Versão de referência: `9.1.0`.
+Versão de referência: `9.1.1`.
 
 Esta source reúne o site público, o botão de download e o portal temporário usado pelo técnico. A maior parte do site é estática. Não há login comercial, checkout, banco próprio, analytics ou formulário de coleta. O portal `/tecnico/` é uma exceção deliberada: ele chama uma Edge Function do projeto do proprietário usando um convite aleatório e temporário.
 
@@ -12,7 +12,7 @@ Esta source reúne o site público, o botão de download e o portal temporário 
 | Build | Vinext/Vite em modo GitHub Pages |
 | Saída pública | `dist/client` |
 | Hospedagem | GitHub Pages, domínio próprio `assistenciasimplificada.site` |
-| Versão anunciada | `9.1.0` em `lib/site-data.ts` |
+| Versão anunciada | `9.1.1` em `lib/site-data.ts` |
 | Download | API pública de Releases do GitHub; aceita somente o instalador do repositório oficial |
 | Compra/suporte | links HTTPS do WhatsApp com texto pré-preenchido |
 | Portal técnico | HTML/CSS/JS estático em `public/tecnico/`, com API remota protegida por token de 24 horas |

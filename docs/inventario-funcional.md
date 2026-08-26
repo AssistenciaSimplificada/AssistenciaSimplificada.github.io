@@ -1,6 +1,6 @@
 # Inventário funcional usado no site
 
-Base de conferência: aplicativo **Assistência Simplificada 9.1.0**, documentação atual, componentes, regras de domínio, migrações locais e suítes automatizadas verificadas em 26/08/2026.
+Base de conferência: aplicativo **Assistência Simplificada 9.1.1**, documentação atual, componentes, regras de domínio, migrações locais e suítes automatizadas verificadas em 26/08/2026.
 
 ## Áreas apresentadas
 
@@ -37,11 +37,11 @@ Base de conferência: aplicativo **Assistência Simplificada 9.1.0**, documenta�
 - Chaves, segredos, tokens, endpoints administrativos ou instruções internas de emissão.
 - Detalhes de implementação que ajudem a contornar licença, atualização ou controle de acesso.
 - Capturas que contenham nomes, telefones ou dados reais.
-- Afirmações encontradas somente em manuais históricos e não confirmadas na versão 9.1.0.
+- Afirmações encontradas somente em manuais históricos e não confirmadas na versão 9.1.1.
 
 ## Configuração comercial atual
 
 - Produto: Assistência Simplificada.
-- Versão anunciada: 9.1.0.
+- Versão anunciada: 9.1.1.
 - Modalidades: 1 mês, 6 meses, 1 ano e permanente, todas com os mesmos recursos.
 - Compra e teste: atendimento assistido pelo WhatsApp; o site não realiza cobrança nem coleta dados em formulário próprio.

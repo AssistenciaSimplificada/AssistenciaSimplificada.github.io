@@ -5,7 +5,7 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://assistencia
 export const SITE_CONFIG = {
   whatsappNumber: "5516994241388",
   whatsappDisplay: "(16) 99424-1388",
-  productVersion: "9.1.0",
+  productVersion: "9.1.1",
   platform: "Windows 10 ou 11, 64 bits",
   trialDays: 1,
   plans: {

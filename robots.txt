@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://assistenciasimplificada.github.io/sitemap.xml
+Sitemap: https://assistenciasimplificada.site/sitemap.xml

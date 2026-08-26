@@ -44,9 +44,15 @@ export function SiteHeader() {
     <header className="site-header sticky-top">
       <nav className="navbar navbar-expand-lg" aria-label="Navegação principal">
         <div className="container" ref={menuRef}>
-          <Link className="navbar-brand d-flex align-items-center gap-2" href="/" onClick={() => setOpen(false)}>
-            <Image src={assetPath("/assets/branding/icon-192.png")} width={42} height={42} alt="" />
-            <span><strong>Assistência</strong><small>Simplificada</small></span>
+          <Link className="navbar-brand" href="/" onClick={() => setOpen(false)} aria-label={`${PRODUCT.name} — início`}>
+            <Image
+              className="site-brand-logo"
+              src={assetPath("/assets/branding/logos/logo-horizontal-fundo-escuro.svg")}
+              width={240}
+              height={63}
+              priority
+              alt={PRODUCT.name}
+            />
           </Link>
           <button ref={toggleRef} className="navbar-toggler" type="button" aria-expanded={open} aria-controls="site-menu" aria-label={open ? "Fechar menu" : "Abrir menu"} onClick={() => setOpen((value) => !value)}>
             <i className={open ? "bi bi-x-lg" : "bi bi-list"} />

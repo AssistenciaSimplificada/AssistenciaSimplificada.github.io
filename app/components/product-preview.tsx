@@ -23,7 +23,7 @@ const previews: Record<PreviewView, { src: string; title: string; description: s
   aparelhos: { src: "/assets/img/app/current/aparelhos.webp", title: "Aparelhos", description: "Compras, estoque, vendas e resultados comerciais em uma central." },
   pecas: { src: "/assets/img/app/current/pesquisa-de-pecas.webp", title: "Pesquisa de peças", description: "Demandas, prioridades, fornecedores e oportunidades de atendimento." },
   garantias: { src: "/assets/img/app/current/garantias.webp", title: "Garantias", description: "Retornos, prazos e serviços ligados ao atendimento original." },
-  configuracoes: { src: "/assets/img/app/current/configuracoes.webp", title: "Configurações", description: "Aparência, inicialização, tutoriais, ajuda e diagnóstico do aplicativo." },
+  configuracoes: { src: "/assets/img/app/current/configuracoes.webp", title: "Administração", description: "Automações, templates, inicialização, usuários, backup e preferências da loja." },
 };
 
 const tourAreas: Array<{ id: TourArea; view: PreviewView; label: string; icon: string; group: string; description: string }> = [
@@ -34,7 +34,7 @@ const tourAreas: Array<{ id: TourArea; view: PreviewView; label: string; icon: s
   { id: "clientes", view: "clientes", label: "Clientes", icon: "bi-people", group: "Cadastros", description: "Consulte contatos, aparelhos e todo o relacionamento de cada cliente." },
   { id: "aparelhos", view: "aparelhos", label: "Aparelhos", icon: "bi-phone", group: "Cadastros", description: "Veja compras, estoque e vendas de aparelhos em uma única central." },
   { id: "garantias", view: "garantias", label: "Garantias", icon: "bi-shield-check", group: "Gestão", description: "Acompanhe garantias abertas e mantenha o retorno ligado ao serviço original." },
-  { id: "configuracoes", view: "configuracoes", label: "Configurações", icon: "bi-gear", group: "Gestão", description: "Ajuste aparência, inicialização, ajuda e preferências do aplicativo." },
+  { id: "configuracoes", view: "configuracoes", label: "Administração", icon: "bi-gear", group: "Gestão", description: "Ajuste automações, templates, usuários, backup, aparência e preferências do aplicativo." },
 ];
 
 const hotspots: Array<{ area: TourArea; label: string; className: string }> = [

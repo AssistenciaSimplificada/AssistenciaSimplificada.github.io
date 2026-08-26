@@ -6,6 +6,8 @@ import { ScrollMotion } from "./components/scroll-motion";
 import { assetPath, PRODUCT, resourceGroups } from "../lib/site-data";
 import { DownloadAppButton } from "./components/download-app-button";
 
+export const dynamic = "force-static";
+
 export default function Home() {
   return <main><ScrollMotion />
     <section className="hero-section">
@@ -24,7 +26,7 @@ export default function Home() {
     <section className="section-light" id="problema" data-reveal><div className="container"><div className="section-heading centered"><span className="eyebrow">Menos improviso</span><h2>O que costuma se perder, passa a ter lugar certo.</h2><p>O sistema acompanha o trabalho real da assistência sem exigir que a equipe monte controles paralelos.</p></div><div className="row g-4 mt-2">{[
       ["bi-chat-left-dots", "Aprovações e mensagens", "Guarde quem aprovou, o canal usado, tentativas, falhas e confirmações de contato."],
       ["bi-phone-vibrate", "Aparelhos e vínculos", "Veja cada aparelho do cliente, inclusive compras, vendas e atendimentos conjuntos."],
-      ["bi-clock-history", "Prazos e pendências", "Destaque análises, peças, garantias, pagamentos parciais e retiradas que precisam de atenção."],
+      ["bi-clock-history", "Prazos e automações", "Configure validade, arquivamento, vencimentos e lembretes que continuam visíveis até serem tratados."],
       ["bi-journal-check", "Documentação", "Gere PDFs padronizados e mantenha os documentos recentes acessíveis."],
     ].map(([icon,title,text]) => <div className="col-sm-6 col-lg-3" key={title}><article className="benefit-card h-100"><i className={`bi ${icon}`} /><h3>{title}</h3><p>{text}</p></article></div>)}</div></div></section>
 
@@ -51,15 +53,15 @@ export default function Home() {
 
     <section className="security-section"><div className="container"><div className="security-card"><div><span className="eyebrow">Proteção e continuidade</span><h2>O banco principal permanece no computador da loja.</h2><p>O aplicativo usa SQLite local criptografado, backups autenticados, cópia externa configurável, usuários com permissões, auditoria e atualizações assinadas.</p><div className="security-points"><span><i className="bi bi-database-lock" /> Banco local criptografado</span><span><i className="bi bi-person-lock" /> Acessos individuais</span><span><i className="bi bi-device-ssd" /> Backup externo protegido</span><span><i className="bi bi-arrow-repeat" /> Atualização assinada</span></div></div><Link className="btn btn-primary btn-lg" href="/privacidade">Como os dados são tratados</Link></div></div></section>
 
-    <section className="updates-section"><div className="container"><div className="section-heading"><span className="eyebrow">Versão atual em desenvolvimento</span><h2>A {PRODUCT.version} aproxima gestão, bancada e atendimento.</h2><p>As mudanças atuais aparecem nas telas, nos fluxos e na proteção da operação.</p></div><div className="updates-grid">{[
-      ["bi-clock-history","Central de Atendimentos","O antigo Histórico agora reúne ativos, encerrados, aparelhos abandonados e resumos vinculados."],
-      ["bi-cash-stack","Financeiro operacional","Receitas, despesas e pagamentos parciais passam a compor a leitura da operação."],
-      ["bi-bookmark-check","Peças reservadas","O estoque separa peças por orçamento e só baixa o saldo físico quando a reserva é usada."],
-      ["bi-chat-square-check","Mensagens rastreáveis","Tentativas, falhas, nova tentativa e confirmação manual ficam registradas no atendimento."],
-      ["bi-shield-check","Garantias completas","A conclusão pede os serviços e as peças executados para documentar o retorno."],
-      ["bi-cloud-arrow-up","Continuidade protegida","Backup externo, diagnóstico da máquina, atualização assinada e validação periódica reforçam a distribuição."],
-    ].map(([icon,title,text]) => <article key={title}><i className={`bi ${icon}`} /><h3>{title}</h3><p>{text}</p></article>)}</div><Link className="text-link" href="/guia#atualizacoes">Como funcionam licença e atualizações <i className="bi bi-arrow-right" /></Link></div></section>
+    <section className="updates-section"><div className="container"><div className="section-heading"><span className="eyebrow">Versão atual em desenvolvimento</span><h2>A {PRODUCT.version} deixa a operação mais configurável.</h2><p>Novos controles de prazo, comunicação técnica e continuidade acompanham o fluxo real da assistência.</p></div><div className="updates-grid">{[
+      ["bi-calendar2-check","Ciclo do orçamento configurável","Defina validade, expiração, arquivamento e dias úteis com padrões próprios para a loja."],
+      ["bi-person-workspace","Resposta técnica em 24 horas","Envie um link individual para diagnóstico e valores e revise a resposta antes de aplicá-la."],
+      ["bi-bell-fill","Alertas que não se perdem","Avisos importantes permanecem disponíveis, lembram arquivados e podem reaparecer até duas vezes por dia."],
+      ["bi-cloud-check","Backup e portabilidade","Valide a restauração, mantenha cópia externa e importe clientes com prévia antes de confirmar."],
+      ["bi-layout-text-window-reverse","Templates centralizados","Documentos, mensagens e regras de garantia ficam reunidos em uma área consistente."],
+      ["bi-shield-lock","Primeiro acesso protegido","A ativação vem antes da conta administrativa, com atualização assinada e acesso por permissões."],
+    ].map(([icon,title,text]) => <article key={title}><i className={`bi ${icon}`} /><h3>{title}</h3><p>{text}</p></article>)}</div><Link className="text-link" href="/guia#automacoes">Configurar automações e notificações <i className="bi bi-arrow-right" /></Link></div></section>
 
-    <section className="final-cta"><div className="container"><div className="cta-panel"><span className="eyebrow">Versão {PRODUCT.version}</span><h2>Organize hoje o próximo aparelho que entrar na sua loja.</h2><p>Baixe a versão estável mais recente ou solicite o modo de demonstração por 1 dia.</p><div className="d-flex flex-wrap justify-content-center gap-3"><DownloadAppButton className="btn btn-primary btn-lg" /><Link className="btn btn-outline-light btn-lg" href={PRODUCT.purchaseLink}>Ver licenças</Link><a className="btn btn-outline-light btn-lg" href={PRODUCT.trialLink}>Teste grátis de 1 dia</a></div></div></div></section>
+    <section className="final-cta"><div className="container"><div className="cta-panel"><span className="eyebrow">Versão {PRODUCT.version}</span><h2>Organize hoje o próximo aparelho que entrar na sua loja.</h2><p>Baixe a versão mais recente ou solicite o modo de demonstração por 1 dia.</p><div className="d-flex flex-wrap justify-content-center gap-3"><DownloadAppButton className="btn btn-primary btn-lg" /><Link className="btn btn-outline-light btn-lg" href={PRODUCT.purchaseLink}>Ver licenças</Link><a className="btn btn-outline-light btn-lg" href={PRODUCT.trialLink}>Teste grátis de 1 dia</a></div></div></div></section>
   </main>;
 }

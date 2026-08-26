@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { SiteLink as Link } from "../components/site-link";
 import { PageHero } from "../components/page-hero";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Termos de uso | Assistência Simplificada",
   description: "Condições gerais de uso do site e do aplicativo Assistência Simplificada.",
@@ -23,10 +25,10 @@ export default function TermosPage() {
             ))}
           </aside>
           <article className="legal-copy">
-            <p className="legal-date">Atualizado em 24 de agosto de 2026</p>
+            <p className="legal-date">Atualizado em 25 de agosto de 2026</p>
             <section id="aceite"><h2>1. Aceite</h2><p>Ao instalar ou usar a Assistência Simplificada, o usuário declara ter lido estes termos e concordado com as condições apresentadas no instalador e nesta página. Se não concordar, não deve concluir a instalação nem utilizar o produto.</p></section>
             <section id="licenca"><h2>2. Licença de uso</h2><p>A licença autoriza o uso do aplicativo na instalação e máquina validadas, pelo período contratado. Mesmo a modalidade permanente continua sujeita à validação periódica, revogação e transferência autorizada. A licença não transfere propriedade do software, código, marca ou mecanismos de emissão. Chaves e arquivos de licença não devem ser alterados, compartilhados publicamente ou usados para contornar a validação.</p></section>
-            <section id="responsabilidades"><h2>3. Responsabilidades da loja</h2><p>A loja é responsável pela exatidão dos registros, pela base legal do tratamento de dados de seus clientes, pela guarda do computador e backups e por conceder acesso somente a pessoas autorizadas. Cada usuário deve proteger sua senha e encerrar a sessão quando deixar o equipamento sem supervisão.</p><p>Documentos com credenciais de transferência ou pós-formatação devem ser entregues somente ao cliente e excluídos quando deixarem de ser necessários.</p></section>
+            <section id="responsabilidades"><h2>3. Responsabilidades da loja</h2><p>A loja é responsável pela exatidão dos registros, pela base legal do tratamento de dados de seus clientes, pela guarda do computador e backups e por conceder acesso somente a pessoas autorizadas. Cada usuário deve proteger sua senha e encerrar a sessão quando deixar o equipamento sem supervisão.</p><p>Links individuais enviados ao técnico são temporários e devem ser compartilhados somente com o profissional responsável pelo atendimento. A loja deve revisar diagnóstico e valores recebidos antes de aplicá-los ao orçamento.</p><p>Documentos com credenciais de transferência ou pós-formatação devem ser entregues somente ao cliente e excluídos quando deixarem de ser necessários.</p></section>
             <section id="dados"><h2>4. Dados e privacidade</h2><p>O banco principal é armazenado localmente em formato criptografado. Dados de clientes e aparelhos podem ser sincronizados de forma protegida para apoiar a operação licenciada e análises previstas no produto. Os detalhes e os direitos aplicáveis estão na <Link href="/privacidade">Política de Privacidade</Link>.</p></section>
             <section id="atualizacoes"><h2>5. Atualizações</h2><p>Atualizações assinadas podem corrigir falhas, melhorar compatibilidade, alterar a interface ou acrescentar funções. O aplicativo pode baixá-las conforme o canal escolhido e instalá-las no fechamento. Uma versão beta pode apresentar comportamento ainda em validação.</p></section>
             <section id="disponibilidade"><h2>6. Disponibilidade e limites</h2><p>O produto foi projetado para a plataforma indicada na página de planos. A operação local tolera interrupções dentro da janela válida da licença, mas ativação, validação periódica, revogação, sincronização, atualização e outros serviços externos dependem de rede ou internet. O usuário deve manter backups adequados e verificar documentos antes de entregá-los.</p></section>

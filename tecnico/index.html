@@ -4,9 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="description" content="Avaliação técnica protegida e temporária da Assistência Simplificada.">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; connect-src https://nbyezzdvxjcmlcejiiak.supabase.co; style-src 'self'; script-src 'self'">
   <title>Avaliação técnica | Assistência Simplificada</title>
+  <link rel="canonical" href="https://assistenciasimplificada.github.io/tecnico/">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="page.css">
   <script src="page.js" defer></script>
 </head>
@@ -35,8 +38,19 @@
         <textarea id="diagnosis" maxlength="2000" minlength="3" required placeholder="Descreva o que foi constatado nos testes."></textarea>
       </section>
       <section class="card">
-        <h2>Valores de cada serviço</h2>
-        <p class="muted">Informe o preço unitário de todos os serviços.</p>
+        <label for="evaluation-result">Resultado da avaliação</label>
+        <select id="evaluation-result" required>
+          <option value="">Selecione o resultado</option>
+          <option value="repair_recommended">Reparo recomendado</option>
+          <option value="repair_with_reservations">Reparo possível com ressalvas</option>
+          <option value="awaiting_part">Aguardando disponibilidade de peça</option>
+          <option value="not_repairable">Reparo não recomendado</option>
+          <option value="inconclusive">Avaliação inconclusiva</option>
+        </select>
+      </section>
+      <section class="card">
+        <h2>Peças e valores de cada serviço</h2>
+        <p class="muted">Informe ao menos uma opção. Quando houver alternativas, adicione todas para a assistência apresentar ao cliente.</p>
         <div id="services"></div>
       </section>
       <button id="submit" type="submit">Enviar para conferência</button>

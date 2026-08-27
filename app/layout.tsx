@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./globals.css";
+import "./marketing-refresh.css";
 import { BackToTop } from "./components/back-to-top";
 import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
-import { SITE_URL } from "../lib/site-data";
+import { PRODUCT, SITE_URL } from "../lib/site-data";
+import { SITE_COMMERCIAL_CONFIG } from "../lib/product-config";
 
 export const dynamic = "force-static";
 const absoluteSiteAsset = (relativePath: string) =>
@@ -13,12 +15,12 @@ const absoluteSiteAsset = (relativePath: string) =>
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Assistência Simplificada | Gestão para assistência técnica",
-  description: "Organize Atendimentos, clientes, técnicos, peças, prazos, garantias, automações e documentos em um aplicativo Windows para assistências técnicas.",
-  authors: [{ name: "Gabriel Schmeisk", url: SITE_URL }],
-  creator: "Gabriel Schmeisk",
-  publisher: "Assistência Simplificada",
-  keywords: ["software para assistência técnica", "gestão de assistência técnica", "ordem de serviço", "orçamento para conserto", "Gabriel Schmeisk", "Assistência Simplificada"],
+  title: `${PRODUCT.name} | Sistema para assistência técnica`,
+  description: `Organize orçamentos, ordens de serviço, técnicos, peças, clientes, pagamentos, documentos, retirada e garantia em um aplicativo Windows.`,
+  authors: [{ name: PRODUCT.authorName, url: SITE_URL }],
+  creator: PRODUCT.authorName,
+  publisher: PRODUCT.name,
+  keywords: ["software para assistência técnica", "gestão de assistência técnica", "ordem de serviço", "orçamento para conserto", PRODUCT.authorName, PRODUCT.name],
   alternates: { canonical: "/" },
   referrer: "strict-origin-when-cross-origin",
   icons: {
@@ -26,18 +28,18 @@ export const metadata: Metadata = {
     apple: [{ url: absoluteSiteAsset("/assets/branding/icon-512.png"), sizes: "512x512", type: "image/png" }],
   },
   openGraph: {
-    title: "Assistência Simplificada",
-    description: "Atendimentos, técnicos, prazos, peças, garantias e automações em um aplicativo Windows para assistência técnica.",
+    title: `Cada aparelho no lugar. Cada etapa sob controle. | ${PRODUCT.name}`,
+    description: "Gestão completa para assistências técnicas no Windows: do orçamento à garantia.",
     url: "/",
-    siteName: "Assistência Simplificada",
+    siteName: PRODUCT.name,
     images: [absoluteSiteAsset("/og.png")],
     locale: "pt_BR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Assistência Simplificada",
-    description: "Atendimentos, técnicos, prazos, peças, garantias e automações em um aplicativo Windows para assistência técnica.",
+    title: `Cada aparelho no lugar. Cada etapa sob controle. | ${PRODUCT.name}`,
+    description: "Gestão completa para assistências técnicas no Windows: do orçamento à garantia.",
     images: [absoluteSiteAsset("/og.png")],
   },
 };
@@ -48,27 +50,44 @@ const structuredData = {
     {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
-      name: "Assistência Simplificada",
+      name: PRODUCT.name,
       url: SITE_URL,
       logo: absoluteSiteAsset("/assets/branding/icon-512.png"),
-      founder: { "@type": "Person", name: "Gabriel Schmeisk" },
+      founder: { "@type": "Person", name: PRODUCT.authorName },
     },
     {
       "@type": "SoftwareApplication",
       "@id": `${SITE_URL}/#software`,
-      name: "Assistência Simplificada",
+      name: PRODUCT.name,
+      softwareVersion: PRODUCT.version,
       url: SITE_URL,
       applicationCategory: "BusinessApplication",
       operatingSystem: "Windows 10, Windows 11",
-      author: { "@type": "Person", name: "Gabriel Schmeisk" },
+      author: { "@type": "Person", name: PRODUCT.authorName },
       publisher: { "@id": `${SITE_URL}/#organization` },
       description: metadata.description,
-      offers: { "@type": "AggregateOffer", priceCurrency: "BRL", lowPrice: "27.99", highPrice: "119.99", offerCount: 4 },
+      featureList: [
+        "Orçamentos e ordens de serviço",
+        "Aprovação e revisão imutável",
+        "Painel e convite temporário para técnicos",
+        "Clientes, aparelhos e atenção interna",
+        "Peças, estoque, compras e vendas",
+        "Garantias, retiradas e aparelhos abandonados",
+        "PDFs, etiquetas e templates",
+        "Backup protegido e restauração validada",
+      ],
+      offers: {
+        "@type": "AggregateOffer",
+        priceCurrency: "BRL",
+        lowPrice: (SITE_COMMERCIAL_CONFIG.plans.monthly.priceCents / 100).toFixed(2),
+        highPrice: (SITE_COMMERCIAL_CONFIG.plans.permanent.priceCents / 100).toFixed(2),
+        offerCount: Object.keys(SITE_COMMERCIAL_CONFIG.plans).length,
+      },
     },
     {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
-      name: "Assistência Simplificada",
+      name: PRODUCT.name,
       url: SITE_URL,
       inLanguage: "pt-BR",
       publisher: { "@id": `${SITE_URL}/#organization` },
@@ -76,8 +95,8 @@ const structuredData = {
     {
       "@type": "Person",
       "@id": `${SITE_URL}/#gabriel-schmeisk`,
-      name: "Gabriel Schmeisk",
-      jobTitle: "Criador da Assistência Simplificada",
+      name: PRODUCT.authorName,
+      jobTitle: `Criador da ${PRODUCT.name}`,
       worksFor: { "@id": `${SITE_URL}/#organization` },
     },
   ],

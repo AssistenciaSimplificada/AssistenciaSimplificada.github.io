@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "shortName": "Assistência",
+  "copyrightStartYear": 2026,
+  "trialDays": 1,
+  "desktop": {
+    "appId": "br.com.orcamentos.app",
+    "productName": "Assistência Simplificada"
+  },
+  "platform": {
+    "display": "Windows 10 ou 11, 64 bits",
+    "operatingSystems": [
+      "Windows 10",
+      "Windows 11"
+    ],
+    "architecture": "x64"
+  },
+  "artifacts": {
+    "windowsInstallerPrefix": "Assistencia-Simplificada-Setup"
+  },
+  "support": {
+    "name": "Gabriel Schmeisk",
+    "whatsapp": "5516994241388",
+    "whatsappDisplay": "(16) 99424-1388",
+    "email": ""
+  },
+  "urls": {
+    "officialWebsite": "https://assistenciasimplificada.site",
+    "technicianPath": "/tecnico/",
+    "documentationPath": "/guia",
+    "supportPath": "/faq#suporte",
+    "termsPath": "/termos",
+    "privacyPath": "/privacidade",
+    "legacyPublicOrigins": [
+      "https://assistenciasimplificada.github.io"
+    ],
+    "creatorInstagram": "https://www.instagram.com/bielschmeisk/",
+    "creatorInstagramHandle": "@bielschmeisk",
+    "releaseRepository": "AssistenciaSimplificada/Orcamentos-Atualizacoes",
+    "technicianApi": "https://nbyezzdvxjcmlcejiiak.supabase.co/functions/v1/technician-quote"
+  },
+  "productName": "Assistência Simplificada",
+  "version": "9.1.5",
+  "description": "Aplicativo multiempresa para orçamentos e ordens de serviço.",
+  "authorName": "Gabriel Schmeisk"
+}

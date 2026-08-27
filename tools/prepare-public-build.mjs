@@ -1,4 +1,4 @@
-import { cp, readdir, stat } from "node:fs/promises";
+import { cp, readdir, rm, stat } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
@@ -16,6 +16,7 @@ const requiredFiles = [
   "privacidade.html",
   "termos.html",
   path.join("tecnico", "index.html"),
+  path.join("tecnico", "config.js"),
   ".nojekyll",
   "favicon.svg",
   "og.png",
@@ -29,6 +30,12 @@ const prerenderMetadata = await stat(prerenderRoot).catch(() => null);
 if (prerenderMetadata?.isDirectory()) {
   await cp(prerenderRoot, publicRoot, { recursive: true, force: true });
 }
+
+// The technician template is a build input. Only the fully rendered page may
+// be exposed by GitHub Pages.
+await rm(path.join(publicRoot, "tecnico", "index.template.html"), {
+  force: true,
+});
 
 for (const relativePath of requiredFiles) {
   const file = path.join(publicRoot, relativePath);

@@ -1,10 +1,33 @@
 import type { Metadata } from "next";
 import { SiteLink as Link } from "../components/site-link";
 import { PageHero } from "../components/page-hero";
-import { faqs } from "../../lib/site-data";
+import { faqs, PRODUCT } from "../../lib/site-data";
 
 export const dynamic = "force-static";
+export const metadata: Metadata = { title: `Perguntas frequentes | ${PRODUCT.name}`, description: "Respostas sobre Windows, licença, internet, link técnico, documentos, garantia, backup, atualização e usuários.", alternates: { canonical: "/faq" } };
 
-export const metadata: Metadata = { title: "Perguntas frequentes | Assistência Simplificada", description: "Respostas sobre Windows, licença, prazos, link técnico, notificações, backup, atualização e usuários.", alternates: { canonical: "/faq" } };
-
-export default function FaqPage() { return <main><PageHero eyebrow="Dúvidas objetivas" title="Antes de instalar, saiba como funciona." description="Compatibilidade, licenças, atualizações e rotina de uso explicadas de forma direta." /><section className="faq-section"><div className="container"><div className="faq-layout"><aside><span className="eyebrow">Neste FAQ</span><h2>Informações essenciais</h2><p>Compatibilidade, internet, dados, licenciamento, atualizações e uso pela equipe.</p><Link className="btn btn-primary" href="/guia">Abrir o guia completo</Link></aside><div className="faq-list">{faqs.map((item,index) => <details key={item.q} open={index === 0}><summary><span>{item.q}</span><i className="bi bi-plus-lg" /></summary><p>{item.a}</p></details>)}</div></div><div className="support-card" id="suporte"><div className="support-icon"><i className="bi bi-headset" /></div><div><span className="eyebrow">Suporte</span><h2>Precisa relatar um problema?</h2><p>Informe a tela, a ação realizada e a mensagem exibida. Envie capturas sem dados pessoais de clientes. Para licença, informe apenas a mensagem de erro; não envie senhas, banco, backups ou documentos.</p></div><Link className="btn btn-outline-light" href="/guia#atualizacoes">Ajuda com licença</Link></div></div></section></main>; }
+export default function FaqPage() {
+  return (
+    <main className="as-secondary-page">
+      <PageHero eyebrow="Dúvidas objetivas" title="Antes de instalar, saiba como funciona." description="Compatibilidade, licenças, internet, segurança e rotina explicadas sem letras miúdas." />
+      <section className="faq-section">
+        <div className="container">
+          <div className="faq-layout">
+            <aside>
+              <span className="eyebrow">Neste FAQ</span>
+              <h2>Informações essenciais</h2>
+              <p>Do banco local ao convite do técnico: confira as regras que afetam a sua operação.</p>
+              <Link className="btn btn-primary" href="/guia">Abrir o guia completo</Link>
+            </aside>
+            <div className="faq-list">{faqs.map((item, index) => <details key={item.q} open={index === 0}><summary><span>{item.q}</span><i className="bi bi-plus-lg" /></summary><p>{item.a}</p></details>)}</div>
+          </div>
+          <div className="support-card" id="suporte">
+            <div className="support-icon"><i className="bi bi-headset" /></div>
+            <div><span className="eyebrow">Suporte</span><h2>Precisa relatar um problema?</h2><p>Informe a tela, a ação realizada e a mensagem exibida. Envie capturas sem dados pessoais. Para licença, não compartilhe senhas, banco, backups ou documentos.</p></div>
+            <a className="btn btn-outline-light" href={PRODUCT.contactLink}>Falar com o suporte</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

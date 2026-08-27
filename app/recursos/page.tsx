@@ -1,18 +1,93 @@
 import type { Metadata } from "next";
+import { FeatureExplorer } from "../components/feature-explorer";
+import { ScrollMotion } from "../components/scroll-motion";
 import { SiteLink as Link } from "../components/site-link";
-import { PageHero } from "../components/page-hero";
-import { ProductPreview } from "../components/product-preview";
 import { PRODUCT, resourceGroups } from "../../lib/site-data";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = { title: "Recursos da versão atual | Assistência Simplificada", description: "Conheça Atendimentos, automações, painel técnico, clientes, peças, garantias, templates, backup e segurança.", alternates: { canonical: "/recursos" } };
+export const metadata: Metadata = {
+  title: `Recursos da versão ${PRODUCT.version} | ${PRODUCT.name}`,
+  description: "Conheça orçamentos, técnicos, clientes, peças, estoque, garantias, documentos, automações, backup e segurança com telas reais do aplicativo.",
+  alternates: { canonical: "/recursos" },
+};
 
-const guideLinks: Record<string, string> = { orcamentos: "novo-orcamento", clientes: "clientes", operacao: "manutencao", garantias: "garantias", aparelhos: "compra-venda", documentos: "documentos", gestao: "automacoes", seguranca: "backup" };
+const guideLinks: Record<string, string> = {
+  orcamentos: "novo-orcamento",
+  clientes: "clientes",
+  operacao: "manutencao",
+  garantias: "garantias",
+  aparelhos: "compra-venda",
+  documentos: "documentos",
+  gestao: "automacoes",
+  seguranca: "backup",
+};
 
-export default function RecursosPage() { return <main><PageHero eyebrow="Visão completa" title="Recursos que acompanham a operação de verdade." description="Do atendimento à gestão, cada área foi pensada para reduzir repetição e manter a equipe alinhada." /><section className="section-light"><div className="container"><nav className="resource-index" aria-label="Índice de recursos">{resourceGroups.map((group) => <a key={group.id} href={`#${group.id}`}><i className={`bi ${group.icon}`} />{group.title}</a>)}</nav><div className="resource-sections">{resourceGroups.map((group,index) => <article id={group.id} className="resource-detail" key={group.id}><div className="resource-detail-copy"><span className="eyebrow">{group.kicker}</span><h2>{group.title}</h2><p>{group.summary}</p><ul className="check-list dark">{group.items.map((item) => <li key={item}>{item}</li>)}</ul><Link className="text-link" href={`/guia#${guideLinks[group.id]}`}>Ver como utilizar <i className="bi bi-arrow-right" /></Link></div><div className="resource-visual" aria-hidden="true"><span className="resource-number">{String(index+1).padStart(2,"0")}</span><i className={`bi ${group.icon}`} /><small>Disponível na versão {PRODUCT.version}</small></div></article>)}</div><section className="micro-inventory"><div className="section-heading centered"><span className="eyebrow">Conheça todos os recursos</span><h2>Microfunções que também economizam tempo.</h2><p>Detalhes pequenos na interface que reduzem digitação, repetição e dúvida durante o atendimento.</p></div><div className="micro-grid">{[
-        ["Cadastro e validação",["Autocompletar clientes","Máscaras de telefone e documento","Primeiro e segundo nome obrigatórios","Limites seguros de texto","Valores em moeda com foco padronizado","Sugestão de serviço pelo relato"]],
-        ["Pesquisa e organização",["Busca por protocolo, contato e aparelho","Filtros persistentes de status","Ordenação por atualização, criação, valor ou status","Validade e arquivamento configuráveis","Nomes longos abreviados somente na lista","Orçamentos vinculados mantidos próximos"]],
-        ["Ações e documentos",["Editar, duplicar, arquivar e excluir com confirmação","PDF, impressão e mensagem","Downloads automáticos","Aviso manual ao técnico","Peça indisponível enviada para procura","Comprovantes próprios de compra e venda"]],
-        ["Preferências e controle",["Tema claro ou noturno","Pasta de documentos configurável","Inicialização com o Windows","Notificações persistentes e repetição limitada","Atalhos de teclado e tutoriais","Templates de mensagens, documentos e garantia"]],
-      ].map(([title,items]) => <details key={title as string}><summary>{title as string}<i className="bi bi-plus-lg" /></summary><ul>{(items as string[]).map((item) => <li key={item}>{item}</li>)}</ul></details>)}</div></section></div></section><section className="showcase-section"><div className="container"><div className="row align-items-center g-5"><div className="col-lg-8"><div className="hero-console resource-console"><div className="shot-top"><span /><span /><span /><small>Loja teste • versão {PRODUCT.version}</small></div><ProductPreview /></div></div><div className="col-lg-4"><span className="eyebrow">Navegação atual</span><h2>Todos os setores da assistência no mesmo lugar.</h2><p>Operação, negócio e gestão ficam reunidos da entrada do aparelho ao backup.</p><Link className="btn btn-primary" href="/guia#novo-orcamento">Aprender a criar um orçamento</Link></div></div></div></section><section className="final-cta"><div className="container"><div className="cta-panel"><h2>Os mesmos recursos em todos os planos.</h2><p>A modalidade muda apenas o período da licença.</p><Link className="btn btn-primary btn-lg" href={PRODUCT.purchaseLink}>Comparar licenças</Link></div></div></section></main>; }
+export default function RecursosPage() {
+  return (
+    <main className="as-resources-page">
+      <ScrollMotion />
+      <header className="as-resource-intro">
+        <div className="container" data-motion="signal">
+          <span className="as-kicker"><i className="bi bi-grid-1x2" /> Versão {PRODUCT.version}</span>
+          <h1>Uma assistência inteira, conectada pelo mesmo atendimento.</h1>
+          <p>Explore as áreas do aplicativo com capturas reais. Cada recurso abaixo existe na versão atual e foi conferido contra o fluxo instalado.</p>
+          <div className="as-hero-actions">
+            <a className="btn btn-primary btn-lg" href="#explorar">Explorar recursos</a>
+            <Link className="btn btn-outline-light btn-lg" href="/guia">Abrir o guia</Link>
+          </div>
+        </div>
+      </header>
+
+      <section className="as-section" id="explorar">
+        <div className="container">
+          <div className="as-section-heading">
+            <span className="as-kicker">Escolha uma área</span>
+            <h2>Veja o recurso e a tela onde ele acontece.</h2>
+            <p>As imagens foram capturadas no modo demonstração seguro, com dados fictícios separados da base real.</p>
+          </div>
+          <FeatureExplorer />
+        </div>
+      </section>
+
+      <section className="as-section as-resource-catalog">
+        <div className="container">
+          <div className="as-section-heading">
+            <span className="as-kicker">Inventário conferido</span>
+            <h2>Das funções principais aos detalhes que evitam retrabalho.</h2>
+            <p>O sistema organiza a operação sem esconder as ações menores que fazem diferença no balcão, na bancada e na gestão.</p>
+          </div>
+          <div className="as-resource-ledger">
+            {resourceGroups.map((group, index) => (
+              <article id={group.id} key={group.id} data-motion="screen">
+                <div className="as-ledger-mark">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <i className={`bi ${group.icon}`} />
+                </div>
+                <div>
+                  <span className="as-kicker">{group.kicker}</span>
+                  <h2>{group.title}</h2>
+                  <p>{group.summary}</p>
+                  <Link className="text-link" href={`/guia#${guideLinks[group.id]}`}>Ver passo a passo <i className="bi bi-arrow-right" /></Link>
+                </div>
+                <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="as-final-cta">
+        <div className="container">
+          <span className="as-kicker">Todos os recursos em qualquer modalidade</span>
+          <h2>Escolha o prazo da licença, não uma versão reduzida do produto.</h2>
+          <p>Mensal, semestral, anual e permanente usam o mesmo conjunto de recursos.</p>
+          <div className="as-hero-actions">
+            <Link className="btn btn-primary btn-lg" href="/planos">Consultar planos</Link>
+            <Link className="btn btn-outline-light btn-lg" href="/faq">Tirar dúvidas</Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

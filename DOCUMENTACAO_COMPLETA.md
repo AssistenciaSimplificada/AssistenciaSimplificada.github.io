@@ -1,6 +1,6 @@
 # Documentação completa — site comercial Assistência Simplificada
 
-Versão de referência: `9.1.2`.
+Versão de referência: `9.1.5`.
 
 Esta source reúne o site público, o botão de download e o portal temporário usado pelo técnico. A maior parte do site é estática. Não há login comercial, checkout, banco próprio, analytics ou formulário de coleta. O portal `/tecnico/` é uma exceção deliberada: ele chama uma Edge Function do projeto do proprietário usando um convite aleatório e temporário.
 
@@ -12,10 +12,10 @@ Esta source reúne o site público, o botão de download e o portal temporário 
 | Build | Vinext/Vite em modo GitHub Pages |
 | Saída pública | `dist/client` |
 | Hospedagem | GitHub Pages, domínio próprio `assistenciasimplificada.site` |
-| Versão anunciada | `9.1.2` em `lib/site-data.ts` |
+| Versão anunciada | `9.1.5` na configuração central do produto |
 | Download | API pública de Releases do GitHub; aceita somente o instalador do repositório oficial |
 | Compra/suporte | links HTTPS do WhatsApp com texto pré-preenchido |
-| Portal técnico | HTML/CSS/JS estático em `public/tecnico/`, com API remota protegida por token de 24 horas |
+| Portal técnico | HTML/CSS/JS estático em `public/tecnico/`, com API remota protegida por token de 8 horas |
 
 ```mermaid
 flowchart LR
@@ -40,7 +40,7 @@ O site comercial não recebe credenciais do aplicativo nem autoridade administra
 | `/faq` | dúvidas de compatibilidade, dados, licença e suporte |
 | `/privacidade` | política de privacidade |
 | `/termos` | condições de uso |
-| `/tecnico/` | diagnóstico e valores por convite individual de 24 horas |
+| `/tecnico/` | diagnóstico e valores por convite individual de 8 horas |
 | `/robots.txt`, `/sitemap.xml` | indexação e URLs canônicas |
 
 `app/layout.tsx` define metadata, header, footer e assets globais. `lib/site-data.ts` centraliza nome, versão, URL, planos, WhatsApp, recursos e repositório de download. `app/components/download-app-button.tsx` consulta releases sem credenciais, valida host/nome do EXE e usa fallback para a página oficial.
@@ -52,7 +52,7 @@ Arquivos: `public/tecnico/index.html`, `page.css` e `page.js`.
 Fluxo:
 
 1. o aplicativo cria um convite individual no backend;
-2. o link contém um token aleatório com validade de 24 horas;
+2. o link contém um token aleatório com validade de 8 horas;
 3. o técnico abre `/tecnico/?token=...` em qualquer rede com acesso à internet;
 4. a Edge Function devolve somente dados necessários do serviço;
 5. o técnico informa defeito constatado e valor de cada serviço;

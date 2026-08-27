@@ -1,17 +1,24 @@
 {
   "name": "sites-project",
-  "version": "9.1.2",
+  "version": "9.1.5",
   "private": true,
   "packageManager": "pnpm@11.19.0",
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
+    "config:sync": "node tools/sync-public-config.mjs",
+    "predev": "npm run config:sync",
     "dev": "vinext dev",
+    "prebuild": "npm run config:sync",
     "build": "node tools/build-public.mjs",
     "preview:public": "node tools/serve-public-build.mjs",
     "start": "vinext start",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern .openai"
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern .openai",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm run test:contract && pnpm run test:responsive",
+    "test:contract": "node --test tests/site-contract.test.mjs",
+    "test:responsive": "playwright test"
   },
   "dependencies": {
     "bootstrap": "5.3.8",
@@ -24,6 +31,7 @@
     "@cloudflare/vite-plugin": "1.53.1",
     "@cloudflare/workers-types": "5.20260823.1",
     "@openai/sites-vite-plugin": "^0.1.0 || ^0.2.0",
+    "@playwright/test": "1.62.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",

@@ -72,8 +72,12 @@ async function openSidebar(label, expectedHeading = label) {
     `document.querySelector('.topbar-copy strong')?.innerText.includes(${JSON.stringify(expectedHeading)})`,
     `a tela ${label}`,
   );
+  await waitFor(
+    `![...document.querySelectorAll('body *')].some(element=>element.children.length===0&&/^(Consultando banco|Carregando)/i.test(element.textContent?.trim()||""))`,
+    `o carregamento da tela ${label}`,
+  );
   await evaluate("document.querySelector('.content')?.scrollTo(0,0);window.scrollTo(0,0)");
-  await delay(220);
+  await delay(900);
 }
 
 async function capture(name) {
@@ -87,6 +91,16 @@ async function capture(name) {
   const destination = path.join(outputDirectory, `${name}.webp`);
   fs.writeFileSync(destination, Buffer.from(screenshot.data, "base64"));
   process.stdout.write(`${destination}\n`);
+}
+
+async function openAdministrationArea(label, expectedText = label) {
+  await clickButton(label, "document.querySelector('.admin-layout') || document.querySelector('main')");
+  await waitFor(
+    `document.querySelector('main')?.innerText.includes(${JSON.stringify(expectedText)})`,
+    `a área administrativa ${label}`,
+  );
+  await evaluate("document.querySelector('.content')?.scrollTo(0,0);window.scrollTo(0,0)");
+  await delay(900);
 }
 
 try {
@@ -105,6 +119,10 @@ try {
   }
   await waitFor("Boolean(document.querySelector('.app-shell'))", "o acesso ao aplicativo");
 
+  if (await evaluate("[...document.querySelectorAll('button')].some(button=>button.innerText.trim()==='Entendi')")) {
+    await clickButton("Entendi");
+  }
+
   if (await evaluate("[...document.querySelectorAll('button')].some(button=>button.innerText.includes('Pular tutorial'))")) {
     await clickButton("Pular tutorial");
   }
@@ -113,6 +131,14 @@ try {
   await capture("dashboard-principal");
   await openSidebar("Atendimentos");
   await capture("atendimentos");
+  await clickButton("Expandir orçamento");
+  await delay(900);
+  await capture("atendimento-detalhado");
+  await clickButton("Visualizar");
+  await waitFor("Boolean(document.querySelector('[role=dialog]'))", "os detalhes do orçamento");
+  await delay(700);
+  await capture("orcamento-detalhes");
+  await clickButton("Fechar");
   await openSidebar("Clientes");
   await capture("clientes");
   await openSidebar("Pesquisa de peças", "Peças");
@@ -121,6 +147,18 @@ try {
   await capture("aparelhos");
   await openSidebar("Garantias");
   await capture("garantias");
+  await openSidebar("Estoque de peças");
+  await capture("estoque-de-pecas");
+  await openSidebar("Backup");
+  await capture("backup");
+  await openSidebar("Administração");
+  await capture("administracao");
+  await openAdministrationArea("Dados da empresa", "Identidade, aparência e dados da loja");
+  await capture("dados-da-empresa");
+  await openAdministrationArea("Técnicos", "Cadastrar técnico da loja");
+  await capture("tecnicos");
+  await openAdministrationArea("Licença", "Licença");
+  await capture("licenca");
   await openSidebar("Configurações");
   await capture("configuracoes");
   await openSidebar("Novo orçamento", "Novo orçamento");

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export function ScrollMotion() {
   useEffect(() => {
-    const nodes = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>("[data-motion], [data-reveal]"));
     document.documentElement.classList.add("motion-ready");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       nodes.forEach((node) => node.classList.add("is-visible"));

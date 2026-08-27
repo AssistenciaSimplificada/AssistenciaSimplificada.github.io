@@ -1,4 +1,4 @@
-# Site comercial — Assistência Simplificada 9.1.2
+# Site comercial — Assistência Simplificada
 
 Source privada do site oficial do produto. A publicação usa GitHub Pages e envia somente a saída estática de `dist/client`; código-fonte, dependências, ferramentas, configurações locais e arquivos do servidor nunca entram no repositório público.
 
@@ -20,7 +20,7 @@ pnpm build
 
 A pasta publicável é `dist/client`. Confira que ela contém `.nojekyll`, páginas estáticas, assets e `tecnico/`, e que não contém `node_modules`, `.git`, source maps privados ou `dist/server`.
 
-Consulte `DOCUMENTACAO_COMPLETA.md` para arquitetura, segurança, rotas e publicação. O inventário do conteúdo anunciado está em `docs/inventario-funcional.md`.
+Consulte `DOCUMENTACAO_COMPLETA.md` para arquitetura, segurança, rotas e publicação. O inventário do conteúdo anunciado está em `docs/inventario-funcional.md`. A origem dos valores públicos e comerciais está descrita em `CONFIGURACAO.md`.
 
 ## Identidade visual
 

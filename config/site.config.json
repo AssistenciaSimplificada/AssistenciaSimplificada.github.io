@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "legalLastUpdated": "27 de agosto de 2026",
+  "plans": {
+    "monthly": { "label": "1 mês", "priceCents": 2799 },
+    "semiannual": { "label": "6 meses", "priceCents": 4799 },
+    "annual": { "label": "1 ano", "priceCents": 7799 },
+    "permanent": { "label": "Permanente", "priceCents": 11999 }
+  }
+}

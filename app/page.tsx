@@ -1,67 +1,184 @@
 import Image from "next/image";
-import { SiteLink as Link } from "./components/site-link";
-import { MediaGallery } from "./components/media-gallery";
-import { ProductPreview } from "./components/product-preview";
-import { ScrollMotion } from "./components/scroll-motion";
-import { assetPath, PRODUCT, resourceGroups } from "../lib/site-data";
+import type { CSSProperties } from "react";
 import { DownloadAppButton } from "./components/download-app-button";
+import { HeroShowcase } from "./components/hero-showcase";
+import { MediaGallery } from "./components/media-gallery";
+import { OperationStory } from "./components/operation-story";
+import { ScrollMotion } from "./components/scroll-motion";
+import { SiteLink as Link } from "./components/site-link";
+import { assetPath, PRODUCT, resourceGroups } from "../lib/site-data";
 
 export const dynamic = "force-static";
 
+const evidenceScreens = [
+  ["atendimento-detalhado.webp", "Atendimento aberto", "Serviços, equipe, valor, status e próximas ações no mesmo cartão."],
+  ["orcamento-detalhes.webp", "Orçamento auditável", "Aprovação, diagnóstico, valores, prazo e linha do tempo em uma visualização."],
+  ["clientes.webp", "Clientes e empresas", "Contatos, aparelhos, histórico, atenção interna e portabilidade de dados."],
+  ["estoque-de-pecas.webp", "Estoque de peças", "Saldos, reservas por orçamento, custos e movimentações sem quantidade negativa."],
+  ["backup.webp", "Backup e restauração", "Cópias protegidas, teste de restauração, importação e exportação completa."],
+  ["licenca.webp", "Licença transparente", "Prazo, instalação, renovação, observações administrativas e estado de validação."],
+] as const;
+
 export default function Home() {
-  return <main><ScrollMotion />
-    <section className="hero-section">
-      <div className="container position-relative"><div className="row align-items-center gy-5">
-        <div className="col-lg-5"><span className="eyebrow"><i className="bi bi-windows" /> Feito para assistência técnica</span><h1>Mais bancada. Menos bagunça.</h1><p className="hero-lead">Da entrada do aparelho à garantia: organize Atendimentos, clientes, peças, aparelhos, pagamentos e documentos em um aplicativo Windows.</p><div className="d-flex flex-wrap gap-3 mt-4"><DownloadAppButton className="btn btn-primary btn-lg" /><Link className="btn btn-outline-light btn-lg" href={PRODUCT.purchaseLink}>Ver planos e preços</Link></div><div className="trust-row"><span><i className="bi bi-database-lock" /> Banco local criptografado</span><span><i className="bi bi-display" /> Modo demonstração</span><span><i className="bi bi-patch-check" /> Atualizações assinadas</span></div></div>
-        <div className="col-lg-7"><div className="hero-console"><div className="shot-top"><span /><span /><span /><small>Loja teste • versão {PRODUCT.version}</small></div><ProductPreview /></div></div>
-      </div></div>
-    </section>
+  return (
+    <main className="as-site">
+      <ScrollMotion />
 
-    <section className="proof-bar"><div className="container"><div><strong>Um fluxo, não telas soltas.</strong><span>Entrada, análise, aprovação, manutenção, retirada e garantia conectadas pelo mesmo atendimento.</span></div><div className="proof-stats"><span><strong>8</strong> telas atuais no passeio</span><span><strong>4</strong> modalidades de licença</span><span><strong>1</strong> base organizada</span></div></div></section>
+      <section className="as-hero">
+        <div className="as-hero-grid container">
+          <div className="as-hero-copy" data-motion="signal">
+            <span className="as-kicker"><i className="bi bi-windows" /> Gestão completa para assistências técnicas</span>
+            <h1>Cada aparelho no lugar.<br /><em>Cada etapa sob controle.</em></h1>
+            <p>Orçamentos, bancada, peças, clientes, documentos e garantia conectados em um aplicativo Windows feito para a rotina real da assistência.</p>
+            <div className="as-hero-actions">
+              <DownloadAppButton className="btn btn-primary btn-lg" />
+              <a className="btn btn-outline-light btn-lg" href={PRODUCT.trialLink}><i className="bi bi-play-circle" /> Testar por {PRODUCT.trialDays} dia</a>
+            </div>
+            <div className="as-trust-grid" aria-label="Características principais">
+              <span><i className="bi bi-database-lock" /><strong>Banco local criptografado</strong><small>Operação preservada no computador</small></span>
+              <span><i className="bi bi-shield-check" /><strong>Backup protegido</strong><small>Cópia externa e restauração validada</small></span>
+              <span><i className="bi bi-patch-check" /><strong>Versão {PRODUCT.version}</strong><small>Instalador e atualizações assinados</small></span>
+            </div>
+          </div>
+          <HeroShowcase />
+        </div>
+        <div className="as-hero-gridlines" aria-hidden="true" />
+      </section>
 
-    <section className="compare-section" data-reveal><div className="container"><div className="section-heading centered"><span className="eyebrow">Mudança prática</span><h2>Saia de registros espalhados para um fluxo consultável.</h2></div><div className="compare-grid"><article className="compare-card before"><span><i className="bi bi-x-circle" /> Antes do sistema</span><ul><li>Anotações, conversas e documentos em lugares diferentes</li><li>Consulta demorada de atendimentos anteriores</li><li>Orçamentos e termos feitos manualmente</li><li>Pendências lembradas apenas pela equipe</li></ul></article><article className="compare-card after"><span><i className="bi bi-check-circle" /> Com o sistema</span><ul><li>Cliente, aparelho, serviço e documentos conectados</li><li>Pesquisa por contato, equipamento, IMEI ou protocolo</li><li>PDFs padronizados com os dados já registrados</li><li>Alertas, filtros e painéis para o que exige atenção</li></ul></article></div></div></section>
+      <section className="as-proof-strip" aria-label="Resumo do produto">
+        <div className="container">
+          <span><strong>1 fluxo conectado</strong> da entrada à garantia</span>
+          <span><strong>Todos os recursos</strong> em qualquer modalidade</span>
+          <span><strong>Dados demonstrativos</strong> separados do banco real</span>
+          <Link href="/planos">Ver planos <i className="bi bi-arrow-right" /></Link>
+        </div>
+      </section>
 
-    <section className="buy-band"><div className="container"><div><span>Veja sua assistência por inteiro</span><strong>Uma licença. Todos os recursos. Sem módulos escondidos.</strong></div><Link className="btn btn-primary" href={PRODUCT.purchaseLink}>Comparar licenças <i className="bi bi-arrow-right" /></Link></div></section>
+      <section className="as-section as-outcomes" data-motion="stagger">
+        <div className="container">
+          <div className="as-section-heading">
+            <span className="as-kicker">O problema não é falta de trabalho</span>
+            <h2>É o trabalho se espalhar entre conversa, papel e memória.</h2>
+            <p>A Assistência Simplificada transforma cada atendimento em um registro pesquisável, com responsáveis, prazos e documentos no lugar certo.</p>
+          </div>
+          <div className="as-outcome-grid">
+            <article><span>01</span><i className="bi bi-search" /><h3>Encontre sem caçar</h3><p>Pesquise por cliente, telefone, orçamento, OS, aparelho, IMEI, serviço ou responsável.</p></article>
+            <article><span>02</span><i className="bi bi-arrow-left-right" /><h3>Continue sem redigitar</h3><p>Cliente, aparelho, técnico, peças, pagamento, documentos e garantia compartilham o mesmo contexto.</p></article>
+            <article><span>03</span><i className="bi bi-journal-check" /><h3>Decida com histórico</h3><p>Aprovações, revisões, contatos, alterações sensíveis e motivos ficam registrados para consulta.</p></article>
+          </div>
+        </div>
+      </section>
 
-    <section className="section-light" id="problema" data-reveal><div className="container"><div className="section-heading centered"><span className="eyebrow">Menos improviso</span><h2>O que costuma se perder, passa a ter lugar certo.</h2><p>O sistema acompanha o trabalho real da assistência sem exigir que a equipe monte controles paralelos.</p></div><div className="row g-4 mt-2">{[
-      ["bi-chat-left-dots", "Aprovações e mensagens", "Guarde quem aprovou, o canal usado, tentativas, falhas e confirmações de contato."],
-      ["bi-phone-vibrate", "Aparelhos e vínculos", "Veja cada aparelho do cliente, inclusive compras, vendas e atendimentos conjuntos."],
-      ["bi-clock-history", "Prazos e automações", "Configure validade, arquivamento, vencimentos e lembretes que continuam visíveis até serem tratados."],
-      ["bi-journal-check", "Documentação", "Gere PDFs padronizados e mantenha os documentos recentes acessíveis."],
-    ].map(([icon,title,text]) => <div className="col-sm-6 col-lg-3" key={title}><article className="benefit-card h-100"><i className={`bi ${icon}`} /><h3>{title}</h3><p>{text}</p></article></div>)}</div></div></section>
+      <section className="as-section as-flow-section">
+        <div className="container">
+          <div className="as-section-heading as-heading-dark">
+            <span className="as-kicker">Da recepção ao pós-atendimento</span>
+            <h2>O sistema acompanha o que acontece — na ordem em que acontece.</h2>
+            <p>Role para percorrer o fluxo. Cada etapa usa uma tela real da versão atual.</p>
+          </div>
+          <OperationStory />
+        </div>
+      </section>
 
-    <section className="section-dark" data-reveal><div className="container"><div className="section-heading"><span className="eyebrow">Tudo no lugar certo</span><h2>Do balcão à gestão, sem perder o contexto.</h2><p>Escolha uma área e veja como ela ajuda no atendimento, na bancada e na administração da loja.</p></div><div className="feature-grid mt-5">{resourceGroups.slice(0,6).map((group) => <article className="feature-tile" key={group.id}><div className="feature-icon"><i className={`bi ${group.icon}`} /></div><div><span>{group.kicker}</span><h3>{group.title}</h3><p>{group.summary}</p></div></article>)}</div><div className="text-center mt-5 d-flex flex-wrap justify-content-center gap-3"><Link className="btn btn-outline-light btn-lg" href="/recursos">Explorar todos os recursos</Link><Link className="btn btn-primary btn-lg" href={PRODUCT.purchaseLink}>Quero para minha assistência</Link></div></div></section>
+      <section className="as-section as-capabilities" data-motion="stagger">
+        <div className="container">
+          <div className="as-section-heading">
+            <span className="as-kicker">Uma operação, oito áreas conectadas</span>
+            <h2>Profundo onde precisa. Simples no balcão.</h2>
+            <p>Os recursos são completos, mas aparecem dentro do fluxo certo — sem obrigar a equipe a montar controles paralelos.</p>
+          </div>
+          <div className="as-capability-grid">
+            {resourceGroups.map((group, index) => (
+              <article key={group.id}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <i className={`bi ${group.icon}`} />
+                <small>{group.kicker}</small>
+                <h3>{group.title}</h3>
+                <p>{group.summary}</p>
+                <Link href={`/recursos#${group.id}`}>Explorar área <i className="bi bi-arrow-up-right" /></Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-    <section className="workflow-section"><div className="container"><div className="section-heading centered"><span className="eyebrow">Fluxo conectado</span><h2>Uma sequência clara para a equipe inteira.</h2></div><div className="workflow-line">{[
-      ["01","Receber","Cliente, aparelho e relato"],["02","Analisar","Técnico, diagnóstico e peças"],["03","Aprovar","Versão, canal e responsável"],["04","Executar","Manutenção e andamento"],["05","Entregar","Pagamento, retirada e garantia"],
-    ].map(([n,title,text]) => <div className="workflow-step" key={n}><span>{n}</span><i className="bi bi-check-lg" /><h3>{title}</h3><p>{text}</p></div>)}</div></div></section>
+      <section className="as-section as-remote-section" data-motion="draw">
+        <div className="container as-remote-grid">
+          <div className="as-remote-visual">
+            <Image src={assetPath("/assets/img/app/current/tecnicos.webp")} width={1440} height={900} loading="lazy" sizes="(max-width: 991px) 100vw, 55vw" alt="Configuração real dos técnicos e avisos recebidos" />
+            <div className="as-security-orbit" aria-hidden="true"><i className="bi bi-lock" /><span>8h</span><small>convite individual</small></div>
+          </div>
+          <div className="as-remote-copy">
+            <span className="as-kicker">O técnico pode responder fora do balcão</span>
+            <h2>Um link temporário. Só o atendimento necessário.</h2>
+            <p>O painel completo continua no computador principal. Para outro dispositivo, a loja envia um convite individual e revisa a resposta antes de alterar o orçamento.</p>
+            <ul className="as-check-list">
+              <li>Validade de 8 horas e senha numérica opcional</li>
+              <li>A senha nunca é incluída no endereço do convite</li>
+              <li>Editar o orçamento invalida o link anterior</li>
+              <li>Múltiplas peças e valores por serviço</li>
+              <li>Diagnóstico e resultado só entram após a confirmação da loja</li>
+            </ul>
+            <Link className="btn btn-primary" href="/recursos#operacao">Conhecer o fluxo técnico</Link>
+          </div>
+        </div>
+      </section>
 
-    <section className="differentials-section"><div className="container"><div className="row g-4"><div className="col-lg-6"><article className="differential-card guarantee"><div className="differential-icon"><i className="bi bi-shield-check" /></div><span className="eyebrow">Diferencial de pós-atendimento</span><h2>Garantia vinculada ao serviço que realmente foi feito.</h2><p>A garantia nasce do orçamento finalizado, mantém cliente e aparelho, identifica prazo, avaliação, decisão, andamento e responsável. No fim, a loja pode gerar o comprovante correspondente.</p><ul className="check-list"><li>Pesquisa por cliente, aparelho, IMEI, orçamento ou número</li><li>Histórico de mudanças e responsáveis</li><li>Exclusão controlada quando criada incorretamente</li><li>Pasta conjunta para produtos vinculados, com obrigações separadas</li></ul><Link className="text-link" href="/guia#garantias">Ver como utilizar <i className="bi bi-arrow-right" /></Link></article></div><div className="col-lg-6"><article className="differential-card transfer"><div className="differential-icon"><i className="bi bi-arrow-left-right" /></div><span className="eyebrow">Diferencial operacional</span><h2>Transferência de dados com origem, destino e conferência.</h2><p>A ficha própria registra os dois aparelhos, identificadores, números, contas, tipos de dados autorizados e verificações antes da entrega. Campos vazios são omitidos do PDF.</p><ul className="check-list"><li>Aparelho de origem e aparelho de destino</li><li>WhatsApp, chip/eSIM, backup e autenticação em duas etapas</li><li>Autorização separada para apagar o aparelho antigo</li><li>Credenciais temporárias, não gravadas no cadastro</li></ul><Link className="text-link" href="/guia#transferencia">Ver como utilizar <i className="bi bi-arrow-right" /></Link></article></div></div></div></section>
+      <section className="as-section as-evidence" id="telas-reais">
+        <div className="container">
+          <div className="as-section-heading as-heading-dark">
+            <span className="as-kicker">Sem ilustração genérica</span>
+            <h2>Esta é a versão que você instala.</h2>
+            <p>Capturas realizadas no ambiente demonstrativo da versão {PRODUCT.version}, com dados fictícios e os mesmos fluxos do aplicativo.</p>
+          </div>
+          <div className="as-evidence-grid">
+            {evidenceScreens.map(([file, title, caption], index) => (
+              <figure key={file} data-motion="screen" style={{ "--screen-index": index } as CSSProperties}>
+                <div><Image src={assetPath(`/assets/img/app/current/${file}`)} width={1440} height={900} loading="lazy" sizes="(max-width: 767px) 100vw, 50vw" alt={`${title} na versão ${PRODUCT.version}`} /></div>
+                <figcaption><span>{String(index + 1).padStart(2, "0")}</span><strong>{title}</strong><p>{caption}</p><small><i className="bi bi-check-circle" /> versão {PRODUCT.version}</small></figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="as-centered-action"><Link className="btn btn-outline-light btn-lg" href="/recursos">Ver todos os recursos <i className="bi bi-arrow-right" /></Link></div>
+        </div>
+      </section>
 
-    <section className="owner-tour" id="demonstracao" data-reveal><div className="container"><div className="section-heading centered"><span className="eyebrow">O que o dono precisa enxergar</span><h2>Veja como o sistema organiza a rotina da loja.</h2><p>Da visão geral ao cadastro do orçamento, cada tela foi pensada para encontrar o que importa sem perder tempo.</p></div><div className="real-screen-grid">{[
-      ["dashboard-principal.webp", "Visão geral", "Faturamento, operação, estoque, garantias e o que exige atenção agora."],
-      ["atendimentos.webp", "Atendimentos", "Ativos, finalizados, aparelhos abandonados, filtros e registros vinculados."],
-      ["clientes.webp", "Clientes", "Pesquisa, indicadores, aparelhos e relacionamento reunidos."],
-      ["novo-orcamento.webp", "Novo orçamento", "Cadastro completo com revisão permanente e número público."],
-      ["pesquisa-de-pecas.webp", "Pesquisa de peças", "Demandas, urgência, fornecedores e retorno ao cliente."],
-      ["aparelhos.webp", "Aparelhos", "Compras, estoque, vendas e resultado comercial no mesmo espaço."],
-      ["garantias.webp", "Garantias", "Retornos ligados ao atendimento, com decisão, serviços e peças."],
-      ["configuracoes.webp", "Configurações", "Aparência, tutoriais, ajuda, diagnóstico e preferências."],
-    ].map(([file,title,caption]) => <figure className="real-screen-card" key={file}><div><Image src={assetPath(`/assets/img/app/current/${file}`)} width={1440} height={900} alt={`Tela real da versão ${PRODUCT.version}: ${title}`} sizes="(max-width: 767px) 100vw, 50vw" /></div><figcaption><strong>{title}</strong><span>{caption}</span><small><i className="bi bi-check-circle" /> Capturada na versão {PRODUCT.version}</small></figcaption></figure>)}</div><div className="tour-action"><p>Quer testar esse fluxo com dados fictícios?</p><a className="btn btn-primary btn-lg" href={PRODUCT.trialLink}>Solicitar teste grátis <i className="bi bi-whatsapp" /></a></div></div></section>
+      <section className="as-section as-documents" data-motion="signal">
+        <div className="container">
+          <div className="as-section-heading">
+            <span className="as-kicker">Documentos da própria operação</span>
+            <h2>O atendimento termina com uma entrega profissional.</h2>
+            <p>Orçamento, ordem de serviço, retirada, compra e venda, ficha técnica, garantia, transferência de dados e pós-formatação usam os dados já registrados.</p>
+          </div>
+          <MediaGallery />
+        </div>
+      </section>
 
-    <section className="section-light" data-reveal><div className="container"><div className="section-heading centered"><span className="eyebrow">Documentos que valorizam sua entrega</span><h2>Sua loja com uma apresentação mais profissional.</h2><p>Abra os exemplos e veja como orçamento, retirada, compra e fichas ficam prontos para entregar ao cliente.</p></div><div className="mt-5"><MediaGallery /></div></div></section>
+      <section className="as-section as-continuity">
+        <div className="container as-continuity-grid">
+          <div>
+            <span className="as-kicker">Continuidade da loja</span>
+            <h2>Fechar uma janela não pode significar perder um dia de trabalho.</h2>
+            <p>Banco local criptografado, backups autenticados, cópia externa configurável, verificação antes de restaurar e cópia de recuperação ao minimizar protegem a rotina.</p>
+            <div className="as-continuity-points"><span><i className="bi bi-device-ssd" /> Base local</span><span><i className="bi bi-cloud-check" /> Cópia externa</span><span><i className="bi bi-fingerprint" /> Auditoria</span><span><i className="bi bi-arrow-repeat" /> Atualização assinada</span></div>
+          </div>
+          <Image src={assetPath("/assets/img/app/current/backup.webp")} width={1440} height={900} loading="lazy" sizes="(max-width: 991px) 100vw, 50vw" alt="Central de backup da versão atual" />
+        </div>
+      </section>
 
-    <section className="security-section"><div className="container"><div className="security-card"><div><span className="eyebrow">Proteção e continuidade</span><h2>O banco principal permanece no computador da loja.</h2><p>O aplicativo usa SQLite local criptografado, backups autenticados, cópia externa configurável, usuários com permissões, auditoria e atualizações assinadas.</p><div className="security-points"><span><i className="bi bi-database-lock" /> Banco local criptografado</span><span><i className="bi bi-person-lock" /> Acessos individuais</span><span><i className="bi bi-device-ssd" /> Backup externo protegido</span><span><i className="bi bi-arrow-repeat" /> Atualização assinada</span></div></div><Link className="btn btn-primary btn-lg" href="/privacidade">Como os dados são tratados</Link></div></div></section>
-
-    <section className="updates-section"><div className="container"><div className="section-heading"><span className="eyebrow">Versão atual em desenvolvimento</span><h2>A {PRODUCT.version} deixa a operação mais configurável.</h2><p>Novos controles de prazo, comunicação técnica e continuidade acompanham o fluxo real da assistência.</p></div><div className="updates-grid">{[
-      ["bi-calendar2-check","Ciclo do orçamento configurável","Defina validade, expiração, arquivamento e dias úteis com padrões próprios para a loja."],
-      ["bi-person-workspace","Resposta técnica em 24 horas","Envie um link individual para diagnóstico e valores e revise a resposta antes de aplicá-la."],
-      ["bi-bell-fill","Alertas que não se perdem","Avisos importantes permanecem disponíveis, lembram arquivados e podem reaparecer até duas vezes por dia."],
-      ["bi-cloud-check","Backup e portabilidade","Valide a restauração, mantenha cópia externa e importe clientes com prévia antes de confirmar."],
-      ["bi-layout-text-window-reverse","Templates centralizados","Documentos, mensagens e regras de garantia ficam reunidos em uma área consistente."],
-      ["bi-shield-lock","Primeiro acesso protegido","A ativação vem antes da conta administrativa, com atualização assinada e acesso por permissões."],
-    ].map(([icon,title,text]) => <article key={title}><i className={`bi ${icon}`} /><h3>{title}</h3><p>{text}</p></article>)}</div><Link className="text-link" href="/guia#automacoes">Configurar automações e notificações <i className="bi bi-arrow-right" /></Link></div></section>
-
-    <section className="final-cta"><div className="container"><div className="cta-panel"><span className="eyebrow">Versão {PRODUCT.version}</span><h2>Organize hoje o próximo aparelho que entrar na sua loja.</h2><p>Baixe a versão mais recente ou solicite o modo de demonstração por 1 dia.</p><div className="d-flex flex-wrap justify-content-center gap-3"><DownloadAppButton className="btn btn-primary btn-lg" /><Link className="btn btn-outline-light btn-lg" href={PRODUCT.purchaseLink}>Ver licenças</Link><a className="btn btn-outline-light btn-lg" href={PRODUCT.trialLink}>Teste grátis de 1 dia</a></div></div></div></section>
-  </main>;
+      <section className="as-final-cta">
+        <div className="container">
+          <div className="as-cta-signal" aria-hidden="true"><span /><span /><span /></div>
+          <span className="as-kicker">Pronto para organizar a próxima entrada?</span>
+          <h2>Conheça o sistema com os seus próprios olhos.</h2>
+          <p>Baixe a versão {PRODUCT.version}, solicite o teste gratuito ou compare as modalidades. Todos os planos liberam os mesmos recursos.</p>
+          <div className="as-hero-actions">
+            <DownloadAppButton className="btn btn-primary btn-lg" />
+            <a className="btn btn-outline-light btn-lg" href={PRODUCT.trialLink}><i className="bi bi-whatsapp" /> Solicitar teste grátis</a>
+            <Link className="btn btn-outline-light btn-lg" href="/planos">Comparar licenças</Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }

@@ -6,7 +6,7 @@ import { PRODUCT, plans } from "../../lib/site-data";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Planos e licenças | Assistência Simplificada",
+  title: `Planos e licenças | ${PRODUCT.name}`,
   description: "Escolha licença mensal, semestral, anual ou permanente. Todos os recursos estão incluídos.",
   alternates: { canonical: "/planos" },
 };
@@ -22,7 +22,7 @@ const comparedResources = [
 
 export default function PlanosPage() {
   return (
-    <main>
+    <main className="as-secondary-page">
       <PageHero
         eyebrow="Licenciamento simples"
         title="Todos os recursos. Você escolhe o período."
@@ -34,7 +34,7 @@ export default function PlanosPage() {
             <div>
               <span className="trial-icon"><i className="bi bi-stars" /></span>
               <span className="eyebrow">Experimente antes de decidir</span>
-              <h2>Teste grátis por 1 dia</h2>
+              <h2>Teste grátis por {PRODUCT.trialDays} dia{PRODUCT.trialDays === 1 ? "" : "s"}</h2>
               <p>Conheça o fluxo com dados fictícios, separados da base real, sem pagamento e sem compromisso.</p>
             </div>
             <a className="btn btn-primary btn-lg" href={PRODUCT.trialLink}>
@@ -65,7 +65,7 @@ export default function PlanosPage() {
 
           <div className="pricing-note">
             <i className="bi bi-shield-check" />
-            <p><strong>Compra assistida pelo WhatsApp.</strong> Cada botão informa a modalidade e o valor escolhido. Nenhuma cobrança é feita pelo site. A licença padrão autoriza um computador; transferências devem ser combinadas com o suporte.</p>
+            <p><strong>Compra assistida pelo WhatsApp.</strong> Cada botão informa a modalidade e o valor escolhido. Nenhuma cobrança é feita pelo site. Nas contratações à distância, o consumidor pode exercer o direito de arrependimento em até 7 dias corridos, com devolução integral dos valores pagos. Consulte os <Link href="/termos">Termos de Uso</Link>. A licença padrão autoriza um computador; transferências devem ser combinadas com o suporte.</p>
           </div>
 
           <div className="comparison-wrap">
@@ -107,7 +107,7 @@ export default function PlanosPage() {
             </div>
           </div>
           <div className="contact-box">
-            <div><h2>Atendimento direto pelo WhatsApp</h2><p>{PRODUCT.whatsappDisplay} — tire dúvidas ou solicite seu teste grátis de 1 dia.</p></div>
+            <div><h2>Atendimento direto pelo WhatsApp</h2><p>{PRODUCT.whatsappDisplay} — tire dúvidas ou solicite seu teste grátis de {PRODUCT.trialDays} dia{PRODUCT.trialDays === 1 ? "" : "s"}.</p></div>
             <div className="d-flex flex-wrap gap-2">
               <a className="btn btn-outline-light" href={PRODUCT.contactLink}><i className="bi bi-whatsapp" /> Tirar uma dúvida</a>
               <a className="btn btn-primary" href={PRODUCT.trialLink}>Testar gratuitamente</a>

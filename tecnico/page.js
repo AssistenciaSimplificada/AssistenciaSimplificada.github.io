@@ -1,6 +1,8 @@
 (() => {
   "use strict";
-  const API_URL = "https://nbyezzdvxjcmlcejiiak.supabase.co/functions/v1/technician-quote";
+  const API_URL = window.__ASSISTENCIA_PUBLIC_CONFIG__?.apiUrl;
+  if (!API_URL) throw new Error("A configuração pública do painel técnico não foi carregada.");
+  const DEFAULT_DIAGNOSIS = "O defeito relatado pelo cliente foi constatado durante a avaliação técnica.";
   const $ = (id) => document.getElementById(id);
   const state = { token: "", pin: "", services: [] };
   const fail = (message) => {
@@ -45,7 +47,6 @@
     description.type = "text";
     description.autocomplete = "off";
     description.maxLength = 80;
-    description.required = true;
     description.value = `Opção ${optionIndex + 1}`;
     description.placeholder = "Ex.: Tela original com mensagem";
     description.dataset.optionLabel = service.id;
@@ -160,10 +161,8 @@
   });
   $("form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const diagnosis = $("diagnosis").value.trim();
-    if (diagnosis.length < 3) return $("diagnosis").focus();
-    const evaluationResult = $("evaluation-result").value;
-    if (!evaluationResult) return $("evaluation-result").focus();
+    const diagnosis = $("diagnosis").value.trim() || DEFAULT_DIAGNOSIS;
+    const evaluationResult = $("evaluation-result").value || "repair_recommended";
     const values = [];
     for (const service of state.services) {
       const serviceRoot = [...$("services").querySelectorAll(".service")].find((row) => row.dataset.serviceId === service.id);
@@ -173,13 +172,6 @@
         const label = option.querySelector("input[data-option-label]");
         const input = option.querySelector("input[data-option-value]");
         const unitPriceCents = cents(input.value);
-        if (!label.value.trim()) {
-          label.focus();
-          label.setCustomValidity("Descreva a peça ou alternativa.");
-          label.reportValidity();
-          label.setCustomValidity("");
-          return;
-        }
         if (unitPriceCents === null) {
           input.focus();
           input.setCustomValidity("Informe um valor válido maior que zero.");
@@ -187,7 +179,10 @@
           input.setCustomValidity("");
           return;
         }
-        normalizedOptions.push({ label: label.value.trim(), unitPriceCents });
+        normalizedOptions.push({
+          label: label.value.trim() || `Opção ${normalizedOptions.length + 1}`,
+          unitPriceCents,
+        });
       }
       values.push({ id: service.id, options: normalizedOptions });
     }

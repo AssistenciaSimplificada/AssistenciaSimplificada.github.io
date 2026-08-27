@@ -11,6 +11,10 @@ h2{font-size:1.05rem;margin:0 0 10px}
 .facts{display:grid;gap:10px}
 .facts div{display:grid;gap:2px}
 .facts span{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:8px}
+.section-heading h2,.section-heading p{margin:0}
+.section-heading p{margin-top:4px}
+.section-heading>small{flex:0 0 auto;border:1px solid #22515c;border-radius:999px;background:#0d2d34;color:var(--brand);padding:5px 8px;font-size:.68rem;font-weight:800;letter-spacing:.04em}
 label{display:grid;gap:7px;font-weight:700;margin:14px 0}
 textarea,input,select{width:100%;border:1px solid #38505b;border-radius:11px;background:#0c1519;color:var(--text);padding:13px;font:inherit}
 textarea{min-height:130px;resize:vertical}
@@ -37,4 +41,4 @@ button:disabled{opacity:.55;cursor:wait}
 .pin-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#0d2d34;color:var(--brand);font-size:1.35rem;border:1px solid #22515c}
 .field-error{margin:0;color:#ffabb0;font-size:.9rem;font-weight:700}
 [hidden]{display:none!important}
-@media(max-width:560px){.service-option-fields{grid-template-columns:1fr}}
+@media(max-width:560px){.service-option-fields{grid-template-columns:1fr}.section-heading{display:grid}.section-heading>small{width:max-content}}

@@ -104,6 +104,34 @@
         description.textContent = service.description;
         row.append(description);
       }
+      const outcomeFields = document.createElement("div");
+      outcomeFields.className = "service-outcome-fields";
+      const outcomeLabel = document.createElement("label");
+      outcomeLabel.textContent = "Como este serviço deve seguir?";
+      const outcome = document.createElement("select");
+      outcome.dataset.serviceOutcome = "";
+      [
+        ["standard", "Reparo completo (peça e/ou serviço)"],
+        ["labor_only", "Somente mão de obra"],
+        ["part_unavailable", "Peça indisponível"],
+        ["service_unsupported", "Não trabalhamos com este serviço"],
+        ["not_repairable", "Reparo tecnicamente inviável"],
+      ].forEach(([value, text]) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = text;
+        outcome.append(option);
+      });
+      outcomeLabel.append(outcome);
+      const noteLabel = document.createElement("label");
+      noteLabel.textContent = "Observação para a assistência";
+      const note = document.createElement("input");
+      note.dataset.serviceOutcomeNote = "";
+      note.maxLength = 300;
+      note.placeholder = "Ex.: fornecedor sem previsão ou reparo sem segurança";
+      noteLabel.append(note);
+      outcomeFields.append(outcomeLabel, noteLabel);
+      row.append(outcomeFields);
       const options = document.createElement("div");
       options.className = "service-options";
       row.append(options);
@@ -121,6 +149,18 @@
         if (options.children.length >= 8) add.disabled = true;
       });
       row.append(add);
+      const refreshOutcome = () => {
+        const priced = ["standard", "labor_only"].includes(outcome.value);
+        options.hidden = !priced;
+        add.hidden = !priced || outcome.value === "labor_only";
+        note.required = !priced;
+        if (outcome.value === "labor_only") {
+          const label = row.querySelector("input[data-option-label]");
+          if (label && !label.value.trim()) label.value = "Mão de obra";
+        }
+      };
+      outcome.addEventListener("change", refreshOutcome);
+      refreshOutcome();
       root.append(row);
     }
     $("loading").hidden = true;
@@ -166,7 +206,10 @@
     const values = [];
     for (const service of state.services) {
       const serviceRoot = [...$("services").querySelectorAll(".service")].find((row) => row.dataset.serviceId === service.id);
-      const options = [...serviceRoot.querySelectorAll(".service-option")];
+      const outcome = serviceRoot.querySelector("select[data-service-outcome]").value || "standard";
+      const note = serviceRoot.querySelector("input[data-service-outcome-note]").value.trim();
+      const priced = ["standard", "labor_only"].includes(outcome);
+      const options = priced ? [...serviceRoot.querySelectorAll(".service-option")] : [];
       const normalizedOptions = [];
       for (const option of options) {
         const label = option.querySelector("input[data-option-label]");
@@ -184,7 +227,15 @@
           unitPriceCents,
         });
       }
-      values.push({ id: service.id, options: normalizedOptions });
+      if (!priced && note.length < 3) {
+        const noteInput = serviceRoot.querySelector("input[data-service-outcome-note]");
+        noteInput.focus();
+        noteInput.setCustomValidity("Explique brevemente o motivo desta conclusão.");
+        noteInput.reportValidity();
+        noteInput.setCustomValidity("");
+        return;
+      }
+      values.push({ id: service.id, outcome, note, options: normalizedOptions });
     }
     $("submit").disabled = true;
     $("submit").textContent = "Enviando…";

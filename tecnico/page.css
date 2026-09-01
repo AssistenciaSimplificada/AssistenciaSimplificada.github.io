@@ -22,6 +22,8 @@ input:focus,textarea:focus,select:focus{outline:2px solid var(--brand);outline-o
 .service{padding:13px 0;border-top:1px solid var(--line)}
 .service:first-child{border-top:0}
 .service strong{display:block}
+.service-outcome-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:12px}
+.service-outcome-fields label{margin:0;font-size:.86rem}
 .service-options{display:grid;gap:10px;margin-top:12px}
 .service-option{padding:12px;border:1px solid #30444e;border-radius:13px;background:#0d171c}
 .service-option-fields{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(150px,.8fr);gap:10px}
@@ -41,4 +43,4 @@ button:disabled{opacity:.55;cursor:wait}
 .pin-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#0d2d34;color:var(--brand);font-size:1.35rem;border:1px solid #22515c}
 .field-error{margin:0;color:#ffabb0;font-size:.9rem;font-weight:700}
 [hidden]{display:none!important}
-@media(max-width:560px){.service-option-fields{grid-template-columns:1fr}.section-heading{display:grid}.section-heading>small{width:max-content}}
+@media(max-width:560px){.service-option-fields,.service-outcome-fields{grid-template-columns:1fr}.section-heading{display:grid}.section-heading>small{width:max-content}}

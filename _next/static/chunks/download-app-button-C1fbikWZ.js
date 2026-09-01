@@ -1,0 +1,1 @@
+import{r as e}from"./framework-DTZGTDtF.js";import{t}from"./site-data-m9k8SYJ_.js";var n=e();function r({className:e=`btn btn-download`,compact:r=!1,onNavigate:i}){return(0,n.jsxs)(`a`,{className:e,href:t.download,onClick:i,children:[(0,n.jsx)(`i`,{className:`bi bi-download`,"aria-hidden":`true`}),r?`Baixar app`:`Baixar versão estável`]})}export{r as DownloadAppButton};

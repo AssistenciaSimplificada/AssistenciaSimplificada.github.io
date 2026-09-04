@@ -1,0 +1,88 @@
+<!-- ARQUIVO GERADO por tools/sync-public-config.mjs. -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; connect-src https://nbyezzdvxjcmlcejiiak.supabase.co; base-uri 'none'; form-action 'self'">
+  <title>Acompanhar atendimento | Assistência Simplificada</title>
+  <link rel="canonical" href="https://assistenciasimplificada.site/acompanhar/">
+  <link rel="stylesheet" href="/acompanhar/page.css">
+  <script src="/acompanhar/config.js" defer></script>
+  <script src="/acompanhar/page.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="brand">
+      <span class="brand-mark" aria-hidden="true">AS</span>
+      <div><strong>Assistência Simplificada</strong><small>Acompanhamento seguro</small></div>
+    </header>
+
+    <section id="loading" class="state-card" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <h1>Consultando seu atendimento…</h1>
+      <p>Isso leva apenas alguns segundos.</p>
+    </section>
+
+    <form id="pin-form" class="state-card" hidden>
+      <span class="state-icon">••••</span>
+      <h1>Confirme seu telefone</h1>
+      <p>Digite os 4 últimos números do telefone informado à assistência.</p>
+      <label for="pin">Últimos 4 números</label>
+      <input id="pin" name="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="4" pattern="[0-9]{4}" required>
+      <p id="pin-error" class="error-text" hidden></p>
+      <button id="pin-submit" type="submit">Ver acompanhamento</button>
+    </form>
+
+    <section id="error" class="state-card" hidden>
+      <span class="state-icon danger">!</span>
+      <h1>Não foi possível abrir</h1>
+      <p id="error-text"></p>
+      <small>Peça um novo link à assistência se o atendimento ainda estiver em andamento.</small>
+    </section>
+
+    <article id="tracking" class="tracking" hidden>
+      <header class="tracking-head">
+        <div><small id="store"></small><h1 id="number"></h1></div>
+        <span id="status" class="status-pill"></span>
+      </header>
+
+      <section class="hero-card">
+        <div class="hero-copy">
+          <small>STATUS ATUAL</small>
+          <h2 id="status-detail"></h2>
+          <p id="status-help"></p>
+          <span id="updated"></span>
+        </div>
+        <figure id="photo-wrap" hidden>
+          <img id="photo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAF/gL+X8Z9WQAAAABJRU5ErkJggg==" alt="Foto do aparelho registrada pela assistência">
+          <figcaption id="photo-caption"></figcaption>
+        </figure>
+      </section>
+
+      <section class="progress-card" aria-labelledby="progress-title">
+        <div class="section-heading"><div><small>ANDAMENTO</small><h2 id="progress-title">Etapas do atendimento</h2></div><span id="progress-count"></span></div>
+        <ol id="progress" class="progress-list"></ol>
+      </section>
+
+      <div class="info-grid">
+        <section class="info-card"><small>APARELHO</small><strong id="device"></strong><p id="reported"></p></section>
+        <section class="info-card"><small>PRAZO INFORMADO</small><strong id="deadline"></strong></section>
+        <section id="maintenance-card" class="info-card" hidden><small>TEMPO EM MANUTENÇÃO</small><strong id="maintenance-time"></strong><p id="maintenance-note"></p></section>
+        <section id="total-card" class="info-card" hidden><small>VALOR REGISTRADO</small><strong id="total"></strong></section>
+      </div>
+
+      <section id="diagnosis-card" class="detail-card" hidden><small>AVALIAÇÃO TÉCNICA</small><p id="diagnosis"></p></section>
+      <section id="services-card" class="detail-card" hidden><small>SERVIÇOS DO ATENDIMENTO</small><ul id="services"></ul></section>
+      <section id="timeline-card" class="detail-card" hidden><small>ATUALIZAÇÕES</small><div id="timeline" class="timeline"></div></section>
+
+      <footer>
+        <button id="refresh" type="button">Atualizar agora</button>
+        <p>As informações são publicadas pela assistência. Em caso de dúvida, fale diretamente com a loja.</p>
+      </footer>
+    </article>
+  </main>
+</body>
+</html>

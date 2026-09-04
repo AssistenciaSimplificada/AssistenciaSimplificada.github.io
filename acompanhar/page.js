@@ -3,7 +3,7 @@
   const API_URL = window.__ASSISTENCIA_CUSTOMER_CONFIG__?.apiUrl;
   if (!API_URL) throw new Error("A configuração pública não foi carregada.");
   const $ = (id) => document.getElementById(id);
-  const state = { token: "", pin: "", tracking: null, timer: null };
+  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null };
   const statusIndex = (status) =>
     status === "Aguardando técnico"
       ? 1
@@ -67,11 +67,40 @@
   const show = (id, visible = true) => {
     $(id).hidden = !visible;
   };
+  const renderBranding = (tracking) => {
+    const branding = tracking?.snapshot?.storeBranding;
+    const name = [branding?.name, tracking?.storeName]
+      .find((value) => typeof value === "string" && value.trim())?.trim().slice(0, 160)
+      || "Assistência técnica";
+    $("store-name").textContent = tracking ? name : "Acompanhe seu atendimento";
+    $("store").textContent = name;
+    document.title = tracking ? `Acompanhar atendimento | ${name}` : "Acompanhar atendimento";
+    const logo = $("store-logo");
+    logo.onload = null;
+    logo.onerror = null;
+    show("store-logo", false);
+    logo.removeAttribute("src");
+    logo.alt = "";
+    const dataUrl = branding?.logoDataUrl;
+    if (typeof dataUrl === "string" && dataUrl.length <= 32000 &&
+        /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(dataUrl)) {
+      logo.onload = () => show("store-logo");
+      logo.onerror = () => { show("store-logo", false); logo.removeAttribute("src"); };
+      logo.alt = `Logo da loja ${name}`;
+      logo.src = dataUrl;
+    }
+  };
   const fail = (message) => {
+    clearTimeout(state.expiryTimer);
+    state.tracking = null;
+    renderBranding(null);
     clearInterval(state.timer);
     show("loading", false);
     show("pin-form", false);
     show("tracking", false);
+    $("photo").removeAttribute("src");
+    $("services").replaceChildren();
+    $("timeline").replaceChildren();
     $("error-text").textContent = message;
     show("error");
   };
@@ -126,9 +155,31 @@
       : "Encerrado";
   };
   const render = (tracking) => {
+    clearInterval(state.timer);
+    clearTimeout(state.expiryTimer);
+    const expiresAt = Date.parse(tracking.expiresAt);
+    if (Number.isFinite(expiresAt)) {
+      const checkExpiry = () => {
+        const remaining = expiresAt - Date.now();
+        if (remaining <= 0) {
+          fail("Este link expirou. Consulte o PDF enviado pela loja para as informações do atendimento e da garantia, quando aplicável. Se precisar, solicite uma cópia à loja.");
+          return false;
+        }
+        state.expiryTimer = setTimeout(checkExpiry, Math.min(remaining, 60000));
+        return true;
+      };
+      if (!checkExpiry()) return;
+    }
     state.tracking = tracking;
     const snapshot = tracking.snapshot || {};
-    $("store").textContent = tracking.storeName || "Assistência técnica";
+    const deliveredAt = Date.parse(snapshot.deliveredAt);
+    show("pickup-notice", Number.isFinite(deliveredAt));
+    if (Number.isFinite(deliveredAt)) {
+      $("pickup-date").textContent = `Retirada registrada em ${date(snapshot.deliveredAt)}.`;
+      $("pickup-expiry").textContent = Number.isFinite(expiresAt)
+        ? `Disponível até ${date(tracking.expiresAt)}.` : "";
+    }
+    renderBranding(tracking);
     $("number").textContent = tracking.publicNumber || "Atendimento";
     $("status").textContent = snapshot.statusDetail || snapshot.status;
     $("status-detail").textContent = snapshot.statusDetail || snapshot.status;

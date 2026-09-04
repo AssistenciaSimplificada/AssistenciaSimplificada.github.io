@@ -47,22 +47,22 @@ input {
   gap: 12px;
   margin: 0 2px 24px;
 }
-.brand-mark {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
+.brand-logo {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
   border-radius: 13px;
-  background: var(--yellow);
-  color: #101820;
-  font-weight: 900;
 }
 .brand div {
   display: grid;
-  gap: 2px;
+  min-width: 0;
+  gap: 5px;
+  overflow-wrap: anywhere;
 }
 .brand strong {
-  font-size: 0.98rem;
+  font-size: 1.12rem;
+  line-height: 1.35;
 }
 .brand small,
 .tracking-head small,
@@ -335,6 +335,17 @@ button:disabled {
   margin: 0;
   color: #dce4e8;
   line-height: 1.6;
+}
+.pickup-notice {
+  border-color: var(--yellow) !important;
+}
+.pickup-notice h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.pickup-notice #pickup-expiry {
+  color: var(--yellow);
+  font-weight: 700;
 }
 .detail-card ul {
   display: grid;

@@ -16,8 +16,8 @@
 <body>
   <main class="shell">
     <header class="brand">
-      <span class="brand-mark" aria-hidden="true">AS</span>
-      <div><strong>Assistência Simplificada</strong><small>Acompanhamento seguro</small></div>
+      <img id="store-logo" class="brand-logo" alt="" hidden>
+      <div><strong id="store-name">Acompanhe seu atendimento</strong><small>Acompanhamento seguro</small></div>
     </header>
 
     <section id="loading" class="state-card" aria-live="polite">
@@ -48,6 +48,14 @@
         <div><small id="store"></small><h1 id="number"></h1></div>
         <span id="status" class="status-pill"></span>
       </header>
+
+      <section id="pickup-notice" class="detail-card pickup-notice" hidden aria-labelledby="pickup-title">
+        <h2 id="pickup-title">Aparelho retirado</h2>
+        <p id="pickup-date"></p>
+        <p>Este link expira 3 dias (72 horas) após a retirada do aparelho.</p>
+        <p id="pickup-expiry"></p>
+        <p>Guarde o PDF enviado pela loja: todas as informações importantes do atendimento, incluindo as condições e a validade da garantia quando aplicável, estão nesse documento. Se não o recebeu, solicite uma cópia à loja.</p>
+      </section>
 
       <section class="hero-card">
         <div class="hero-copy">

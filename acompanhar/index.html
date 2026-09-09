@@ -32,7 +32,7 @@
       <p>Digite os 4 últimos números do telefone informado à assistência.</p>
       <label for="pin">Últimos 4 números</label>
       <input id="pin" name="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="4" pattern="[0-9]{4}" required>
-      <p id="pin-error" class="error-text" hidden></p>
+      <p id="pin-error" class="error-text" role="alert" hidden></p>
       <button id="pin-submit" type="submit">Ver acompanhamento</button>
     </form>
 
@@ -40,7 +40,8 @@
       <span class="state-icon danger">!</span>
       <h1>Não foi possível abrir</h1>
       <p id="error-text"></p>
-      <small>Peça um novo link à assistência se o atendimento ainda estiver em andamento.</small>
+      <button id="retry" type="button" hidden>Tentar novamente</button>
+      <small id="error-help">Fale com a assistência se precisar de ajuda.</small>
     </section>
 
     <article id="tracking" class="tracking" hidden>
@@ -63,15 +64,15 @@
           <h2 id="status-detail"></h2>
           <p id="status-help"></p>
           <span id="updated"></span>
+          <p id="next-step" class="next-step"></p>
         </div>
-        <figure id="photo-wrap" hidden>
-          <img id="photo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAF/gL+X8Z9WQAAAABJRU5ErkJggg==" alt="Foto do aparelho registrada pela assistência">
-          <figcaption id="photo-caption"></figcaption>
-        </figure>
+        <div id="photo-wrap" hidden>
+          <div id="photo-gallery" class="tracking-photo-gallery" aria-label="Fotos do aparelho"></div>
+        </div>
       </section>
 
       <section class="progress-card" aria-labelledby="progress-title">
-        <div class="section-heading"><div><small>ANDAMENTO</small><h2 id="progress-title">Etapas do atendimento</h2></div><span id="progress-count"></span></div>
+        <div class="section-heading"><div><small>ANDAMENTO</small><h2 id="progress-title">Etapas do atendimento</h2></div><span id="progress-count" role="status"></span></div>
         <ol id="progress" class="progress-list"></ol>
       </section>
 
@@ -92,5 +93,10 @@
       </footer>
     </article>
   </main>
+  <dialog id="photo-dialog" aria-labelledby="photo-title">
+    <header><h2 id="photo-title">Foto do aparelho</h2><button id="close-photo" type="button">Fechar</button></header>
+    <img id="photo-large" alt="">
+    <p id="photo-caption"></p>
+  </dialog>
 </body>
 </html>

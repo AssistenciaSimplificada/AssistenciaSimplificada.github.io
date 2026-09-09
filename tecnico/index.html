@@ -22,10 +22,11 @@
       <h1>Avaliação técnica</h1>
       <p class="muted">Acesso protegido e temporário. O envio ficará aguardando conferência da assistência.</p>
     </header>
-    <section id="loading" class="card notice">Carregando atendimento…</section>
+    <section id="loading" class="card notice" role="status">Carregando atendimento…</section>
     <section id="error" class="card notice error" hidden>
-      <h2>Link indisponível</h2>
+      <h2>Não foi possível abrir</h2>
       <p id="error-text">Este link expirou ou já foi utilizado.</p>
+      <button id="retry" type="button" hidden>Tentar novamente</button>
     </section>
     <form id="pin-form" class="card pin-gate" hidden novalidate>
       <span class="pin-icon" aria-hidden="true">⌨</span>
@@ -40,6 +41,7 @@
     </form>
     <form id="form" hidden novalidate>
       <section class="card facts">
+        <h2>1. Confira o atendimento</h2>
         <div><span>Assistência</span><strong id="store"></strong></div>
         <div><span>Atendimento</span><strong id="number"></strong></div>
         <div><span>Aparelho</span><strong id="device"></strong></div>
@@ -49,7 +51,7 @@
       <section class="card service-values-card">
         <div class="section-heading">
           <div>
-            <h2>Conclusão e valores de cada serviço</h2>
+            <h2>2. Conclusão e valores de cada serviço</h2>
             <p class="muted">Informe se o reparo usa peça, somente mão de obra ou se não pode ser realizado. Quando houver valores alternativos, adicione todos.</p>
           </div>
           <small>RESPOSTA OBRIGATÓRIA</small>
@@ -57,6 +59,7 @@
         <div id="services"></div>
       </section>
       <section class="card">
+        <h2>3. Conclua a avaliação</h2>
         <label for="diagnosis">Defeito constatado pelo técnico</label>
         <textarea id="diagnosis" maxlength="2000" placeholder="Opcional. Descreva alguma diferença encontrada nos testes."></textarea>
         <small>Se ficar em branco, será registrado que o defeito relatado foi constatado.</small>
@@ -73,6 +76,7 @@
         <small>Opcional: altere somente quando o resultado for diferente de “Reparo recomendado”.</small>
       </section>
       <button id="submit" type="submit">Enviar para conferência</button>
+      <p class="muted submission-note">O envio não aprova nem altera o orçamento. A assistência precisa conferir sua resposta.</p>
     </form>
     <section id="success" class="card notice success" hidden>
       <h2>Valores enviados</h2>

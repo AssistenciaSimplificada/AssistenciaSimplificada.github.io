@@ -5,15 +5,20 @@
   const DEFAULT_DIAGNOSIS = "O defeito relatado pelo cliente foi constatado durante a avaliação técnica.";
   const $ = (id) => document.getElementById(id);
   const state = { token: "", pin: "", services: [] };
-  const fail = (message) => {
+  const fail = (message, retryable = false) => {
     $("loading").hidden = true;
     $("form").hidden = true;
     $("pin-form").hidden = true;
     $("error-text").textContent = message;
     $("error").hidden = false;
+    $("retry").hidden = !retryable;
   };
   const api = async (body) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
     const response = await fetch(API_URL, {
+      signal: controller.signal,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
@@ -26,9 +31,19 @@
       const error = new Error(data.message || "Este link expirou ou já foi utilizado.");
       error.code = data.error || "request_failed";
       error.requiresPin = data.requiresPin === true;
+      error.retryable = response.status >= 500 || response.status === 408 || response.status === 429;
       throw error;
     }
     return data;
+    } catch (error) {
+      if (controller.signal.aborted || error instanceof TypeError) {
+        const unavailable = new Error("Não foi possível conectar à assistência. Confira sua conexão e tente novamente. Seu preenchimento foi mantido.");
+        unavailable.code = "network_unavailable";
+        unavailable.retryable = true;
+        throw unavailable;
+      }
+      throw error;
+    } finally { clearTimeout(timeout); }
   };
   const cents = (value) => {
     const normalized = String(value).trim().replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
@@ -92,6 +107,7 @@
     $("reported").textContent = invite.reportedDefect;
     $("expiry").textContent = `Disponível até ${new Date(invite.expiresAt).toLocaleString("pt-BR")}.`;
     const root = $("services");
+    root.replaceChildren();
     for (const [index, service] of invite.services.entries()) {
       const row = document.createElement("div");
       row.className = "service";
@@ -164,6 +180,8 @@
       root.append(row);
     }
     $("loading").hidden = true;
+    $("error").hidden = true;
+    $("pin-form").hidden = true;
     $("form").hidden = false;
   };
   const showPinGate = (message = "") => {
@@ -181,6 +199,7 @@
   });
   $("pin-form").addEventListener("submit", async (event) => {
     event.preventDefault();
+    if ($("pin-submit").disabled) return;
     const pin = $("pin").value.trim();
     if (!/^\d{4,12}$/.test(pin)) return showPinGate("Digite de 4 a 12 números.");
     $("pin-submit").disabled = true;
@@ -193,7 +212,7 @@
       render(data.invite);
     } catch (error) {
       if (error.code === "pin_invalid") showPinGate(error.message);
-      else fail(error.message);
+      else fail(error.message, error.retryable === true);
     } finally {
       $("pin-submit").disabled = false;
       $("pin-submit").textContent = "Abrir atendimento";
@@ -201,6 +220,8 @@
   });
   $("form").addEventListener("submit", async (event) => {
     event.preventDefault();
+    if ($("submit").disabled) return;
+    document.getElementById("submit-error")?.remove();
     const diagnosis = $("diagnosis").value.trim() || DEFAULT_DIAGNOSIS;
     const evaluationResult = $("evaluation-result").value || "repair_recommended";
     const values = [];
@@ -246,17 +267,30 @@
       state.pin = "";
       history.replaceState(null, "", location.pathname);
     } catch (error) {
-      fail(error instanceof Error ? error.message : "Não foi possível enviar agora.");
+      const notice = document.createElement("p");
+      notice.id = "submit-error";
+      notice.setAttribute("role", "alert");
+      notice.textContent = error instanceof Error ? error.message : "Não foi possível enviar agora. Tente novamente; seu preenchimento foi mantido.";
+      $("submit").before(notice);
+    } finally {
+      $("submit").disabled = false;
+      $("submit").textContent = "Enviar avaliação";
     }
   });
   const params = new URLSearchParams(location.hash.slice(1));
   state.token = params.get("token") || "";
   history.replaceState(null, "", location.pathname);
   if (!/^[A-Za-z0-9_-]{43}$/.test(state.token)) return fail("O endereço está incompleto ou inválido.");
-  api({ action: "read", token: state.token })
-    .then((data) => render(data.invite))
-    .catch((error) => {
-      if (error.code === "pin_required") showPinGate();
-      else fail(error.message);
-    });
+  const load = async () => {
+    $("retry").disabled = true;
+    try {
+      const data = await api({ action: "read", token: state.token, pin: state.pin });
+      render(data.invite);
+    } catch (error) {
+      if (error.code === "pin_required" || error.code === "pin_invalid") showPinGate(error.message);
+      else fail(error.message, error.retryable === true);
+    } finally { $("retry").disabled = false; }
+  };
+  $("retry").addEventListener("click", load);
+  void load();
 })();

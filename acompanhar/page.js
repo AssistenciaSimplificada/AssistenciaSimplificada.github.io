@@ -3,22 +3,22 @@
   const API_URL = window.__ASSISTENCIA_CUSTOMER_CONFIG__?.apiUrl;
   if (!API_URL) throw new Error("A configuração pública não foi carregada.");
   const $ = (id) => document.getElementById(id);
-  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null };
+  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null, loading: false };
   const statusIndex = (status) =>
     status === "Aguardando técnico"
-      ? 1
+      ? 2
       : status === "Aguardando aprovação"
-        ? 2
+        ? 3
         : status === "Em manutenção"
-          ? 3
+          ? 4
           : ["Pronto para retirada", "Abandonado"].includes(status)
-            ? 4
+            ? 5
             : status === "Finalizado"
-              ? 5
+              ? 6
               : 0;
   const statusHelp = (status, detail) => {
     if (
-      String(detail || "")
+      status === "Em manutenção" && String(detail || "")
         .toLocaleLowerCase("pt-BR")
         .includes("peça")
     ) {
@@ -90,7 +90,7 @@
       logo.src = dataUrl;
     }
   };
-  const fail = (message) => {
+  const fail = (message, retryable = false) => {
     clearTimeout(state.expiryTimer);
     state.tracking = null;
     renderBranding(null);
@@ -98,14 +98,24 @@
     show("loading", false);
     show("pin-form", false);
     show("tracking", false);
-    $("photo").removeAttribute("src");
+    $("photo-gallery").replaceChildren();
     $("services").replaceChildren();
     $("timeline").replaceChildren();
+    $("photo-dialog").close();
+    $("photo-large").removeAttribute("src");
     $("error-text").textContent = message;
+    show("retry", retryable);
+    $("error-help").textContent = retryable
+      ? "Seu endereço de acesso foi mantido nesta aba. Tente novamente quando a conexão voltar."
+      : "Fale com a assistência se precisar de ajuda ou de uma cópia do PDF.";
     show("error");
   };
   const api = async () => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
     const response = await fetch(API_URL, {
+      signal: controller.signal,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
@@ -123,9 +133,23 @@
         data.message || "Não foi possível consultar o atendimento.",
       );
       error.code = data.error || "request_failed";
+      error.retryable = response.status >= 500 || response.status === 429 || response.status === 408;
+      throw error;
+    }
+    if (!data.tracking || typeof data.tracking !== "object" || !data.tracking.snapshot) {
+      const error = new Error("A assistência não respondeu como esperado. Tente novamente.");
+      error.retryable = true;
       throw error;
     }
     return data.tracking;
+    } catch (error) {
+      if (controller.signal.aborted || error instanceof TypeError) {
+        const unavailable = new Error("Não foi possível conectar à assistência. Confira sua conexão e tente novamente. Isso não significa que o link expirou.");
+        unavailable.retryable = true;
+        throw unavailable;
+      }
+      throw error;
+    } finally { clearTimeout(timeout); }
   };
   const renderProgress = (status) => {
     const steps = [
@@ -142,6 +166,7 @@
         const step = index + 1;
         li.className =
           step < current ? "done" : step === current ? "current" : "";
+        if (step === current) li.setAttribute("aria-current", "step");
         const icon = document.createElement("i");
         icon.textContent = step < current ? "✓" : String(step);
         const text = document.createElement("span");
@@ -188,7 +213,15 @@
       snapshot.statusDetail,
     );
     $("updated").textContent =
-      `Atualizado em ${date(tracking.updatedAt || snapshot.updatedAt)}`;
+      `Atualizado em ${date(snapshot.updatedAt || tracking.updatedAt)}`;
+    $("next-step").textContent = {
+      "Aguardando técnico": "Próximo passo: a assistência confere a avaliação e informa o orçamento.",
+      "Aguardando aprovação": "Sua ação: informe à loja se deseja aprovar o serviço.",
+      "Em manutenção": "Próximo passo: aguarde a confirmação de que o aparelho está pronto.",
+      "Pronto para retirada": "Sua ação: combine a retirada com a loja. A data de entrega ainda será registrada.",
+      Abandonado: "Sua ação: entre em contato com a loja para combinar a retirada.",
+      Finalizado: "Guarde o PDF do atendimento para consultar as informações e a garantia, quando aplicável.",
+    }[snapshot.status] || "Dúvidas sobre este atendimento? Converse diretamente com a loja.";
     $("device").textContent =
       snapshot.deviceSummary || "Aparelho em atendimento";
     $("reported").textContent = snapshot.reportedDefect
@@ -197,11 +230,41 @@
     $("deadline").textContent =
       snapshot.estimatedDeadline || "Consulte a assistência";
     renderProgress(snapshot.status);
-    const photo = snapshot.photo;
-    if (photo?.dataUrl) {
-      $("photo").src = photo.dataUrl;
-      $("photo-caption").textContent =
-        photo.caption || "Foto registrada na entrada";
+    const receivingPhotos = Array.isArray(snapshot.receivingPhotos)
+      ? snapshot.receivingPhotos
+      : snapshot.photo?.dataUrl ? [snapshot.photo] : [];
+    const deliveryPhotos = Array.isArray(snapshot.deliveryPhotos)
+      ? snapshot.deliveryPhotos : [];
+    const photos = [
+      ...receivingPhotos.map((photo) => ({ ...photo, stage: "Recebimento" })),
+      ...deliveryPhotos.map((photo) => ({ ...photo, stage: "Entrega" })),
+    ].filter((photo) => typeof photo?.dataUrl === "string" && photo.dataUrl.length <= 360000 &&
+      /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(photo.dataUrl)).slice(0, 8);
+    if (photos.length) {
+      $("photo-gallery").replaceChildren(...photos.map((photo, index) => {
+        const figure = document.createElement("figure");
+        const image = document.createElement("img");
+        const expand = document.createElement("button");
+        expand.type = "button";
+        expand.className = "photo-expand";
+        expand.setAttribute("aria-label", `Ampliar foto ${index + 1} — ${photo.stage.toLowerCase()}`);
+        const caption = document.createElement("figcaption");
+        image.src = photo.dataUrl;
+        image.alt = `Foto ${index + 1} do aparelho — ${photo.stage.toLowerCase()}`;
+        image.loading = "lazy";
+        image.decoding = "async";
+        caption.textContent = `${photo.stage} · ${photo.caption || "Foto registrada pela assistência"}`;
+        expand.addEventListener("click", () => {
+          $("photo-large").src = photo.dataUrl;
+          $("photo-large").alt = image.alt;
+          $("photo-title").textContent = `${photo.stage} · foto ${index + 1}`;
+          $("photo-caption").textContent = caption.textContent;
+          $("photo-dialog").showModal();
+        });
+        expand.append(image);
+        figure.append(expand, caption);
+        return figure;
+      }));
       show("photo-wrap");
     } else show("photo-wrap", false);
     if (snapshot.maintenanceStartedAt) {
@@ -272,20 +335,35 @@
     show("tracking");
   };
   const load = async () => {
+    if (state.loading) return;
+    state.loading = true;
     try {
       render(await api());
     } catch (error) {
       if (error.code === "pin_required") {
+        show("error", false);
         show("loading", false);
         show("pin-form");
         $("pin").focus();
       } else if (error.code === "pin_invalid") {
+        show("loading", false);
+        show("error", false);
+        show("pin-form");
         show("pin-error");
         $("pin-error").textContent = error.message;
         $("pin").focus();
-      } else fail(error.message);
-    }
+      } else fail(error.message, error.retryable === true);
+    } finally { state.loading = false; }
   };
+  $("close-photo").addEventListener("click", () => $("photo-dialog").close());
+  $("photo-dialog").addEventListener("close", () => $("photo-large").removeAttribute("src"));
+  $("retry").addEventListener("click", async () => {
+    $("retry").disabled = true;
+    $("retry").textContent = "Consultando…";
+    await load();
+    $("retry").disabled = false;
+    $("retry").textContent = "Tentar novamente";
+  });
   $("pin").addEventListener("input", (event) => {
     event.target.value = event.target.value.replace(/\D/g, "").slice(0, 4);
     show("pin-error", false);

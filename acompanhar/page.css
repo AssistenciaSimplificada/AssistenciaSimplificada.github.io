@@ -373,6 +373,65 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
   color: #dce4e8;
   line-height: 1.6;
 }
+.approval-card {
+  border-color: color-mix(in srgb, var(--yellow) 55%, var(--line));
+  background: linear-gradient(135deg, rgba(241, 204, 0, .08), rgba(18, 31, 42, .92));
+}
+.approval-card .section-heading { align-items: center; }
+.beta-label { color: var(--yellow); border: 1px solid rgba(241,204,0,.55); border-radius: 999px; padding: .25rem .5rem; font-size: .7rem; letter-spacing: .12em; }
+.approval-confirm-row { display: flex; align-items: center; gap: .65rem; margin: 1rem 0; color: var(--muted); font-size: .92rem; }
+.approval-confirm-row input { width: 1.1rem; height: 1.1rem; accent-color: var(--yellow); }
+.approval-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+.approval-actions button { min-height: 2.8rem; border-radius: .75rem; padding: .7rem 1rem; font: inherit; font-weight: 700; cursor: pointer; }
+.approval-primary { border: 1px solid var(--yellow); background: var(--yellow); color: #172027; }
+.approval-secondary { border: 1px solid rgba(255,255,255,.2); background: transparent; color: var(--text); }
+.approval-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.approval-feedback { margin: .8rem 0 0; padding: .65rem .75rem; border-radius: .65rem; background: rgba(255,255,255,.06); color: var(--muted); }
+.approval-feedback.success { color: #b8f4d2; background: rgba(65, 196, 123, .12); }
+.approval-feedback.error { color: #ffd0d5; background: rgba(235, 87, 99, .12); }
+.approval-footnote { display: block; margin-top: .9rem; color: var(--muted); line-height: 1.45; }
+.device-details-card {
+  gap: 16px;
+  background: linear-gradient(145deg, rgba(24, 45, 54, 0.98), rgba(12, 27, 36, 0.98));
+}
+.device-details-card .section-heading {
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+.device-details-card .section-heading > span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-align: right;
+}
+.device-details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.device-details-grid > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(159, 176, 186, 0.18);
+  border-radius: 12px;
+  background: rgba(7, 16, 25, 0.35);
+}
+.device-details-grid small {
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+.device-details-grid strong {
+  overflow-wrap: anywhere;
+  font-size: 0.92rem;
+}
+.device-details-note {
+  padding: 12px 14px;
+  border-left: 3px solid var(--yellow);
+  border-radius: 0 10px 10px 0;
+  background: rgba(241, 204, 0, 0.06);
+}
 .pickup-notice {
   border-color: var(--yellow) !important;
 }
@@ -489,12 +548,23 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
   .info-grid {
     grid-template-columns: 1fr;
   }
+  .device-details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .info-card {
     min-height: 0;
   }
   .state-card {
     padding: 34px 18px;
     border-radius: 20px;
+  }
+}
+@media (max-width: 390px) {
+  .device-details-grid {
+    grid-template-columns: 1fr;
+  }
+  .device-details-card .section-heading > span {
+    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -71,6 +71,18 @@
         </div>
       </section>
 
+      <section id="approval-card" class="detail-card approval-card" hidden aria-labelledby="approval-title">
+        <div class="section-heading"><div><small>CONFIRMAÇÃO DIGITAL</small><h2 id="approval-title">Confira e responda ao orçamento</h2></div><span class="beta-label">BETA</span></div>
+        <p id="approval-intro">Confira os serviços e o valor acima. Você pode confirmar sua decisão diretamente por este link.</p>
+        <label class="approval-confirm-row"><input id="approval-check" type="checkbox"> Li os serviços, valores e condições apresentados.</label>
+        <p id="approval-feedback" class="approval-feedback" role="status" hidden></p>
+        <div class="approval-actions">
+          <button id="approve-quote" type="button" class="approval-primary">Aprovar orçamento</button>
+          <button id="reject-quote" type="button" class="approval-secondary">Não aprovar</button>
+        </div>
+        <small class="approval-footnote">Sua confirmação será registrada com data e hora para a assistência. Ela não substitui uma assinatura física quando esta for necessária.</small>
+      </section>
+
       <section class="progress-card" aria-labelledby="progress-title">
         <div class="section-heading"><div><small>ANDAMENTO</small><h2 id="progress-title">Etapas do atendimento</h2></div><span id="progress-count" role="status"></span></div>
         <ol id="progress" class="progress-list"></ol>
@@ -82,6 +94,19 @@
         <section id="maintenance-card" class="info-card" hidden><small>TEMPO EM MANUTENÇÃO</small><strong id="maintenance-time"></strong><p id="maintenance-note"></p></section>
         <section id="total-card" class="info-card" hidden><small>VALOR REGISTRADO</small><strong id="total"></strong></section>
       </div>
+
+      <section id="device-details-card" class="detail-card device-details-card" hidden>
+        <div class="section-heading"><div><small>IDENTIFICAÇÃO E CONFERÊNCIA</small><h2>Informações do aparelho</h2></div><span>Dados publicados pela loja</span></div>
+        <div class="device-details-grid">
+          <div id="device-physical-detail"><small>SITUAÇÃO FÍSICA</small><strong id="device-physical-status"></strong></div>
+          <div id="device-capacity-detail" hidden><small>CAPACIDADE</small><strong id="device-capacity"></strong></div>
+          <div id="device-imei-detail" hidden><small>IMEI</small><strong id="device-imei"></strong></div>
+          <div id="device-serial-detail" hidden><small>NÚMERO DE SÉRIE</small><strong id="device-serial"></strong></div>
+          <div id="device-received-detail" hidden><small>ENTRADA REGISTRADA</small><strong id="device-received"></strong></div>
+        </div>
+        <p id="device-accessories" class="device-details-note" hidden></p>
+        <p id="device-visual-notes" class="device-details-note" hidden></p>
+      </section>
 
       <section id="diagnosis-card" class="detail-card" hidden><small>AVALIAÇÃO TÉCNICA</small><p id="diagnosis"></p></section>
       <section id="services-card" class="detail-card" hidden><small>SERVIÇOS DO ATENDIMENTO</small><ul id="services"></ul></section>

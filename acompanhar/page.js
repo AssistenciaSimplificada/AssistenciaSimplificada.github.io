@@ -3,7 +3,7 @@
   const API_URL = window.__ASSISTENCIA_CUSTOMER_CONFIG__?.apiUrl;
   if (!API_URL) throw new Error("A configuração pública não foi carregada.");
   const $ = (id) => document.getElementById(id);
-  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null, loading: false };
+  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null, loading: false, approving: false };
   const statusIndex = (status) =>
     status === "Aguardando técnico"
       ? 2
@@ -98,6 +98,7 @@
     show("loading", false);
     show("pin-form", false);
     show("tracking", false);
+    show("approval-card", false);
     $("photo-gallery").replaceChildren();
     $("services").replaceChildren();
     $("timeline").replaceChildren();
@@ -110,7 +111,7 @@
       : "Fale com a assistência se precisar de ajuda ou de uma cópia do PDF.";
     show("error");
   };
-  const api = async () => {
+  const api = async (action = "read", decision = "") => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     try {
@@ -122,9 +123,10 @@
       credentials: "omit",
       redirect: "error",
       body: JSON.stringify({
-        action: "read",
+        action,
         token: state.token,
         pin: state.pin,
+        ...(action !== "read" ? { decision } : {}),
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -197,6 +199,27 @@
     }
     state.tracking = tracking;
     const snapshot = tracking.snapshot || {};
+    const approvalState = String(tracking.approvalState || snapshot.approvalState || "not_applicable");
+    const approvalMode = snapshot.portalMode === "approval" || tracking.accessKind === "approval";
+    show("approval-card", approvalMode && snapshot.status === "Aguardando aprovação");
+    if (approvalMode) {
+      const check = $("approval-check");
+      const approve = $("approve-quote");
+      const reject = $("reject-quote");
+      const feedback = $("approval-feedback");
+      const resolved = approvalState !== "pending";
+      check.checked = false;
+      check.disabled = resolved;
+      approve.disabled = resolved;
+      reject.disabled = resolved;
+      feedback.hidden = !resolved;
+      feedback.className = `approval-feedback ${approvalState === "approved" ? "success" : ""}`;
+      feedback.textContent = approvalState === "approved"
+        ? `Aprovação registrada em ${date(tracking.approvedAt)}. A assistência já pode iniciar o serviço.`
+        : approvalState === "rejected"
+          ? "Sua decisão foi registrada como não aprovado. Fale com a assistência se quiser revisar o atendimento."
+          : "";
+    }
     const deliveredAt = Date.parse(snapshot.deliveredAt);
     show("pickup-notice", Number.isFinite(deliveredAt));
     if (Number.isFinite(deliveredAt)) {
@@ -229,6 +252,32 @@
       : "";
     $("deadline").textContent =
       snapshot.estimatedDeadline || "Consulte a assistência";
+    const deviceDetails = snapshot.deviceDetails && typeof snapshot.deviceDetails === "object"
+      ? snapshot.deviceDetails : {};
+    const detailValues = [
+      deviceDetails.physicalStatusLabel,
+      deviceDetails.capacity,
+      deviceDetails.imeiLast4,
+      deviceDetails.serialLast4,
+      deviceDetails.receivedAt,
+      deviceDetails.accessories,
+      deviceDetails.visualNotes,
+    ].filter(Boolean);
+    if (detailValues.length) {
+      show("device-details-card");
+      $("device-physical-status").textContent = deviceDetails.physicalStatusLabel || "Situação física não informada";
+      const setDetail = (rowId, valueId, value, formatter = (item) => item) => {
+        const present = Boolean(String(value || "").trim());
+        show(rowId, present);
+        if (present) $(valueId).textContent = formatter(value);
+      };
+      setDetail("device-capacity-detail", "device-capacity", deviceDetails.capacity);
+      setDetail("device-imei-detail", "device-imei", deviceDetails.imeiLast4);
+      setDetail("device-serial-detail", "device-serial", deviceDetails.serialLast4);
+      setDetail("device-received-detail", "device-received", deviceDetails.receivedAt, date);
+      setDetail("device-accessories", "device-accessories", deviceDetails.accessories, (value) => `Acessórios registrados: ${value}`);
+      setDetail("device-visual-notes", "device-visual-notes", deviceDetails.visualNotes, (value) => `Condição registrada: ${value}`);
+    } else show("device-details-card", false);
     renderProgress(snapshot.status);
     const receivingPhotos = Array.isArray(snapshot.receivingPhotos)
       ? snapshot.receivingPhotos
@@ -390,6 +439,31 @@
     $("refresh").disabled = false;
     $("refresh").textContent = "Atualizar agora";
   });
+  const submitApproval = async (decision) => {
+    if (state.approving) return;
+    if (!$("approval-check").checked) {
+      show("approval-feedback");
+      $("approval-feedback").className = "approval-feedback error";
+      $("approval-feedback").textContent = "Marque a confirmação de ciência antes de responder.";
+      return;
+    }
+    state.approving = true;
+    $("approve-quote").disabled = true;
+    $("reject-quote").disabled = true;
+    $("approval-feedback").hidden = false;
+    $("approval-feedback").className = "approval-feedback";
+    $("approval-feedback").textContent = "Registrando sua decisão…";
+    try {
+      render(await api("approve", decision));
+    } catch (error) {
+      $("approval-feedback").className = "approval-feedback error";
+      $("approval-feedback").textContent = error.message || "Não foi possível registrar sua decisão.";
+      $("approve-quote").disabled = false;
+      $("reject-quote").disabled = false;
+    } finally { state.approving = false; }
+  };
+  $("approve-quote").addEventListener("click", () => void submitApproval("approved"));
+  $("reject-quote").addEventListener("click", () => void submitApproval("rejected"));
   const params = new URLSearchParams(location.hash.slice(1));
   state.token = params.get("token") || "";
   history.replaceState(null, "", location.pathname);

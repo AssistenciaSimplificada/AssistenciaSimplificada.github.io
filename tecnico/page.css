@@ -22,6 +22,7 @@ input:focus,textarea:focus,select:focus{outline:2px solid var(--brand);outline-o
 .service{padding:13px 0;border-top:1px solid var(--line)}
 .service:first-child{border-top:0}
 .service strong{display:block}
+.technician-service-name{display:grid;gap:7px;margin-top:12px;padding:12px;border:1px solid #655819;border-radius:12px;background:#221f0f;color:#fff2a8;font-weight:800}
 .service-outcome-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:12px}
 .service-outcome-fields label{margin:0;font-size:.86rem}
 .service-options{display:grid;gap:10px;margin-top:12px}
@@ -48,6 +49,11 @@ button:focus-visible{outline:3px solid var(--text);outline-offset:3px}
 .facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .facts h2,.facts small,.facts div:has(#reported){grid-column:1/-1}
 .facts span,.eyebrow,.section-heading>small{font-size:.875rem}
+.facts #device{white-space:pre-line;line-height:1.55}
+.device-guide h2{margin-bottom:8px}
+.device-guide ul{display:grid;gap:8px;margin:0;padding-left:1.15rem;color:#dce9ec}
+.device-guide li{padding-left:3px}
+.device-guide p{margin:12px 0 0;font-size:.86rem}
 .service{margin-top:18px;padding-top:18px}
 .submission-note{text-align:center;font-size:.875rem}
 #submit-error{padding:14px;border:1px solid var(--danger);border-radius:12px;color:#ffabb0}

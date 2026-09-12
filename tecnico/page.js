@@ -120,6 +120,20 @@
         description.textContent = service.description;
         row.append(description);
       }
+      if (service.requiresServiceName) {
+        const serviceNameLabel = document.createElement("label");
+        serviceNameLabel.className = "technician-service-name";
+        serviceNameLabel.textContent = "Serviço que será realizado";
+        const serviceName = document.createElement("input");
+        serviceName.type = "text";
+        serviceName.autocomplete = "off";
+        serviceName.maxLength = 200;
+        serviceName.required = true;
+        serviceName.dataset.serviceName = "";
+        serviceName.placeholder = "Ex.: Troca do conector de carga";
+        serviceNameLabel.append(serviceName);
+        row.append(serviceNameLabel);
+      }
       const outcomeFields = document.createElement("div");
       outcomeFields.className = "service-outcome-fields";
       const outcomeLabel = document.createElement("label");
@@ -229,6 +243,15 @@
       const serviceRoot = [...$("services").querySelectorAll(".service")].find((row) => row.dataset.serviceId === service.id);
       const outcome = serviceRoot.querySelector("select[data-service-outcome]").value || "standard";
       const note = serviceRoot.querySelector("input[data-service-outcome-note]").value.trim();
+      const serviceNameInput = serviceRoot.querySelector("input[data-service-name]");
+      const serviceName = serviceNameInput?.value.trim() || "";
+      if (service.requiresServiceName && serviceName.length < 3) {
+        serviceNameInput.focus();
+        serviceNameInput.setCustomValidity("Informe qual serviço será realizado.");
+        serviceNameInput.reportValidity();
+        serviceNameInput.setCustomValidity("");
+        return;
+      }
       const priced = ["standard", "labor_only"].includes(outcome);
       const options = priced ? [...serviceRoot.querySelectorAll(".service-option")] : [];
       const normalizedOptions = [];
@@ -256,7 +279,13 @@
         noteInput.setCustomValidity("");
         return;
       }
-      values.push({ id: service.id, outcome, note, options: normalizedOptions });
+      values.push({
+        id: service.id,
+        outcome,
+        note,
+        options: normalizedOptions,
+        ...(service.requiresServiceName ? { serviceName } : {}),
+      });
     }
     $("submit").disabled = true;
     $("submit").textContent = "Enviando…";

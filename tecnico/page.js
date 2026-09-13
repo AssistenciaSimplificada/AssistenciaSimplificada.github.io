@@ -266,7 +266,6 @@
     if ($("submit").disabled) return;
     document.getElementById("submit-error")?.remove();
     const diagnosis = $("diagnosis").value.trim() || DEFAULT_DIAGNOSIS;
-    const evaluationResult = $("evaluation-result").value || "repair_recommended";
     const values = [];
     for (const service of state.services) {
       const serviceRoot = [...$("services").querySelectorAll(".service")].find((row) => row.dataset.serviceId === service.id);
@@ -316,6 +315,14 @@
         ...(service.requiresServiceName ? { serviceName } : {}),
       });
     }
+    const outcomes = values.map((item) => item.outcome);
+    const evaluationResult = outcomes.includes("not_repairable")
+      ? "not_repairable"
+      : outcomes.includes("part_unavailable") && !outcomes.some((outcome) => ["standard", "labor_only"].includes(outcome))
+        ? "awaiting_part"
+        : outcomes.some((outcome) => ["service_unsupported", "part_unavailable"].includes(outcome))
+          ? "repair_with_reservations"
+          : "repair_recommended";
     $("submit").disabled = true;
     $("submit").textContent = "Enviando…";
     try {

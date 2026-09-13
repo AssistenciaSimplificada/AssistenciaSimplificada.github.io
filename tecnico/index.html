@@ -11,11 +11,11 @@
   <title>Avaliação técnica | Assistência Simplificada</title>
   <link rel="canonical" href="https://assistenciasimplificada.site/tecnico/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/tecnico/page.css?v=20260913-professional">
-  <link rel="stylesheet" href="/portal-design.css?v=20260913-professional">
-  <script src="/portal-theme.js?v=20260913-professional"></script>
+  <link rel="stylesheet" href="/tecnico/page.css?v=20260913-technician-flow">
+  <link rel="stylesheet" href="/portal-design.css?v=20260913-technician-flow">
+  <script src="/portal-theme.js?v=20260913-technician-flow"></script>
   <script src="/tecnico/config.js" defer></script>
-  <script src="/tecnico/page.js?v=20260913-professional" defer></script>
+  <script src="/tecnico/page.js?v=20260913-technician-flow" defer></script>
 </head>
 <body class="technician-portal">
   <main>
@@ -89,17 +89,6 @@
         <label for="diagnosis">Defeito constatado pelo técnico</label>
         <textarea id="diagnosis" maxlength="2000" placeholder="Opcional. Descreva alguma diferença encontrada nos testes."></textarea>
         <small>Se ficar em branco, será registrado que o defeito relatado foi constatado.</small>
-      </section>
-      <section class="card">
-        <label for="evaluation-result">Resultado da avaliação</label>
-        <select id="evaluation-result">
-          <option value="repair_recommended" selected>Reparo recomendado</option>
-          <option value="repair_with_reservations">Reparo possível com ressalvas</option>
-          <option value="awaiting_part">Aguardando disponibilidade de peça</option>
-          <option value="not_repairable">Reparo tecnicamente inviável</option>
-          <option value="inconclusive">Avaliação inconclusiva</option>
-        </select>
-        <small>Opcional: altere somente quando o resultado for diferente de “Reparo recomendado”.</small>
       </section>
       <button id="submit" type="submit">Enviar para conferência</button>
       <p class="muted submission-note">O envio não aprova nem altera o orçamento. A assistência precisa conferir sua resposta.</p>

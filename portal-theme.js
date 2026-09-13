@@ -1,27 +1,51 @@
 (() => {
   "use strict";
-  const key = "assistencia-portal-theme";
+  const storageKey = "assistencia-portal-theme";
   const media = window.matchMedia("(prefers-color-scheme: dark)");
   let preference = "system";
-  try { const saved = localStorage.getItem(key); if (["system", "light", "dark"].includes(saved)) preference = saved; } catch { /* Private browsing may disable storage; use the system theme. */ }
+  try {
+    const saved = localStorage.getItem(storageKey);
+    if (["system", "light", "dark"].includes(saved)) preference = saved;
+  } catch { /* O tema automático continua disponível sem armazenamento local. */ }
+
   const apply = () => {
-    document.documentElement.dataset.portalTheme = preference === "system" ? (media.matches ? "dark" : "light") : preference;
+    document.documentElement.dataset.portalTheme = preference === "system"
+      ? (media.matches ? "dark" : "light")
+      : preference;
+    document.querySelectorAll("[data-theme-choice]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.themeChoice === preference));
+    });
   };
+
   apply();
   media.addEventListener("change", apply);
   document.addEventListener("DOMContentLoaded", () => {
-    const control = document.createElement("label");
-    control.className = "portal-theme-control";
-    const caption = document.createElement("span");
-    caption.textContent = "Aparência";
-    const select = document.createElement("select");
-    select.setAttribute("aria-label", "Tema da página");
-    for (const [value, text] of [["system", "Automático"], ["light", "Claro"], ["dark", "Escuro"]]) {
-      const option = document.createElement("option"); option.value = value; option.textContent = text; select.append(option);
+    const toolbar = document.createElement("div");
+    toolbar.className = "portal-toolbar";
+    const inner = document.createElement("div");
+    inner.className = "portal-toolbar-inner";
+    const security = document.createElement("span");
+    security.className = "portal-security-label";
+    security.textContent = "ACESSO SEGURO";
+    const choices = document.createElement("div");
+    choices.className = "portal-theme-choices";
+    choices.setAttribute("role", "group");
+    choices.setAttribute("aria-label", "Aparência da página");
+    for (const [value, label] of [["system", "Auto"], ["light", "Claro"], ["dark", "Escuro"]]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.themeChoice = value;
+      button.textContent = label;
+      button.addEventListener("click", () => {
+        preference = value;
+        try { localStorage.setItem(storageKey, preference); } catch { /* Mantém a escolha durante esta visita. */ }
+        apply();
+      });
+      choices.append(button);
     }
-    select.value = preference;
-    select.addEventListener("change", () => { preference = select.value; try { localStorage.setItem(key, preference); } catch { /* Keep the choice for this page when storage is unavailable. */ } apply(); });
-    control.append(caption, select);
-    document.body.prepend(control);
+    inner.append(security, choices);
+    toolbar.append(inner);
+    document.body.prepend(toolbar);
+    apply();
   });
 })();

@@ -50,6 +50,19 @@
         <div><span>Relato recebido</span><strong id="reported"></strong></div>
         <small id="expiry"></small>
       </section>
+      <section class="card evaluation-overview" aria-labelledby="evaluation-progress-title">
+        <div class="evaluation-overview-head">
+          <div><span class="panel-kicker">PAINEL DA AVALIAÇÃO</span><h2 id="evaluation-progress-title">Progresso do preenchimento</h2></div>
+          <strong id="completion-percent">0%</strong>
+        </div>
+        <progress id="completion-chart" max="100" value="0">0%</progress>
+        <div class="evaluation-metrics">
+          <div><span>Serviços</span><strong id="services-count">0</strong></div>
+          <div><span>Concluídos</span><strong id="services-complete">0</strong></div>
+          <div><span>Pendentes</span><strong id="services-pending">0</strong></div>
+        </div>
+        <p id="completion-message" class="muted">Preencha os valores ou informe por que o serviço não pode prosseguir.</p>
+      </section>
       <section class="card device-guide">
         <details><summary>Orientações para a avaliação</summary>
         <h2>Conferência rápida do aparelho</h2>

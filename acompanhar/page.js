@@ -162,6 +162,14 @@
         "Retirada",
       ],
       current = statusIndex(status);
+    const visibleStep = Math.max(0, Math.min(current, 5));
+    const completedSteps = current > 5 ? 5 : Math.max(0, visibleStep - 1);
+    const percent = completedSteps * 20;
+    $("progress-meter").className = `progress-meter progress-${percent}`;
+    $("progress-percent").textContent = `${percent}%`;
+    $("progress-summary").textContent = visibleStep
+      ? steps[visibleStep - 1]
+      : "Atendimento encerrado";
     $("progress").replaceChildren(
       ...steps.map((label, index) => {
         const li = document.createElement("li");

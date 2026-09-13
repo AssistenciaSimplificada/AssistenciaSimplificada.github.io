@@ -51,6 +51,30 @@
     const result = Math.round(Number(normalized) * 100);
     return Number.isSafeInteger(result) && result >= 1 && result <= 99999999 ? result : null;
   };
+  const updateEvaluationProgress = () => {
+    const serviceRoots = [...$("services").querySelectorAll(".service")];
+    const completed = serviceRoots.filter((serviceRoot) => {
+      const serviceName = serviceRoot.querySelector("input[data-service-name]");
+      if (serviceName && serviceName.value.trim().length < 3) return false;
+      const outcome = serviceRoot.querySelector("select[data-service-outcome]")?.value || "standard";
+      const priced = ["standard", "labor_only"].includes(outcome);
+      if (!priced)
+        return (serviceRoot.querySelector("input[data-service-outcome-note]")?.value.trim().length || 0) >= 3;
+      const prices = [...serviceRoot.querySelectorAll("input[data-option-value]")];
+      return prices.length > 0 && prices.every((input) => cents(input.value) !== null);
+    }).length;
+    const total = serviceRoots.length;
+    const percent = total ? Math.round((completed / total) * 100) : 0;
+    $("completion-chart").value = percent;
+    $("completion-chart").textContent = `${percent}%`;
+    $("completion-percent").textContent = `${percent}%`;
+    $("services-count").textContent = String(total);
+    $("services-complete").textContent = String(completed);
+    $("services-pending").textContent = String(Math.max(0, total - completed));
+    $("completion-message").textContent = percent === 100
+      ? "Avaliação completa. Revise as informações antes de enviar."
+      : `${Math.max(0, total - completed)} ${total - completed === 1 ? "serviço ainda precisa" : "serviços ainda precisam"} de informação.`;
+  };
   const addOption = (serviceRoot, service, optionIndex) => {
     const option = document.createElement("div");
     option.className = "service-option";
@@ -95,6 +119,7 @@
         option.remove();
         const addButton = serviceRoot.querySelector(".add-option");
         if (addButton) addButton.disabled = false;
+        updateEvaluationProgress();
       });
       option.append(remove);
     }
@@ -177,6 +202,7 @@
         addOption(row, service, nextOptionNumber - 1);
         row.dataset.nextOptionNumber = String(nextOptionNumber + 1);
         if (options.children.length >= 8) add.disabled = true;
+        updateEvaluationProgress();
       });
       row.append(add);
       const refreshOutcome = () => {
@@ -193,6 +219,7 @@
       refreshOutcome();
       root.append(row);
     }
+    updateEvaluationProgress();
     $("loading").hidden = true;
     $("error").hidden = true;
     $("pin-form").hidden = true;
@@ -232,6 +259,8 @@
       $("pin-submit").textContent = "Abrir atendimento";
     }
   });
+  $("form").addEventListener("input", updateEvaluationProgress);
+  $("form").addEventListener("change", updateEvaluationProgress);
   $("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     if ($("submit").disabled) return;

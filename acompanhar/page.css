@@ -377,6 +377,27 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
   border-color: color-mix(in srgb, var(--yellow) 55%, var(--line));
   background: linear-gradient(135deg, rgba(241, 204, 0, .08), rgba(18, 31, 42, .92));
 }
+.revision-card {
+  border-color: color-mix(in srgb, var(--yellow) 55%, var(--line));
+  background: linear-gradient(135deg, rgba(241, 204, 0, .08), rgba(18, 31, 42, .92));
+}
+.revision-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.revision-values > div {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .035);
+}
+.revision-values small { color: var(--muted); font-size: .72rem; letter-spacing: .06em; }
+.revision-values strong { font-size: 1.18rem; }
+.revision-values > div:last-child strong { color: var(--yellow); }
+.revision-warning { padding-left: 12px; border-left: 3px solid var(--yellow); }
 .approval-summary { display: grid; gap: .2rem; margin: 1.1rem 0; padding: 1rem 1.1rem; border: 1px solid rgba(255, 211, 0, .42); border-radius: .9rem; background: rgba(255, 211, 0, .08); }
 .approval-summary span { color: var(--muted); font-size: .9rem; }
 .approval-summary strong { color: var(--yellow); font-size: clamp(1.75rem, 5vw, 2.5rem); line-height: 1.1; }
@@ -462,6 +483,8 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
   list-style: none;
 }
 .detail-card li {
+  display: grid;
+  gap: 4px;
   padding: 10px 12px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.035);
@@ -569,6 +592,11 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
     padding: 34px 18px;
     border-radius: 20px;
   }
+}
+.detail-card li > span { color: var(--yellow); font-weight: 750; }
+.detail-card li > small { color: var(--muted); line-height: 1.45; }
+@media (max-width: 620px) {
+  .revision-values { grid-template-columns: 1fr; }
 }
 @media (max-width: 390px) {
   .device-details-grid {

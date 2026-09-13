@@ -340,6 +340,7 @@ input:disabled, textarea:disabled, select:disabled {
 .customer-portal .info-card strong { margin-top: 8px; color: var(--portal-text); font-size: 17px; }
 .customer-portal .info-card p { margin-top: 6px; font-size: 12px; }
 .customer-portal #approval-card,
+.customer-portal #revision-card,
 .customer-portal #pickup-notice,
 .customer-portal #services-card { grid-column: 1 / 9; }
 .customer-portal #device-details-card,

@@ -99,6 +99,7 @@
     show("pin-form", false);
     show("tracking", false);
     show("approval-card", false);
+    show("revision-card", false);
     $("photo-gallery").replaceChildren();
     $("services").replaceChildren();
     $("timeline").replaceChildren();
@@ -209,6 +210,22 @@
     const snapshot = tracking.snapshot || {};
     const approvalState = String(tracking.approvalState || snapshot.approvalState || "not_applicable");
     const approvalMode = snapshot.portalMode === "approval" || tracking.accessKind === "approval";
+    const revision = snapshot.revisionSummary && typeof snapshot.revisionSummary === "object"
+      ? snapshot.revisionSummary : null;
+    const revisionValuesValid = revision
+      && Number.isInteger(revision.originalTotalCents)
+      && Number.isInteger(revision.newTotalCents)
+      && Number.isInteger(revision.differenceCents)
+      && revision.differenceCents === revision.newTotalCents - revision.originalTotalCents;
+    show("revision-card", approvalMode && revisionValuesValid);
+    if (approvalMode && revisionValuesValid) {
+      $("revision-title").textContent = `Revisão de ${revision.originalPublicNumber || "orçamento anterior"}`;
+      $("revision-reason").textContent = `Motivo da alteração: ${revision.reason || "Reavaliação informada pela assistência."}`;
+      $("revision-original-total").textContent = money(revision.originalTotalCents);
+      $("revision-new-total").textContent = money(revision.newTotalCents);
+      const sign = revision.differenceCents > 0 ? "+" : revision.differenceCents < 0 ? "−" : "";
+      $("revision-difference").textContent = `${sign}${money(Math.abs(revision.differenceCents))}`;
+    }
     show("approval-card", approvalMode && snapshot.status === "Aguardando aprovação");
     if (approvalMode) {
       const approvalCard = $("approval-card");
@@ -394,7 +411,21 @@
       $("services").replaceChildren(
         ...services.map((item) => {
           const li = document.createElement("li");
-          li.textContent = item.name;
+          const name = document.createElement("strong");
+          name.textContent = item.name;
+          li.append(name);
+          if (Number.isInteger(item.totalCents) && Number.isInteger(item.unitPriceCents) && Number.isInteger(item.quantity)) {
+            const value = document.createElement("span");
+            value.textContent = item.quantity > 1
+              ? `${item.quantity} × ${money(item.unitPriceCents)} = ${money(item.totalCents)}`
+              : money(item.totalCents);
+            li.append(value);
+          }
+          if (typeof item.description === "string" && item.description.trim()) {
+            const description = document.createElement("small");
+            description.textContent = item.description.trim();
+            li.append(description);
+          }
           return li;
         }),
       );

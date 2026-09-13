@@ -52,7 +52,7 @@
 }
 
 * { box-sizing: border-box; }
-html { background: var(--portal-bg); }
+html { background: var(--portal-bg); touch-action: manipulation; }
 body {
   min-height: 100vh;
   margin: 0;
@@ -344,6 +344,16 @@ input:disabled, textarea:disabled, select:disabled {
   color: var(--portal-text);
 }
 .customer-portal .approval-card { border-top: 4px solid var(--portal-accent) !important; }
+.customer-portal .approval-card.is-resolved { border-top-color: var(--portal-success) !important; }
+.customer-portal .approval-card.is-resolved .approval-feedback {
+  margin: 16px 0 0;
+  padding: 15px 16px;
+  border: 1px solid color-mix(in srgb, var(--portal-success) 45%, var(--portal-line));
+  border-left: 4px solid var(--portal-success);
+  background: color-mix(in srgb, var(--portal-success) 10%, var(--portal-surface));
+  color: var(--portal-text);
+  font-weight: 650;
+}
 .customer-portal .approval-summary { border: 1px solid var(--portal-line); border-radius: 4px; background: var(--portal-surface-2); }
 .customer-portal .approval-summary strong { color: var(--portal-text); }
 .customer-portal .approval-confirm-row { border-color: var(--portal-line); border-radius: 4px; background: var(--portal-surface); color: var(--portal-text); }
@@ -383,11 +393,15 @@ input:disabled, textarea:disabled, select:disabled {
 .technician-portal main > header p:last-child { max-width: 740px; margin: 0; font-size: 14px; }
 .technician-portal #form {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: minmax(280px, 4fr) minmax(0, 8fr);
   gap: 16px;
   align-items: start;
 }
-.technician-portal #form > .card { margin: 0; padding: 22px; }
+.technician-portal .technician-side-column,
+.technician-portal .technician-work-column { display: grid; min-width: 0; gap: 16px; align-content: start; }
+.technician-portal .technician-side-column > *,
+.technician-portal .technician-work-column > * { grid-column: auto !important; grid-row: auto !important; width: 100%; min-width: 0; }
+.technician-portal #form .card { margin: 0; padding: 22px; }
 .technician-portal .facts { grid-column: 1 / 5; grid-row: 1; grid-template-columns: 1fr; box-shadow: none !important; }
 .technician-portal .facts h2,
 .technician-portal .facts small,
@@ -436,7 +450,15 @@ input:disabled, textarea:disabled, select:disabled {
 .technician-portal .service-option-fields > label,
 .technician-portal .service input,
 .technician-portal .service select { min-width: 0; max-width: 100%; }
-.technician-portal .service > strong { color: var(--portal-text); font-size: 16px; }
+.technician-portal .service > strong {
+  display: block;
+  margin: -2px 0 16px;
+  padding: 11px 13px;
+  border-left: 4px solid var(--portal-accent);
+  background: var(--portal-accent-soft);
+  color: var(--portal-text);
+  font-size: 17px;
+}
 .technician-portal .service-option {
   margin-top: 12px;
   padding: 16px;
@@ -468,7 +490,9 @@ input:disabled, textarea:disabled, select:disabled {
   .customer-portal .tracking,
   .technician-portal #form { display: flex; flex-direction: column; gap: 14px; }
   .customer-portal .tracking > *,
-  .technician-portal #form > * { width: 100%; min-width: 0; }
+  .technician-portal #form > *,
+  .technician-portal .technician-side-column,
+  .technician-portal .technician-work-column { width: 100%; min-width: 0; }
   .customer-portal .hero-card { min-height: 0; padding: 22px; }
   .customer-portal .progress-card { order: 2; }
   .customer-portal .info-grid { order: 3; }

@@ -81,13 +81,13 @@
     const fields = document.createElement("div");
     fields.className = "service-option-fields";
     const descriptionLabel = document.createElement("label");
-    descriptionLabel.textContent = "Peça / alternativa";
+    descriptionLabel.textContent = "Nome desta opção";
     const description = document.createElement("input");
     description.type = "text";
     description.autocomplete = "off";
     description.maxLength = 80;
     description.value = `Opção ${optionIndex + 1}`;
-    description.placeholder = "Ex.: Tela original com mensagem";
+    description.placeholder = "Ex.: Original ou compatível premium";
     description.dataset.optionLabel = service.id;
     descriptionLabel.append(description);
     const priceLabel = document.createElement("label");
@@ -195,7 +195,7 @@
       const add = document.createElement("button");
       add.type = "button";
       add.className = "add-option";
-      add.textContent = "+ Adicionar outra peça / valor";
+      add.textContent = "+ Adicionar outra opção de valor";
       add.addEventListener("click", () => {
         if (options.children.length >= 8) return;
         const nextOptionNumber = Number(row.dataset.nextOptionNumber || 2);

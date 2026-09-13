@@ -211,11 +211,22 @@
     const approvalMode = snapshot.portalMode === "approval" || tracking.accessKind === "approval";
     show("approval-card", approvalMode && snapshot.status === "Aguardando aprovação");
     if (approvalMode) {
+      const approvalCard = $("approval-card");
       const check = $("approval-check");
       const approve = $("approve-quote");
       const reject = $("reject-quote");
       const feedback = $("approval-feedback");
       const resolved = approvalState !== "pending";
+      approvalCard.classList.toggle("is-resolved", resolved);
+      $("approval-title").textContent = approvalState === "approved"
+        ? "Aprovação confirmada"
+        : approvalState === "rejected"
+          ? "Decisão registrada"
+          : "Você aprova este serviço?";
+      $("approval-intro").hidden = resolved;
+      approvalCard.querySelector(".approval-confirm-row").hidden = resolved;
+      approvalCard.querySelector(".approval-actions").hidden = resolved;
+      approvalCard.querySelector(".approval-footnote").hidden = resolved;
       $("approval-total").textContent = Number.isInteger(snapshot.totalCents)
         ? money(snapshot.totalCents)
         : "Valor informado pela assistência";
@@ -260,6 +271,17 @@
       Abandonado: "Sua ação: entre em contato com a loja para combinar a retirada.",
       Finalizado: "Guarde o PDF do atendimento para consultar as informações e a garantia, quando aplicável.",
     }[snapshot.status] || "Dúvidas sobre este atendimento? Converse diretamente com a loja.";
+    if (approvalState === "approved") {
+      $("status").textContent = "Aprovação enviada";
+      $("status-detail").textContent = "Orçamento aprovado por você";
+      $("status-help").textContent = "Sua decisão foi registrada. A assistência atualizará a próxima etapa do atendimento.";
+      $("next-step").textContent = "Próximo passo: aguarde a assistência iniciar o serviço ou informar a necessidade de peças.";
+    } else if (approvalState === "rejected") {
+      $("status").textContent = "Decisão enviada";
+      $("status-detail").textContent = "Orçamento não aprovado";
+      $("status-help").textContent = "Sua decisão foi registrada pela assistência.";
+      $("next-step").textContent = "Próximo passo: converse com a assistência para combinar como o atendimento seguirá.";
+    }
     $("device").textContent =
       snapshot.deviceSummary || "Aparelho em atendimento";
     $("reported").textContent = snapshot.reportedDefect

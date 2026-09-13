@@ -294,6 +294,7 @@
       $("form").hidden = true;
       $("success").hidden = false;
       state.pin = "";
+      try { sessionStorage.removeItem("assistencia_technician_link_token"); } catch {}
       history.replaceState(null, "", location.pathname);
     } catch (error) {
       const notice = document.createElement("p");
@@ -307,7 +308,22 @@
     }
   });
   const params = new URLSearchParams(location.hash.slice(1));
-  state.token = params.get("token") || "";
+  const tokenFromAddress = params.get("token") || "";
+  const tokenStorageKey = "assistencia_technician_link_token";
+  const navigationEntry = typeof performance !== "undefined"
+    ? performance.getEntriesByType("navigation")[0]
+    : null;
+  const isReload = navigationEntry && navigationEntry.type === "reload";
+  try {
+    if (/^[A-Za-z0-9_-]{43}$/.test(tokenFromAddress)) {
+      sessionStorage.setItem(tokenStorageKey, tokenFromAddress);
+      state.token = tokenFromAddress;
+    } else if (isReload) {
+      state.token = sessionStorage.getItem(tokenStorageKey) || "";
+    }
+  } catch {
+    state.token = tokenFromAddress;
+  }
   history.replaceState(null, "", location.pathname);
   if (!/^[A-Za-z0-9_-]{43}$/.test(state.token)) return fail("O endereço está incompleto ou inválido.");
   const load = async () => {

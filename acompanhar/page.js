@@ -208,6 +208,13 @@
       const reject = $("reject-quote");
       const feedback = $("approval-feedback");
       const resolved = approvalState !== "pending";
+      $("approval-total").textContent = Number.isInteger(snapshot.totalCents)
+        ? money(snapshot.totalCents)
+        : "Valor informado pela assistência";
+      const approvalServices = Array.isArray(snapshot.services) ? snapshot.services : [];
+      $("approval-service-summary").textContent = approvalServices.length
+        ? `${approvalServices.length} ${approvalServices.length === 1 ? "serviço apresentado" : "serviços apresentados"}`
+        : "Confira os detalhes do atendimento abaixo";
       check.checked = false;
       check.disabled = resolved;
       approve.disabled = resolved;
@@ -444,7 +451,7 @@
     if (!$("approval-check").checked) {
       show("approval-feedback");
       $("approval-feedback").className = "approval-feedback error";
-      $("approval-feedback").textContent = "Marque a confirmação de ciência antes de responder.";
+      $("approval-feedback").textContent = "Primeiro marque que entendeu o valor e os serviços.";
       return;
     }
     state.approving = true;
@@ -465,7 +472,22 @@
   $("approve-quote").addEventListener("click", () => void submitApproval("approved"));
   $("reject-quote").addEventListener("click", () => void submitApproval("rejected"));
   const params = new URLSearchParams(location.hash.slice(1));
-  state.token = params.get("token") || "";
+  const tokenFromAddress = params.get("token") || "";
+  const tokenStorageKey = "assistencia_customer_link_token";
+  const navigationEntry = typeof performance !== "undefined"
+    ? performance.getEntriesByType("navigation")[0]
+    : null;
+  const isReload = navigationEntry && navigationEntry.type === "reload";
+  try {
+    if (/^[A-Za-z0-9_-]{43}$/.test(tokenFromAddress)) {
+      sessionStorage.setItem(tokenStorageKey, tokenFromAddress);
+      state.token = tokenFromAddress;
+    } else if (isReload) {
+      state.token = sessionStorage.getItem(tokenStorageKey) || "";
+    }
+  } catch {
+    state.token = tokenFromAddress;
+  }
   history.replaceState(null, "", location.pathname);
   if (!/^[A-Za-z0-9_-]{43}$/.test(state.token))
     return fail(

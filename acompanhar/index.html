@@ -10,10 +10,12 @@
   <title>Acompanhar atendimento | Assistência Simplificada</title>
   <link rel="canonical" href="https://assistenciasimplificada.site/acompanhar/">
   <link rel="stylesheet" href="/acompanhar/page.css">
+  <link rel="stylesheet" href="/portal-design.css">
+  <script src="/portal-theme.js"></script>
   <script src="/acompanhar/config.js" defer></script>
   <script src="/acompanhar/page.js" defer></script>
 </head>
-<body>
+<body class="customer-portal">
   <main class="shell">
     <header class="brand">
       <img id="store-logo" class="brand-logo" alt="" hidden>
@@ -72,13 +74,18 @@
       </section>
 
       <section id="approval-card" class="detail-card approval-card" hidden aria-labelledby="approval-title">
-        <div class="section-heading"><div><small>CONFIRMAÇÃO DIGITAL</small><h2 id="approval-title">Confira e responda ao orçamento</h2></div><span class="beta-label">BETA</span></div>
-        <p id="approval-intro">Confira os serviços e o valor acima. Você pode confirmar sua decisão diretamente por este link.</p>
-        <label class="approval-confirm-row"><input id="approval-check" type="checkbox"> Li os serviços, valores e condições apresentados.</label>
+        <div class="section-heading"><div><small>CONFIRMAÇÃO DO ORÇAMENTO</small><h2 id="approval-title">Você aprova este serviço?</h2></div></div>
+        <div class="approval-summary" aria-live="polite">
+          <span>Valor total do orçamento</span>
+          <strong id="approval-total">—</strong>
+          <small id="approval-service-summary"></small>
+        </div>
+        <p id="approval-intro">Confira o valor e os serviços. Depois, marque a confirmação e escolha uma das opções abaixo.</p>
+        <label class="approval-confirm-row"><input id="approval-check" type="checkbox"> <span>Entendi o valor e os serviços deste orçamento.</span></label>
         <p id="approval-feedback" class="approval-feedback" role="status" hidden></p>
         <div class="approval-actions">
-          <button id="approve-quote" type="button" class="approval-primary">Aprovar orçamento</button>
-          <button id="reject-quote" type="button" class="approval-secondary">Não aprovar</button>
+          <button id="approve-quote" type="button" class="approval-primary">Sim, aprovar serviço</button>
+          <button id="reject-quote" type="button" class="approval-secondary">Não quero aprovar</button>
         </div>
         <small class="approval-footnote">Sua confirmação será registrada com data e hora para a assistência. Ela não substitui uma assinatura física quando esta for necessária.</small>
       </section>

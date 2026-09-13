@@ -377,12 +377,16 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
   border-color: color-mix(in srgb, var(--yellow) 55%, var(--line));
   background: linear-gradient(135deg, rgba(241, 204, 0, .08), rgba(18, 31, 42, .92));
 }
+.approval-summary { display: grid; gap: .2rem; margin: 1.1rem 0; padding: 1rem 1.1rem; border: 1px solid rgba(255, 211, 0, .42); border-radius: .9rem; background: rgba(255, 211, 0, .08); }
+.approval-summary span { color: var(--muted); font-size: .9rem; }
+.approval-summary strong { color: var(--yellow); font-size: clamp(1.75rem, 5vw, 2.5rem); line-height: 1.1; }
+.approval-summary small { color: var(--text); font-size: .9rem; }
 .approval-card .section-heading { align-items: center; }
 .beta-label { color: var(--yellow); border: 1px solid rgba(241,204,0,.55); border-radius: 999px; padding: .25rem .5rem; font-size: .7rem; letter-spacing: .12em; }
-.approval-confirm-row { display: flex; align-items: center; gap: .65rem; margin: 1rem 0; color: var(--muted); font-size: .92rem; }
-.approval-confirm-row input { width: 1.1rem; height: 1.1rem; accent-color: var(--yellow); }
+.approval-confirm-row { display: flex; align-items: center; gap: .8rem; margin: 1.15rem 0; padding: .85rem 1rem; border: 1px solid rgba(255,255,255,.14); border-radius: .8rem; color: var(--text); font-size: 1rem; cursor: pointer; }
+.approval-confirm-row input { flex: 0 0 auto; width: 1.35rem; height: 1.35rem; accent-color: var(--yellow); }
 .approval-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
-.approval-actions button { min-height: 2.8rem; border-radius: .75rem; padding: .7rem 1rem; font: inherit; font-weight: 700; cursor: pointer; }
+.approval-actions button { min-height: 3.25rem; border-radius: .75rem; padding: .8rem 1.15rem; font: inherit; font-size: 1rem; font-weight: 800; cursor: pointer; }
 .approval-primary { border: 1px solid var(--yellow); background: var(--yellow); color: #172027; }
 .approval-secondary { border: 1px solid rgba(255,255,255,.2); background: transparent; color: var(--text); }
 .approval-actions button:disabled { opacity: .55; cursor: not-allowed; }

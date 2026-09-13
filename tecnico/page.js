@@ -1,5 +1,6 @@
 (() => {
   "use strict";
+  const TOKEN_PATTERN = /^(?:[A-Za-z0-9_-]{43}|[A-F0-9]{5}\.[A-Za-z0-9_-]{22})$/;
   const API_URL = window.__ASSISTENCIA_PUBLIC_CONFIG__?.apiUrl;
   if (!API_URL) throw new Error("A configuração pública do painel técnico não foi carregada.");
   const DEFAULT_DIAGNOSIS = "O defeito relatado pelo cliente foi constatado durante a avaliação técnica.";
@@ -351,7 +352,7 @@
     : null;
   const isReload = navigationEntry && navigationEntry.type === "reload";
   try {
-    if (/^[A-Za-z0-9_-]{43}$/.test(tokenFromAddress)) {
+    if (TOKEN_PATTERN.test(tokenFromAddress)) {
       sessionStorage.setItem(tokenStorageKey, tokenFromAddress);
       state.token = tokenFromAddress;
     } else if (isReload) {
@@ -361,7 +362,7 @@
     state.token = tokenFromAddress;
   }
   history.replaceState(null, "", location.pathname);
-  if (!/^[A-Za-z0-9_-]{43}$/.test(state.token)) return fail("O endereço está incompleto ou inválido.");
+  if (!TOKEN_PATTERN.test(state.token)) return fail("O endereço está incompleto ou inválido.");
   const load = async () => {
     $("retry").disabled = true;
     try {

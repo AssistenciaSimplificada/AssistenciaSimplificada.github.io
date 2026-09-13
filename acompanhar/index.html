@@ -48,7 +48,7 @@
 
     <article id="tracking" class="tracking" hidden>
       <header class="tracking-head">
-        <div><small id="store"></small><h1 id="number"></h1></div>
+        <div><small>ATENDIMENTO</small><h1 id="number"></h1></div>
         <span id="status" class="status-pill"></span>
       </header>
 
@@ -82,6 +82,12 @@
         </div>
         <p id="approval-intro">Confira o valor e os serviços. Depois, marque a confirmação e escolha uma das opções abaixo.</p>
         <label class="approval-confirm-row"><input id="approval-check" type="checkbox"> <span>Entendi o valor e os serviços deste orçamento.</span></label>
+        <section id="approval-signature" class="approval-signature" hidden aria-labelledby="approval-signature-title">
+          <div><strong id="approval-signature-title">Assinatura do cliente</strong><small id="approval-signature-guidance">Assine com o dedo dentro do quadro.</small></div>
+          <p class="orientation-tip">Para assinar com mais espaço, use o celular na horizontal.</p>
+          <canvas id="approval-signature-canvas" width="600" height="180" aria-label="Quadro para assinatura"></canvas>
+          <button id="clear-approval-signature" type="button">Limpar assinatura</button>
+        </section>
         <p id="approval-feedback" class="approval-feedback" role="status" hidden></p>
         <div class="approval-actions">
           <button id="approve-quote" type="button" class="approval-primary">Sim, aprovar serviço</button>

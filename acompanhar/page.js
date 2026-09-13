@@ -3,7 +3,8 @@
   const API_URL = window.__ASSISTENCIA_CUSTOMER_CONFIG__?.apiUrl;
   if (!API_URL) throw new Error("A configuração pública não foi carregada.");
   const $ = (id) => document.getElementById(id);
-  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null, loading: false, approving: false };
+  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null, loading: false, approving: false, signatureDrawn: false, signatureMode: "disabled" };
+  const TOKEN_PATTERN = /^(?:[A-Za-z0-9_-]{43}|[A-F0-9]{5}\.[A-Za-z0-9_-]{22})$/;
   const statusIndex = (status) =>
     status === "Aguardando técnico"
       ? 2
@@ -73,7 +74,6 @@
       .find((value) => typeof value === "string" && value.trim())?.trim().slice(0, 160)
       || "Assistência técnica";
     $("store-name").textContent = tracking ? name : "Acompanhe seu atendimento";
-    $("store").textContent = name;
     document.title = tracking ? `Acompanhar atendimento | ${name}` : "Acompanhar atendimento";
     const logo = $("store-logo");
     logo.onload = null;
@@ -111,7 +111,7 @@
       : "Fale com a assistência se precisar de ajuda ou de uma cópia do PDF.";
     show("error");
   };
-  const api = async (action = "read", decision = "") => {
+  const api = async (action = "read", decision = "", signature = null) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     try {
@@ -126,7 +126,7 @@
         action,
         token: state.token,
         pin: state.pin,
-        ...(action !== "read" ? { decision } : {}),
+        ...(action !== "read" ? { decision, signature } : {}),
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -217,6 +217,12 @@
       const reject = $("reject-quote");
       const feedback = $("approval-feedback");
       const resolved = approvalState !== "pending";
+      state.signatureMode = ["optional", "required"].includes(snapshot.approvalSignatureMode)
+        ? snapshot.approvalSignatureMode : "disabled";
+      show("approval-signature", !resolved && state.signatureMode !== "disabled");
+      $("approval-signature-guidance").textContent = state.signatureMode === "required"
+        ? "Assine com o dedo dentro do quadro para aprovar."
+        : "Opcional: assine com o dedo dentro do quadro.";
       approvalCard.classList.toggle("is-resolved", resolved);
       $("approval-title").textContent = approvalState === "approved"
         ? "Aprovação confirmada"
@@ -484,6 +490,13 @@
       $("approval-feedback").textContent = "Primeiro marque que entendeu o valor e os serviços.";
       return;
     }
+    if (decision === "approved" && state.signatureMode === "required" && !state.signatureDrawn) {
+      show("approval-feedback");
+      $("approval-feedback").className = "approval-feedback error";
+      $("approval-feedback").textContent = "Assine no quadro antes de aprovar.";
+      $("approval-signature-canvas").scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
     state.approving = true;
     $("approve-quote").disabled = true;
     $("reject-quote").disabled = true;
@@ -491,7 +504,10 @@
     $("approval-feedback").className = "approval-feedback";
     $("approval-feedback").textContent = "Registrando sua decisão…";
     try {
-      render(await api("approve", decision));
+      const signature = decision === "approved" && state.signatureDrawn && typeof $("approval-signature-canvas").toDataURL === "function"
+        ? { dataUrl: $("approval-signature-canvas").toDataURL("image/png"), signedAt: new Date().toISOString() }
+        : null;
+      render(await api("approve", decision, signature));
     } catch (error) {
       $("approval-feedback").className = "approval-feedback error";
       $("approval-feedback").textContent = error.message || "Não foi possível registrar sua decisão.";
@@ -501,6 +517,44 @@
   };
   $("approve-quote").addEventListener("click", () => void submitApproval("approved"));
   $("reject-quote").addEventListener("click", () => void submitApproval("rejected"));
+  const signatureCanvas = $("approval-signature-canvas");
+  const signatureContext = typeof signatureCanvas.getContext === "function"
+    ? signatureCanvas.getContext("2d", { alpha: true }) : null;
+  if (signatureContext) {
+    signatureContext.strokeStyle = "#111827";
+    signatureContext.lineWidth = 4;
+    signatureContext.lineCap = "round";
+    signatureContext.lineJoin = "round";
+  }
+  let signing = false;
+  const signaturePoint = (event) => {
+    const bounds = signatureCanvas.getBoundingClientRect();
+    return {
+      x: (event.clientX - bounds.left) * signatureCanvas.width / bounds.width,
+      y: (event.clientY - bounds.top) * signatureCanvas.height / bounds.height,
+    };
+  };
+  signatureCanvas.addEventListener("pointerdown", (event) => {
+    signing = true;
+    signatureCanvas.setPointerCapture(event.pointerId);
+    const point = signaturePoint(event);
+    signatureContext?.beginPath();
+    signatureContext?.moveTo(point.x, point.y);
+  });
+  signatureCanvas.addEventListener("pointermove", (event) => {
+    if (!signing) return;
+    const point = signaturePoint(event);
+    signatureContext?.lineTo(point.x, point.y);
+    signatureContext?.stroke();
+    state.signatureDrawn = true;
+  });
+  const stopSigning = () => { signing = false; };
+  signatureCanvas.addEventListener("pointerup", stopSigning);
+  signatureCanvas.addEventListener("pointercancel", stopSigning);
+  $("clear-approval-signature").addEventListener("click", () => {
+    signatureContext?.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+    state.signatureDrawn = false;
+  });
   const params = new URLSearchParams(location.hash.slice(1));
   const tokenFromAddress = params.get("token") || "";
   const tokenStorageKey = "assistencia_customer_link_token";
@@ -509,7 +563,7 @@
     : null;
   const isReload = navigationEntry && navigationEntry.type === "reload";
   try {
-    if (/^[A-Za-z0-9_-]{43}$/.test(tokenFromAddress)) {
+    if (TOKEN_PATTERN.test(tokenFromAddress)) {
       sessionStorage.setItem(tokenStorageKey, tokenFromAddress);
       state.token = tokenFromAddress;
     } else if (isReload) {
@@ -519,7 +573,7 @@
     state.token = tokenFromAddress;
   }
   history.replaceState(null, "", location.pathname);
-  if (!/^[A-Za-z0-9_-]{43}$/.test(state.token))
+  if (!TOKEN_PATTERN.test(state.token))
     return fail(
       "O endereço está incompleto. Abra novamente o link enviado pela assistência.",
     );

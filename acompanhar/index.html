@@ -94,10 +94,14 @@
         <p id="approval-intro">Confira o valor e os serviços. Depois, marque a confirmação e escolha uma das opções abaixo.</p>
         <label class="approval-confirm-row"><input id="approval-check" type="checkbox"> <span>Entendi o valor e os serviços deste orçamento.</span></label>
         <section id="approval-signature" class="approval-signature" hidden aria-labelledby="approval-signature-title">
-          <div><strong id="approval-signature-title">Assinatura do cliente</strong><small id="approval-signature-guidance">Assine com o dedo dentro do quadro.</small></div>
+          <div class="approval-signature-heading"><strong id="approval-signature-title">Assinatura do cliente</strong><small id="approval-signature-guidance">Assine com o dedo dentro do quadro.</small></div>
           <p class="orientation-tip">Para assinar com mais espaço, use o celular na horizontal.</p>
-          <canvas id="approval-signature-canvas" width="600" height="180" aria-label="Quadro para assinatura"></canvas>
-          <button id="clear-approval-signature" type="button">Limpar assinatura</button>
+          <canvas id="approval-signature-canvas" width="1200" height="520" aria-label="Quadro para assinatura"></canvas>
+          <div class="approval-signature-actions">
+            <button id="cancel-approval-signature" type="button">Voltar</button>
+            <button id="clear-approval-signature" type="button">Limpar assinatura</button>
+            <button id="confirm-approval-signature" type="button" class="approval-primary">Confirmar assinatura e aprovar</button>
+          </div>
         </section>
         <p id="approval-feedback" class="approval-feedback" role="status" hidden></p>
         <div id="rejection-choice" class="rejection-choice" hidden>

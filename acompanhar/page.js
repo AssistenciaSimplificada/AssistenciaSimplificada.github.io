@@ -251,6 +251,10 @@
         ? "Assine com o dedo dentro do quadro para aprovar."
         : "Opcional: assine com o dedo dentro do quadro.";
       approvalCard.classList.toggle("is-resolved", resolved);
+      if (resolved) {
+        $("approval-signature").classList.remove("is-fullscreen");
+        document.body.classList.remove("approval-signature-open");
+      }
       $("approval-title").textContent = approvalState === "approved"
         ? "Aprovação confirmada"
         : approvalState === "rejected"
@@ -558,7 +562,26 @@
       $("reject-quote").disabled = false;
     } finally { state.approving = false; }
   };
-  $("approve-quote").addEventListener("click", () => void submitApproval("approved"));
+  const openApprovalSignature = () => {
+    if (!$("approval-check").checked) {
+      show("approval-feedback");
+      $("approval-feedback").className = "approval-feedback error";
+      $("approval-feedback").textContent = "Primeiro marque que entendeu o valor e os serviços.";
+      return;
+    }
+    $("approval-signature").classList.add("is-fullscreen");
+    document.body.classList.add("approval-signature-open");
+  };
+  const closeApprovalSignature = () => {
+    $("approval-signature").classList.remove("is-fullscreen");
+    document.body.classList.remove("approval-signature-open");
+  };
+  $("approve-quote").addEventListener("click", () => {
+    if (state.signatureMode !== "disabled") openApprovalSignature();
+    else void submitApproval("approved");
+  });
+  $("cancel-approval-signature").addEventListener("click", closeApprovalSignature);
+  $("confirm-approval-signature").addEventListener("click", () => void submitApproval("approved"));
   $("reject-quote").addEventListener("click", () => {
     show("rejection-choice");
     $("rejection-choice").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -586,6 +609,7 @@
     };
   };
   signatureCanvas.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
     signing = true;
     signatureCanvas.setPointerCapture(event.pointerId);
     const point = signaturePoint(event);
@@ -594,6 +618,7 @@
   });
   signatureCanvas.addEventListener("pointermove", (event) => {
     if (!signing) return;
+    event.preventDefault();
     const point = signaturePoint(event);
     signatureContext?.lineTo(point.x, point.y);
     signatureContext?.stroke();
@@ -606,11 +631,11 @@
     signatureContext?.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
     state.signatureDrawn = false;
   });
-  document.addEventListener("visibilitychange", () => {
+  document.addEventListener?.("visibilitychange", () => {
     if (document.visibilityState === "visible" && state.tracking && !state.loading)
       void load();
   });
-  window.addEventListener("pagehide", () => {
+  window.addEventListener?.("pagehide", () => {
     clearInterval(state.timer);
     clearTimeout(state.expiryTimer);
     clearTimeout(state.statusTimer);

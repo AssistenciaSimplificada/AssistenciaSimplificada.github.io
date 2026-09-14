@@ -421,12 +421,22 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
 .approval-feedback.error { color: #ffd0d5; background: rgba(235, 87, 99, .12); }
 .approval-footnote { display: block; margin-top: .9rem; color: var(--muted); line-height: 1.45; }
 .approval-signature { display: grid; gap: .65rem; margin: 1rem 0; padding: 1rem; border: 1px solid rgba(255,255,255,.18); border-radius: .8rem; }
-.approval-signature > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .35rem 1rem; }
+.approval-signature:not(.is-fullscreen) { display: none; }
+.approval-signature-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .35rem 1rem; }
 .approval-signature small, .orientation-tip { color: var(--muted); }
 .approval-signature .orientation-tip { display: none; margin: 0; font-size: .82rem; }
-.approval-signature canvas { display: block; width: 100%; aspect-ratio: 10 / 3; border: 2px solid rgba(255,255,255,.32); border-radius: .5rem; background: #fff; touch-action: none; }
-.approval-signature button { justify-self: end; min-height: 2.5rem; padding: .45rem .8rem; border: 1px solid rgba(255,255,255,.25); background: transparent; color: var(--text); }
+.approval-signature canvas { display: block; width: 100%; aspect-ratio: 10 / 3; border: 2px solid rgba(255,255,255,.32); border-radius: .5rem; background: #fff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; outline: none; }
+.approval-signature-actions { display: flex; justify-content: flex-end; gap: .65rem; }
+.approval-signature-actions button { min-height: 2.75rem; padding: .55rem .9rem; border: 1px solid rgba(255,255,255,.25); background: transparent; color: var(--text); }
+.approval-signature-actions .approval-primary { border-color: var(--yellow); background: var(--yellow); color: #172027; }
+body.approval-signature-open { overflow: hidden; }
+.approval-signature.is-fullscreen { position: fixed; inset: 0; z-index: 1000; margin: 0; padding: clamp(18px,4vw,42px); border: 0; border-radius: 0; background: var(--bg); grid-template-rows: auto auto minmax(220px,1fr) auto; }
+.approval-signature.is-fullscreen .approval-signature-heading strong { font-size: clamp(1.45rem,4vw,2.15rem); }
+.approval-signature.is-fullscreen .approval-signature-heading small { width: 100%; font-size: clamp(1rem,2.4vw,1.2rem); }
+.approval-signature.is-fullscreen canvas { height: 100%; min-height: 220px; aspect-ratio: auto; border-width: 3px; }
+.approval-signature.is-fullscreen .approval-signature-actions button { min-height: 54px; font-size: 1rem; font-weight: 800; }
 @media (orientation: portrait) and (max-width: 700px) { .approval-signature .orientation-tip { display: block; } }
+@media (max-width: 620px) { .approval-signature-actions { display: grid; grid-template-columns: 1fr 1fr; } .approval-signature-actions .approval-primary { grid-column: 1 / -1; grid-row: 1; } }
 .device-details-card {
   gap: 16px;
   background: linear-gradient(145deg, rgba(24, 45, 54, 0.98), rgba(12, 27, 36, 0.98));

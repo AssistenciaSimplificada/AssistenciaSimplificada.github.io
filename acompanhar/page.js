@@ -3,7 +3,7 @@
   const API_URL = window.__ASSISTENCIA_CUSTOMER_CONFIG__?.apiUrl;
   if (!API_URL) throw new Error("A configuração pública não foi carregada.");
   const $ = (id) => document.getElementById(id);
-  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null, loading: false, approving: false, signatureDrawn: false, signatureMode: "disabled" };
+  const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null, statusTimer: null, loading: false, approving: false, signatureDrawn: false, signatureMode: "disabled" };
   const TOKEN_PATTERN = /^(?:[A-Za-z0-9_-]{43}|[A-F0-9]{5}\.[A-Za-z0-9_-]{22})$/;
   const statusIndex = (status) =>
     status === "Aguardando técnico"
@@ -92,6 +92,7 @@
   };
   const fail = (message, retryable = false) => {
     clearTimeout(state.expiryTimer);
+    clearTimeout(state.statusTimer);
     state.tracking = null;
     renderBranding(null);
     clearInterval(state.timer);
@@ -112,7 +113,16 @@
       : "Fale com a assistência se precisar de ajuda ou de uma cópia do PDF.";
     show("error");
   };
-  const api = async (action = "read", decision = "", signature = null) => {
+  const scheduleStatusRefresh = () => {
+    clearTimeout(state.statusTimer);
+    const status = String(state.tracking?.snapshot?.status || "");
+    if (["Cancelado", "Rejeitado", "Expirado"].includes(status)) return;
+    state.statusTimer = setTimeout(async () => {
+      if (document.visibilityState === "visible") await load();
+      else scheduleStatusRefresh();
+    }, 60_000);
+  };
+  const api = async (action = "read", decision = "", signature = null, note = "") => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     try {
@@ -127,7 +137,7 @@
         action,
         token: state.token,
         pin: state.pin,
-        ...(action !== "read" ? { decision, signature } : {}),
+        ...(action !== "read" ? { decision, signature, note } : {}),
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -249,6 +259,7 @@
       $("approval-intro").hidden = resolved;
       approvalCard.querySelector(".approval-confirm-row").hidden = resolved;
       approvalCard.querySelector(".approval-actions").hidden = resolved;
+      show("rejection-choice", false);
       approvalCard.querySelector(".approval-footnote").hidden = resolved;
       $("approval-total").textContent = Number.isInteger(snapshot.totalCents)
         ? money(snapshot.totalCents)
@@ -456,6 +467,7 @@
     show("pin-form", false);
     show("error", false);
     show("tracking");
+    scheduleStatusRefresh();
   };
   const load = async () => {
     if (state.loading) return;
@@ -513,7 +525,7 @@
     $("refresh").disabled = false;
     $("refresh").textContent = "Atualizar agora";
   });
-  const submitApproval = async (decision) => {
+  const submitApproval = async (decision, note = "") => {
     if (state.approving) return;
     if (!$("approval-check").checked) {
       show("approval-feedback");
@@ -538,7 +550,7 @@
       const signature = decision === "approved" && state.signatureDrawn && typeof $("approval-signature-canvas").toDataURL === "function"
         ? { dataUrl: $("approval-signature-canvas").toDataURL("image/png"), signedAt: new Date().toISOString() }
         : null;
-      render(await api("approve", decision, signature));
+      render(await api("approve", decision, signature, note));
     } catch (error) {
       $("approval-feedback").className = "approval-feedback error";
       $("approval-feedback").textContent = error.message || "Não foi possível registrar sua decisão.";
@@ -547,7 +559,15 @@
     } finally { state.approving = false; }
   };
   $("approve-quote").addEventListener("click", () => void submitApproval("approved"));
-  $("reject-quote").addEventListener("click", () => void submitApproval("rejected"));
+  $("reject-quote").addEventListener("click", () => {
+    show("rejection-choice");
+    $("rejection-choice").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  $("cancel-rejection").addEventListener("click", () => show("rejection-choice", false));
+  $("confirm-rejection").addEventListener("click", () => void submitApproval(
+    "rejected",
+    $("rejection-reason").value || "Cliente não aprovou o serviço",
+  ));
   const signatureCanvas = $("approval-signature-canvas");
   const signatureContext = typeof signatureCanvas.getContext === "function"
     ? signatureCanvas.getContext("2d", { alpha: true }) : null;
@@ -586,8 +606,18 @@
     signatureContext?.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
     state.signatureDrawn = false;
   });
-  const params = new URLSearchParams(location.hash.slice(1));
-  const tokenFromAddress = params.get("token") || "";
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && state.tracking && !state.loading)
+      void load();
+  });
+  window.addEventListener("pagehide", () => {
+    clearInterval(state.timer);
+    clearTimeout(state.expiryTimer);
+    clearTimeout(state.statusTimer);
+  });
+  const rawFragment = location.hash.slice(1);
+  const params = new URLSearchParams(rawFragment);
+  const tokenFromAddress = params.get("token") || rawFragment;
   const tokenStorageKey = "assistencia_customer_link_token";
   const navigationEntry = typeof performance !== "undefined"
     ? performance.getEntriesByType("navigation")[0]

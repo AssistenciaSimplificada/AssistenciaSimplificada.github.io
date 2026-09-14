@@ -403,7 +403,6 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
 .approval-summary strong { color: var(--yellow); font-size: clamp(1.75rem, 5vw, 2.5rem); line-height: 1.1; }
 .approval-summary small { color: var(--text); font-size: .9rem; }
 .approval-card .section-heading { align-items: center; }
-.beta-label { color: var(--yellow); border: 1px solid rgba(241,204,0,.55); border-radius: 999px; padding: .25rem .5rem; font-size: .7rem; letter-spacing: .12em; }
 .approval-confirm-row { display: flex; align-items: center; gap: .8rem; margin: 1.15rem 0; padding: .85rem 1rem; border: 1px solid rgba(255,255,255,.14); border-radius: .8rem; color: var(--text); font-size: 1rem; cursor: pointer; }
 .approval-confirm-row input { flex: 0 0 auto; width: 1.35rem; height: 1.35rem; accent-color: var(--yellow); }
 .approval-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
@@ -411,6 +410,12 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
 .approval-primary { border: 1px solid var(--yellow); background: var(--yellow); color: #172027; }
 .approval-secondary { border: 1px solid rgba(255,255,255,.2); background: transparent; color: var(--text); }
 .approval-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.rejection-choice { display: grid; gap: 10px; padding: 16px; border: 1px solid rgba(251,113,133,.38); border-radius: .75rem; background: rgba(251,113,133,.06); }
+.rejection-choice label { font-weight: 800; }
+.rejection-choice select { width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid var(--line); border-radius: .55rem; background: var(--surface); color: var(--text); font: inherit; }
+.rejection-choice > div { display: grid; grid-template-columns: minmax(110px,.65fr) minmax(210px,1.35fr); gap: 10px; }
+.rejection-choice #cancel-rejection { border-color: var(--line); background: transparent; color: var(--text); }
+.rejection-choice #confirm-rejection { border-color: var(--red); background: var(--red); color: #21060b; }
 .approval-feedback { margin: .8rem 0 0; padding: .65rem .75rem; border-radius: .65rem; background: rgba(255,255,255,.06); color: var(--muted); }
 .approval-feedback.success { color: #b8f4d2; background: rgba(65, 196, 123, .12); }
 .approval-feedback.error { color: #ffd0d5; background: rgba(235, 87, 99, .12); }
@@ -599,6 +604,7 @@ button:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
   .revision-values { grid-template-columns: 1fr; }
 }
 @media (max-width: 390px) {
+  .rejection-choice > div { grid-template-columns: 1fr; }
   .device-details-grid {
     grid-template-columns: 1fr;
   }

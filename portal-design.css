@@ -561,3 +561,44 @@ input:disabled, textarea:disabled, select:disabled {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition: none !important; }
 }
+
+/* Fluxo contínuo no computador: elimina lacunas entre cartões de alturas diferentes. */
+@media (min-width: 1041px) {
+  .customer-portal .shell { width: min(980px, calc(100% - 48px)); }
+  .customer-portal .tracking { grid-template-columns: minmax(0, 1fr); }
+  .customer-portal .tracking > *,
+  .customer-portal .tracking-head,
+  .customer-portal .hero-card,
+  .customer-portal .progress-card,
+  .customer-portal .info-grid,
+  .customer-portal #approval-card,
+  .customer-portal #revision-card,
+  .customer-portal #pickup-notice,
+  .customer-portal #services-card,
+  .customer-portal #device-details-card,
+  .customer-portal #diagnosis-card,
+  .customer-portal #timeline-card,
+  .customer-portal .tracking > footer {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .customer-portal .hero-card { min-height: 0; }
+  .customer-portal .device-details-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  .technician-portal main { width: min(980px, calc(100% - 48px)); }
+  .technician-portal #form { display: flex; flex-direction: column; gap: 14px; }
+  .technician-portal .technician-side-column,
+  .technician-portal .technician-work-column { display: contents; }
+  .technician-portal .facts { order: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .technician-portal .facts h2,
+  .technician-portal .facts small,
+  .technician-portal .facts div:has(#device),
+  .technician-portal .facts div:has(#reported) { grid-column: 1 / -1; }
+  .technician-portal .evaluation-overview { order: 2; }
+  .technician-portal .service-values-card { order: 3; }
+  .technician-portal .technician-work-column > .card:not(.service-values-card):not(.evaluation-overview) { order: 4; }
+  .technician-portal .device-guide { order: 5; }
+  .technician-portal #submit,
+  .technician-portal #submit-error,
+  .technician-portal .submission-note { order: 6; }
+}

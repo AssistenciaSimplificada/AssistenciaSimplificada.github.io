@@ -47,9 +47,23 @@
     } finally { clearTimeout(timeout); }
   };
   const cents = (value) => {
-    const normalized = String(value).trim().replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
-    if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) return null;
-    const result = Math.round(Number(normalized) * 100);
+    const raw = String(value).trim().replace(/^R\$\s*/i, "").replace(/\s/g, "");
+    if (!/^\d+(?:[.,]\d+)*$/.test(raw)) return null;
+    const separator = Math.max(raw.lastIndexOf(","), raw.lastIndexOf("."));
+    let whole = raw;
+    let fraction = "";
+    if (separator >= 0) {
+      const tail = raw.slice(separator + 1);
+      const separatorCount = (raw.match(/[.,]/g) || []).length;
+      if (tail.length <= 2) {
+        whole = raw.slice(0, separator).replace(/[.,]/g, "");
+        fraction = tail.padEnd(2, "0");
+      } else if (tail.length === 3 || separatorCount > 1) {
+        whole = raw.replace(/[.,]/g, "");
+      } else return null;
+    }
+    if (!/^\d+$/.test(whole) || !/^\d{0,2}$/.test(fraction)) return null;
+    const result = Number(whole) * 100 + Number(fraction || 0);
     return Number.isSafeInteger(result) && result >= 1 && result <= 99999999 ? result : null;
   };
   const updateEvaluationProgress = () => {
@@ -213,7 +227,8 @@
         note.required = !priced;
         if (outcome.value === "labor_only") {
           const label = row.querySelector("input[data-option-label]");
-          if (label && !label.value.trim()) label.value = "Mão de obra";
+          if (label && (!label.value.trim() || /^Opção \d+$/i.test(label.value.trim())))
+            label.value = "Mão de obra";
         }
       };
       outcome.addEventListener("change", refreshOutcome);
@@ -344,8 +359,9 @@
       $("submit").textContent = "Enviar avaliação";
     }
   });
-  const params = new URLSearchParams(location.hash.slice(1));
-  const tokenFromAddress = params.get("token") || "";
+  const rawFragment = location.hash.slice(1);
+  const params = new URLSearchParams(rawFragment);
+  const tokenFromAddress = params.get("token") || rawFragment;
   const tokenStorageKey = "assistencia_technician_link_token";
   const navigationEntry = typeof performance !== "undefined"
     ? performance.getEntriesByType("navigation")[0]

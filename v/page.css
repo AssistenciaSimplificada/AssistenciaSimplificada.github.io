@@ -42,6 +42,7 @@ footer{display:grid;gap:6px;place-items:center}footer strong{color:#42586a;font-
 .tags .availability-tag.unavailable{border-color:#d1d7dd;background:#eef0f2;color:#68737d}
 .card.unavailable{filter:grayscale(1);opacity:.72}
 .card.unavailable:hover{filter:grayscale(.85);opacity:.86}
+.detail-shell.unavailable{filter:grayscale(1)}
 .zoomable{touch-action:pan-x pan-y;cursor:zoom-in}
 .zoomable.is-zoomed{touch-action:none;cursor:zoom-out}
 .zoom-controls{position:absolute;z-index:2;left:50%;bottom:12px;display:flex;align-items:center;overflow:hidden;transform:translateX(-50%);border:1px solid rgba(255,255,255,.55);border-radius:999px;background:rgba(19,30,40,.82);box-shadow:0 4px 18px rgba(0,0,0,.18)}

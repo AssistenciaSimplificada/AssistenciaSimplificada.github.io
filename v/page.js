@@ -47,6 +47,14 @@
     logo.src = catalog.logoUrl ? imageUrl(catalog.logoUrl) : "/favicon.svg"; logo.alt = `Logo de ${catalog.storeName}`; logo.onerror = () => { logo.onerror = null; logo.src = "/favicon.svg"; };
   }
   const paymentMethods = item => (Array.isArray(item.acceptedPaymentMethods) ? item.acceptedPaymentMethods : []).join(" • ");
+  const installmentOptions = item => {
+    const base = salePrice(item);
+    const free = Math.max(1, Math.min(24, Number(item.interestFreeInstallments || 1)));
+    const withoutInterest = Array.from({ length:free }, (_, index) => ({ installments:index + 1, totalCents:base, installmentCents:Math.ceil(base / (index + 1)), rateBasisPoints:0 }));
+    const withInterest = (Array.isArray(item.interestInstallments) ? item.interestInstallments : item.interestInstallment ? [item.interestInstallment] : [])
+      .filter(option => Number.isInteger(option.installments) && option.installments > free && option.installments <= 24 && Number.isInteger(option.totalCents) && option.totalCents >= base && Number.isInteger(option.installmentCents) && option.installmentCents > 0);
+    return [...withoutInterest, ...withInterest].sort((a,b) => a.installments-b.installments);
+  };
   const cardPaymentHtml = item => {
     const base = salePrice(item);
     const cashOffer = Number(item.cashDiscountBasisPoints || 0) > 0;
@@ -76,6 +84,10 @@
     detailNode.hidden = true; document.body.classList.remove("detail-open"); catalogNode.hidden = false; bestSellerNode.hidden = !catalog.items.length; document.querySelector(".toolbar").hidden = false;
     const items = filtered(); statusNode.textContent = `${items.length} aparelho${items.length === 1 ? "" : "s"} disponível${items.length === 1 ? "" : "is"}`;
     catalogNode.innerHTML = items.length ? items.map(card).join("") : '<div class="empty"><h2>Nenhum aparelho encontrado</h2><p>Tente outra busca ou fale com a loja.</p></div>';
+    catalogNode.querySelectorAll(".card").forEach(node => {
+      const item = items.find(entry => entry.code === node.dataset.code);
+      if (item?.purchaseKind === "Novo") node.querySelector(".card-payment")?.insertAdjacentHTML("beforeend", '<small class="payjo-card-note">🧾 Boleto parcelado via PayJo · consulte condições</small>');
+    });
     bindCards();
   }
   function closeDetail() {
@@ -91,6 +103,25 @@
     const base = salePrice(item);
     const purchaseInfo = `<section class="purchase-info"><h2>Compra e disponibilidade</h2><div><span class="purchase-icon">${availabilityIcon(item)}</span><p><strong>${availabilityLabel(item)}</strong><small>${item.availability === "order" ? esc(item.orderLeadTime || "Consulte a loja para confirmar o prazo") : item.availability === "unavailable" ? "Este anúncio foi vendido ou retirado recentemente." : "Disponível para retirada ou envio após confirmação da loja"}</small></p></div>${item.warranty ? `<div><span class="purchase-icon">🛡️</span><p><strong>Garantia</strong><small>${esc(item.warranty)}</small></p></div>` : ""}${item.specsUrl ? `<a href="${esc(item.specsUrl)}" target="_blank" rel="noopener"><span class="purchase-icon">📋</span><p><strong>Ficha técnica oficial</strong><small>Consulte especificações completas do fabricante</small></p><b>↗</b></a>` : ""}</section>`;
     detailNode.innerHTML = `<div class="detail-shell" role="document"><button class="detail-close" type="button" aria-label="Fechar detalhes">×</button><div class="detail-layout"><div class="detail-gallery"><div class="picture zoomable"><img src="${imageUrl(images[0])}" alt="${esc(item.title)}"><span class="zoom-hint">Passe o mouse ou use dois dedos para ampliar</span><div class="zoom-controls" aria-label="Controles de zoom"><button type="button" data-zoom="out" aria-label="Diminuir foto">−</button><output aria-live="polite">100%</output><button type="button" data-zoom="in" aria-label="Ampliar foto">+</button></div></div>${images.length ? `<div class="thumbnails" role="group" aria-label="Fotos do aparelho">${images.map((source,index) => `<button type="button" class="${index === 0 ? "selected" : ""}" data-image="${esc(imageUrl(source))}" aria-label="Ver foto ${index + 1}"><img src="${imageUrl(source)}" alt=""></button>`).join("")}</div>` : ""}${purchaseInfo}</div><div class="detail-copy"><div class="tags"><span>${esc(item.purchaseKind)}</span><span class="availability-tag ${item.availability === "order" ? "order" : "ready"}">${item.availability === "order" ? "🚚" : "✓"} ${availabilityLabel(item)}</span>${item.featured ? '<span class="featured-tag">Destaque</span>' : ""}${item.discountPriceCents ? '<span>Oferta</span>' : ""}</div><h1>${esc(item.title)}</h1><div class="detail-pricebox"><small>Preço à vista</small>${item.discountPriceCents || item.cashDiscountBasisPoints ? `<small class="previous-price">${money(item.priceCents)}</small>` : ""}<div class="price">${money(cashPrice(item))}</div>${item.cashDiscountBasisPoints ? `<strong class="cash-offer">${percent(item.cashDiscountBasisPoints)} OFF no ${esc((item.cashDiscountMethods || []).join(" e ") || "pagamento à vista")}</strong>` : ""}<span>${money(base)} no cartão</span><b>Até ${free}x de ${money(Math.ceil(base/free))} sem juros</b>${item.interestInstallment ? `<span>Ou ${item.interestInstallment.installments}x de ${money(item.interestInstallment.installmentCents)} com juros</span>` : ""}</div>${paymentMethods(item) ? `<section class="payment-box"><small>FORMAS DE PAGAMENTO ACEITAS</small><div>${item.acceptedPaymentMethods.map(method => `<span>${esc(method)}</span>`).join("")}</div>${item.paymentMachineName ? `<p>Condições calculadas pela maquininha ${esc(item.paymentMachineName)}.</p>` : ""}</section>` : ""}<p class="description">${esc(item.description || "Consulte a loja para mais informações.")}</p><div class="facts">${facts.map(([label,value]) => `<div><small>${label}</small><strong>${esc(value)}</strong></div>`).join("")}</div>${wa ? `<a class="contact" href="${wa}" target="_blank" rel="noopener">Quero adquirir pelo WhatsApp</a>` : '<p class="contact-unavailable">A loja ainda não informou um WhatsApp para contato.</p>'}<button class="share-product" type="button">Compartilhar este aparelho</button></div></div></div>`;
+    if (item.purchaseKind === "Novo") {
+      const anchor = detailNode.querySelector(".payment-box") || detailNode.querySelector(".detail-pricebox");
+      anchor.insertAdjacentHTML("afterend", '<section class="payjo-box"><strong>🧾 Parcelamento no boleto via PayJo</strong><span>Disponível para aparelhos novos. Consulte prazos e condições diretamente com a loja.</span></section>');
+    }
+    const terms = item.acceptedPaymentMethods?.includes("Cartão de crédito") ? installmentOptions(item) : [];
+    if (terms.length > 1) {
+      const selection = `<section class="installment-picker"><label for="installment-count">Simule as parcelas no cartão</label><select id="installment-count" aria-label="Número de parcelas">${terms.map(term => `<option value="${term.installments}">${term.installments}x ${term.rateBasisPoints ? "com juros" : "sem juros"}</option>`).join("")}</select><output aria-live="polite"></output></section>`;
+      detailNode.querySelector(".detail-pricebox").insertAdjacentHTML("afterend", selection);
+      const picker = detailNode.querySelector(".installment-picker");
+      const count = picker.querySelector("select");
+      const result = picker.querySelector("output");
+      const update = () => {
+        const term = terms.find(entry => entry.installments === Number(count.value)) || terms[0];
+        result.textContent = `${term.installments}x de ${money(term.installmentCents)} ${term.rateBasisPoints ? "com juros" : "sem juros"} · Total ${money(term.totalCents)}`;
+      };
+      count.value = String(terms.at(-1).installments);
+      count.addEventListener("change", update);
+      update();
+    }
     const detailTags = detailNode.querySelector(".detail-copy .tags");
     detailTags.querySelector("span").textContent = `📱 ${displayCondition(item.purchaseKind)}`;
     if (item.storage) detailTags.insertAdjacentHTML("beforeend", `<span>💾 ${esc(formatCapacity(item.storage))}</span>`);

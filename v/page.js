@@ -162,11 +162,17 @@
     let pinchStart = 0;
     let pinchBase = 1;
     let lastTap = 0;
+    let panX = 0, panY = 0, panTouch = null, suppressViewerClickUntil = 0;
     const clampZoom = value => Math.min(3, Math.max(1, value));
     const applyZoom = (value, origin) => {
       zoomLevel = clampZoom(value);
       if (origin) mainImage.style.transformOrigin = origin;
-      mainImage.style.transform = `scale(${zoomLevel})`;
+      if (zoomLevel === 1) panX = panY = 0;
+      const maxPanX = (zoomLevel - 1) * zoom.clientWidth / 2;
+      const maxPanY = (zoomLevel - 1) * zoom.clientHeight / 2;
+      panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
+      panY = Math.max(-maxPanY, Math.min(maxPanY, panY));
+      mainImage.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
       zoom.classList.toggle("is-zoomed", zoomLevel > 1);
       zoomOutput.value = `${Math.round(zoomLevel * 100)}%`;
     };
@@ -178,30 +184,46 @@
     zoom.addEventListener("dblclick", () => applyZoom(zoomLevel > 1 ? 1 : 2));
     zoom.addEventListener("touchstart", event => {
       if (event.touches.length === 2) {
+        panTouch = null;
+        lastTap = 0;
         pinchStart = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
         pinchBase = zoomLevel;
       } else if (event.touches.length === 1) {
+        panTouch = { x: event.touches[0].clientX, y: event.touches[0].clientY };
         const now = Date.now();
-        if (now - lastTap < 320) applyZoom(zoomLevel > 1 ? 1 : 2);
+        if (now - lastTap < 320) { applyZoom(zoomLevel > 1 ? 1 : 2); suppressViewerClickUntil = now + 500; }
         lastTap = now;
       }
     }, { passive:true });
     zoom.addEventListener("touchmove", event => {
-      if (event.touches.length !== 2 || !pinchStart) return;
-      event.preventDefault();
-      const box = zoom.getBoundingClientRect();
-      const centerX = (event.touches[0].clientX + event.touches[1].clientX) / 2;
-      const centerY = (event.touches[0].clientY + event.touches[1].clientY) / 2;
-      const distance = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
-      applyZoom(pinchBase * distance / pinchStart, `${((centerX-box.left)/box.width)*100}% ${((centerY-box.top)/box.height)*100}%`);
+      if (event.touches.length === 2 && pinchStart) {
+        event.preventDefault();
+        suppressViewerClickUntil = Date.now() + 500;
+        const box = zoom.getBoundingClientRect();
+        const centerX = (event.touches[0].clientX + event.touches[1].clientX) / 2;
+        const centerY = (event.touches[0].clientY + event.touches[1].clientY) / 2;
+        const distance = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
+        applyZoom(pinchBase * distance / pinchStart, `${((centerX-box.left)/box.width)*100}% ${((centerY-box.top)/box.height)*100}%`);
+      } else if (event.touches.length === 1 && zoomLevel > 1 && panTouch) {
+        event.preventDefault();
+        suppressViewerClickUntil = Date.now() + 500;
+        panX += event.touches[0].clientX - panTouch.x;
+        panY += event.touches[0].clientY - panTouch.y;
+        panTouch = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+        applyZoom(zoomLevel);
+      }
     }, { passive:false });
-    zoom.addEventListener("touchend", event => { if (event.touches.length < 2) pinchStart = 0; });
+    zoom.addEventListener("touchend", event => {
+      if (event.touches.length < 2) pinchStart = 0;
+      panTouch = event.touches.length === 1 ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
+    });
     const openPhotoViewer = () => {
       closePhotoViewer();
       let index = Math.max(0, images.findIndex(source => new URL(imageUrl(source), location.href).href === mainImage.src));
       let level = 1, panX = 0, panY = 0, pointerStart = null, pinchDistance = 0, pinchLevel = 1;
       const viewer = document.createElement("div");
       viewer.className = "photo-viewer";
+      viewer.classList.toggle("single-photo", images.length < 2);
       viewer.setAttribute("role", "dialog");
       viewer.setAttribute("aria-modal", "true");
       viewer.setAttribute("aria-label", `Fotos de ${item.title}`);
@@ -245,7 +267,7 @@
       show(0);
       viewer.querySelector('[data-action="close"]').focus();
     };
-    zoom.addEventListener("click", event => { if (!event.target.closest(".zoom-controls")) openPhotoViewer(); });
+    zoom.addEventListener("click", event => { if (Date.now() >= suppressViewerClickUntil && !event.target.closest(".zoom-controls")) openPhotoViewer(); });
     detailNode.querySelector(".share-product").addEventListener("click", async () => { const url = catalogShareUrl(item); const title = `${item.title} — Vitrine ${catalog.storeName}`; const text = `Confira este aparelho na vitrine de ${catalog.storeName}.`; try { if (navigator.share) await navigator.share(shareContent(title,text,url)); else await copyShare(title,text,url); } catch {} });
   }
   function render() {

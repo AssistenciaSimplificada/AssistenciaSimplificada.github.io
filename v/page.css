@@ -23,6 +23,7 @@ body.detail-open{overflow:hidden}.detail{position:fixed;z-index:20;inset:0;overf
 .installment-picker{display:grid;gap:8px;margin:10px 0 14px;padding:14px;border:1px solid #dce9f5;border-radius:9px;background:#fff}.installment-picker label{color:#334b5e;font-size:.78rem;font-weight:750}.installment-picker select{width:100%;min-height:42px;padding:8px 10px;border:1px solid #cbd8e4;border-radius:8px;background:#fff;color:#26333f;font:inherit}.installment-picker output{color:#26333f;font-size:.8rem;font-weight:700}
 .facts strong{white-space:pre-line}
 .payjo-card-note{display:block;margin-top:8px;color:#395777;font-size:.7rem;font-weight:700}.payjo-box{display:grid;gap:4px;margin:10px 0 14px;padding:13px 14px;border:1px solid #dce9f5;border-radius:9px;background:#f7fbff}.payjo-box strong{color:#254764;font-size:.8rem}.payjo-box span{color:var(--muted);font-size:.72rem;line-height:1.45}
+.hero .catalog-mode[hidden]{display:none}
 .facts{gap:10px}.facts div{min-width:0;padding:14px 15px;border-color:#e2eaf1;background:#f8fafc}.facts .key-fact{background:#f4faff;border-color:#d8eaf8}.facts small{font-size:.73rem;font-weight:700}.facts strong{display:block;overflow-wrap:anywhere;font-size:.9rem}
 .best-seller{overflow:hidden}.best-thumb{flex-shrink:0}.best-copy span{line-height:1.4}
 @media(max-width:760px){.card .picture{height:225px}.card-payment .price{font-size:1.31rem}.best-seller{align-items:center}}

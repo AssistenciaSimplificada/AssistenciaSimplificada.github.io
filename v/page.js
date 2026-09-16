@@ -24,6 +24,9 @@
   const offerPercent = item => item.discountPriceCents && Number(item.priceCents) > Number(item.discountPriceCents) ? Math.round((1 - Number(item.discountPriceCents) / Number(item.priceCents)) * 100) : 0;
   const slug = value => String(value || "aparelho").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 64) || "aparelho";
   const productRouteKey = item => `${slug(item.title)}--${String(item.code || "item").slice(-6).toLowerCase()}`;
+  const catalogShareUrl = item => /^[A-Za-z0-9_-]{12}$/.test(String(catalog?.storeCode || "")) && (!item || /^[A-Za-z0-9_-]{10}$/.test(String(item.code || "")))
+    ? `${API}/share/${catalog.storeCode}${item ? `/${item.code}` : ""}`
+    : location.href;
   const availabilityLabel = item => item.availability === "order" ? "Sob encomenda" : item.availability === "unavailable" ? "Indisponível" : "Pronta entrega";
   const availabilityIcon = item => item.availability === "order" ? "🚚" : item.availability === "unavailable" ? "•" : "✓";
   const shareContent = (title, text, url) => ({ title, text, url });
@@ -181,7 +184,7 @@
       applyZoom(pinchBase * distance / pinchStart, `${((centerX-box.left)/box.width)*100}% ${((centerY-box.top)/box.height)*100}%`);
     }, { passive:false });
     zoom.addEventListener("touchend", event => { if (event.touches.length < 2) pinchStart = 0; });
-    detailNode.querySelector(".share-product").addEventListener("click", async () => { const url = location.href; const title = `${item.title} — Vitrine ${catalog.storeName}`; const text = `Confira este aparelho na vitrine de ${catalog.storeName}.`; try { if (navigator.share) await navigator.share(shareContent(title,text,url)); else await copyShare(title,text,url); } catch {} });
+    detailNode.querySelector(".share-product").addEventListener("click", async () => { const url = catalogShareUrl(item); const title = `${item.title} — Vitrine ${catalog.storeName}`; const text = `Confira este aparelho na vitrine de ${catalog.storeName}.`; try { if (navigator.share) await navigator.share(shareContent(title,text,url)); else await copyShare(title,text,url); } catch {} });
   }
   function render() {
     if (!catalog) return;
@@ -205,6 +208,6 @@
   searchNode.addEventListener("input", renderList); kindNode.addEventListener("change", renderList); availabilityNode.addEventListener("change", renderList); sortNode.addEventListener("change", renderList); window.addEventListener("hashchange", render);
   detailNode.addEventListener("click", event => { if (event.target === detailNode) closeDetail(); });
   document.addEventListener("keydown", event => { if (event.key === "Escape" && !detailNode.hidden) closeDetail(); });
-  document.querySelector("#share").addEventListener("click", async () => { const title = `Vitrine — ${catalog?.storeName || "Loja"}`; const text = `Confira os aparelhos disponíveis na vitrine de ${catalog?.storeName || "nossa loja"}.`; try { if (navigator.share) await navigator.share(shareContent(title,text,location.href)); else await copyShare(title,text,location.href); } catch {} });
+  document.querySelector("#share").addEventListener("click", async () => { const title = `Vitrine — ${catalog?.storeName || "Loja"}`; const text = `Confira os aparelhos disponíveis na vitrine de ${catalog?.storeName || "nossa loja"}.`; const url = catalogShareUrl(); try { if (navigator.share) await navigator.share(shareContent(title,text,url)); else await copyShare(title,text,url); } catch {} });
   load().catch(error => { statusNode.textContent = error.message === "link_invalid" ? "Este endereço de vitrine está incompleto." : "Esta vitrine não está disponível no momento."; catalogNode.innerHTML = '<div class="empty"><h2>Vitrine indisponível</h2><p>Peça à loja um novo endereço.</p></div>'; });
 })();

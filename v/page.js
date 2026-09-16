@@ -10,6 +10,12 @@
   const sortNode = document.querySelector("#sort");
   const bestSellerNode = document.querySelector("#best-seller");
   let catalog = null;
+  let activePhotoViewer = null;
+  const closePhotoViewer = () => {
+    activePhotoViewer?.remove();
+    activePhotoViewer = null;
+    document.body.classList.remove("photo-viewer-open");
+  };
   const money = value => new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" }).format(Number(value || 0) / 100);
   const salePrice = item => Number(item.discountPriceCents || item.priceCents);
   const cashPrice = item => Number(item.cashDiscountBasisPoints || 0) > 0 ? Number(item.cashPriceCents || salePrice(item)) : salePrice(item);
@@ -84,16 +90,18 @@
     return items.sort((a,b) => sortNode.value === "lowest" ? salePrice(a)-salePrice(b) : sortNode.value === "highest" ? salePrice(b)-salePrice(a) : sortNode.value === "recent" ? b.updatedAt.localeCompare(a.updatedAt) : availabilityRank(a)-availabilityRank(b) || Number(b.salesCount || 0)-Number(a.salesCount || 0) || Number(b.featured)-Number(a.featured) || b.updatedAt.localeCompare(a.updatedAt));
   }
   function renderList() {
+    closePhotoViewer();
     detailNode.hidden = true; document.body.classList.remove("detail-open"); catalogNode.hidden = false; bestSellerNode.hidden = !catalog.items.length; document.querySelector(".toolbar").hidden = false;
     const items = filtered(); const availableCount = items.filter(item => item.availability !== "unavailable").length; const unavailableCount = items.length - availableCount; statusNode.textContent = `${availableCount} aparelho${availableCount === 1 ? "" : "s"} disponível${availableCount === 1 ? "" : "is"}${unavailableCount ? ` · ${unavailableCount} indisponível${unavailableCount === 1 ? "" : "is"}` : ""}`;
     catalogNode.innerHTML = items.length ? items.map(card).join("") : '<div class="empty"><h2>Nenhum aparelho encontrado</h2><p>Tente outra busca ou fale com a loja.</p></div>';
     catalogNode.querySelectorAll(".card").forEach(node => {
       const item = items.find(entry => entry.code === node.dataset.code);
-      if (item?.purchaseKind === "Novo") node.querySelector(".card-payment")?.insertAdjacentHTML("beforeend", '<small class="payjo-card-note">🧾 Boleto parcelado via PayJo · consulte condições</small>');
+      if (item?.purchaseKind === "Novo") node.querySelector(".card-payment")?.insertAdjacentHTML("beforeend", '<small class="payjo-card-note">🧾 Boleto parcelado via PayJoy · consulte condições</small>');
     });
     bindCards();
   }
   function closeDetail() {
+    closePhotoViewer();
     location.hash = catalog.storeCode;
   }
   function renderDetail(item) {
@@ -111,7 +119,7 @@
     }
     if (item.purchaseKind === "Novo") {
       const anchor = detailNode.querySelector(".payment-box") || detailNode.querySelector(".detail-pricebox");
-      anchor.insertAdjacentHTML("afterend", '<section class="payjo-box"><strong>🧾 Parcelamento no boleto via PayJo</strong><span>Disponível para aparelhos novos. Consulte prazos e condições diretamente com a loja.</span></section>');
+      anchor.insertAdjacentHTML("afterend", '<section class="payjo-box"><strong>🧾 Parcelamento no boleto via PayJoy</strong><span>Disponível para aparelhos novos. Consulte prazos e condições diretamente com a loja.</span></section>');
     }
     const terms = item.acceptedPaymentMethods?.includes("Cartão de crédito") ? installmentOptions(item) : [];
     if (terms.length > 1) {
@@ -148,6 +156,7 @@
     closeButton.addEventListener("click", closeDetail); closeButton.focus();
     const mainImage = detailNode.querySelector(".detail-gallery .picture img");
     const zoom = detailNode.querySelector(".zoomable");
+    zoom.querySelector(".zoom-hint").textContent = "Toque na foto para ampliar";
     const zoomOutput = zoom.querySelector("output");
     let zoomLevel = 1;
     let pinchStart = 0;
@@ -187,6 +196,56 @@
       applyZoom(pinchBase * distance / pinchStart, `${((centerX-box.left)/box.width)*100}% ${((centerY-box.top)/box.height)*100}%`);
     }, { passive:false });
     zoom.addEventListener("touchend", event => { if (event.touches.length < 2) pinchStart = 0; });
+    const openPhotoViewer = () => {
+      closePhotoViewer();
+      let index = Math.max(0, images.findIndex(source => new URL(imageUrl(source), location.href).href === mainImage.src));
+      let level = 1, panX = 0, panY = 0, pointerStart = null, pinchDistance = 0, pinchLevel = 1;
+      const viewer = document.createElement("div");
+      viewer.className = "photo-viewer";
+      viewer.setAttribute("role", "dialog");
+      viewer.setAttribute("aria-modal", "true");
+      viewer.setAttribute("aria-label", `Fotos de ${item.title}`);
+      viewer.innerHTML = '<div class="photo-viewer-toolbar"><span class="photo-viewer-count" aria-live="polite"></span><button type="button" data-action="close" aria-label="Fechar foto">×</button></div><div class="photo-viewer-stage"><button type="button" data-action="previous" aria-label="Foto anterior">‹</button><img alt=""><button type="button" data-action="next" aria-label="Próxima foto">›</button></div><div class="photo-viewer-controls"><button type="button" data-action="out" aria-label="Diminuir foto ampliada">−</button><output aria-live="polite">100%</output><button type="button" data-action="in" aria-label="Ampliar foto ampliada">+</button></div>';
+      const stage = viewer.querySelector(".photo-viewer-stage");
+      const photo = stage.querySelector("img");
+      const count = viewer.querySelector(".photo-viewer-count");
+      const output = viewer.querySelector("output");
+      const apply = () => {
+        const maxPanX = Math.max(0, (level - 1) * stage.clientWidth / 2);
+        const maxPanY = Math.max(0, (level - 1) * stage.clientHeight / 2);
+        panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
+        panY = Math.max(-maxPanY, Math.min(maxPanY, panY));
+        photo.style.transform = `translate(${panX}px, ${panY}px) scale(${level})`;
+        output.value = `${Math.round(level * 100)}%`;
+      };
+      const setZoom = value => { level = Math.max(1, Math.min(4, value)); if (level === 1) panX = panY = 0; apply(); };
+      const show = offset => {
+        index = (index + offset + images.length) % images.length;
+        photo.src = imageUrl(images[index]); photo.alt = `${item.title}, foto ${index + 1} de ${images.length}`;
+        count.textContent = `${index + 1} de ${images.length}`;
+        setZoom(1);
+      };
+      viewer.querySelector('[data-action="close"]').addEventListener("click", closePhotoViewer);
+      viewer.querySelector('[data-action="previous"]').addEventListener("click", () => show(-1));
+      viewer.querySelector('[data-action="next"]').addEventListener("click", () => show(1));
+      viewer.querySelector('[data-action="out"]').addEventListener("click", () => setZoom(level - .5));
+      viewer.querySelector('[data-action="in"]').addEventListener("click", () => setZoom(level + .5));
+      viewer.addEventListener("click", event => { if (event.target === viewer) closePhotoViewer(); });
+      stage.addEventListener("dblclick", event => { if (event.target === photo) setZoom(level > 1 ? 1 : 2); });
+      stage.addEventListener("pointerdown", event => { if (event.target !== photo) return; pointerStart = { x: event.clientX, y: event.clientY, panX, panY }; photo.setPointerCapture(event.pointerId); });
+      stage.addEventListener("pointermove", event => { if (!pointerStart || level === 1 || pinchDistance) return; panX = pointerStart.panX + event.clientX - pointerStart.x; panY = pointerStart.panY + event.clientY - pointerStart.y; apply(); });
+      stage.addEventListener("pointerup", event => { if (!pointerStart) return; const dx = event.clientX - pointerStart.x; const dy = event.clientY - pointerStart.y; if (level === 1 && Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) show(dx < 0 ? 1 : -1); pointerStart = null; });
+      stage.addEventListener("pointercancel", () => { pointerStart = null; });
+      stage.addEventListener("touchstart", event => { if (event.touches.length === 2) { pinchDistance = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY); pinchLevel = level; pointerStart = null; } }, { passive: true });
+      stage.addEventListener("touchmove", event => { if (event.touches.length !== 2 || !pinchDistance) return; event.preventDefault(); const distance = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY); setZoom(pinchLevel * distance / pinchDistance); }, { passive: false });
+      stage.addEventListener("touchend", event => { if (event.touches.length < 2) pinchDistance = 0; });
+      document.body.append(viewer);
+      document.body.classList.add("photo-viewer-open");
+      activePhotoViewer = viewer;
+      show(0);
+      viewer.querySelector('[data-action="close"]').focus();
+    };
+    zoom.addEventListener("click", event => { if (!event.target.closest(".zoom-controls")) openPhotoViewer(); });
     detailNode.querySelector(".share-product").addEventListener("click", async () => { const url = catalogShareUrl(item); const title = `${item.title} — Vitrine ${catalog.storeName}`; const text = `Confira este aparelho na vitrine de ${catalog.storeName}.`; try { if (navigator.share) await navigator.share(shareContent(title,text,url)); else await copyShare(title,text,url); } catch {} });
   }
   function render() {
@@ -211,7 +270,12 @@
   }
   searchNode.addEventListener("input", renderList); kindNode.addEventListener("change", renderList); availabilityNode.addEventListener("change", renderList); sortNode.addEventListener("change", renderList); window.addEventListener("hashchange", render);
   detailNode.addEventListener("click", event => { if (event.target === detailNode) closeDetail(); });
-  document.addEventListener("keydown", event => { if (event.key === "Escape" && !detailNode.hidden) closeDetail(); });
+  document.addEventListener("keydown", event => {
+    if (activePhotoViewer && event.key === "Escape") { closePhotoViewer(); return; }
+    if (activePhotoViewer && event.key === "ArrowLeft") activePhotoViewer.querySelector('[data-action="previous"]').click();
+    if (activePhotoViewer && event.key === "ArrowRight") activePhotoViewer.querySelector('[data-action="next"]').click();
+    if (event.key === "Escape" && !detailNode.hidden) closeDetail();
+  });
   document.querySelector("#share").addEventListener("click", async () => { const title = `Vitrine — ${catalog?.storeName || "Loja"}`; const text = `Confira os aparelhos disponíveis na vitrine de ${catalog?.storeName || "nossa loja"}.`; const url = catalogShareUrl(); try { if (navigator.share) await navigator.share(shareContent(title,text,url)); else await copyShare(title,text,url); } catch {} });
   load().catch(error => { statusNode.textContent = error.message === "link_invalid" ? "Este endereço de vitrine está incompleto." : "Esta vitrine não está disponível no momento."; catalogNode.innerHTML = '<div class="empty"><h2>Vitrine indisponível</h2><p>Peça à loja um novo endereço.</p></div>'; });
 })();

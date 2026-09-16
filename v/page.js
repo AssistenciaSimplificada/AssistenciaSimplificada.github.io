@@ -8,6 +8,9 @@
   const kindNode = document.querySelector("#kind");
   const availabilityNode = document.querySelector("#availability");
   const sortNode = document.querySelector("#sort");
+  const mobileSearchNode = document.querySelector("#mobile-search");
+  const mobileSortNode = document.querySelector("#mobile-sort");
+  const mobileFilterNodes = [...document.querySelectorAll(".mobile-filter-strip > button")];
   const bestSellerNode = document.querySelector("#best-seller");
   let catalog = null;
   let activePhotoViewer = null;
@@ -100,6 +103,7 @@
     });
     bindCards();
   }
+  const updateMobileFilterState = () => mobileFilterNodes.forEach(button => button.classList.toggle("active", button.dataset.kind === kindNode.value && button.dataset.availability === availabilityNode.value));
   function closeDetail() {
     closePhotoViewer();
     location.hash = catalog.storeCode;
@@ -282,15 +286,21 @@
     const [storeCode] = location.hash.slice(1).split("/");
     if (!storeCode || storeCode === demoCatalog.storeCode) {
       catalog = demoCatalog;
-      applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.querySelector("#status").textContent = "Mostruário demonstrativo · dados ilustrativos"; document.querySelector("#catalog-mode").hidden = false; document.querySelector("#hero-description").textContent = "Conheça a experiência da vitrine pública. Os aparelhos abaixo são exemplos e não representam estoque real."; document.title = "Mostruário de vitrine — Assistência Simplificada"; renderBestSeller(); render(); return;
+      applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#store-subtitle").textContent = "Demonstração · dados ilustrativos"; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.querySelector("#status").textContent = "Mostruário demonstrativo · dados ilustrativos"; document.querySelector("#catalog-mode").hidden = false; document.querySelector("#hero-description").textContent = "Conheça a experiência da vitrine pública. Os aparelhos abaixo são exemplos e não representam estoque real."; document.title = "Mostruário de vitrine — Assistência Simplificada"; renderBestSeller(); render(); return;
     }
     if (!/^[A-Za-z0-9_-]{12}$/.test(storeCode || "")) throw new Error("link_invalid");
     const response = await fetch(`${API}/public/${encodeURIComponent(storeCode)}?v=${Date.now()}`, { cache: "no-store" });
     const body = await response.json();
     if (!response.ok || !body.catalog) throw new Error("not_found");
-    catalog = body.catalog; document.querySelector("#catalog-mode").hidden = true; document.querySelector("#hero-description").textContent = "Consulte os modelos disponíveis e chame nossa equipe para confirmar a compra."; applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.title = `Vitrine — ${catalog.storeName}`; renderBestSeller(); render();
+    catalog = body.catalog; document.querySelector("#catalog-mode").hidden = true; document.querySelector("#store-subtitle").textContent = "Catálogo de aparelhos"; document.querySelector("#hero-description").textContent = "Consulte os modelos disponíveis e chame nossa equipe para confirmar a compra."; applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.title = `Vitrine — ${catalog.storeName}`; renderBestSeller(); render();
   }
-  searchNode.addEventListener("input", renderList); kindNode.addEventListener("change", renderList); availabilityNode.addEventListener("change", renderList); sortNode.addEventListener("change", renderList); window.addEventListener("hashchange", render);
+  searchNode.addEventListener("input", () => { mobileSearchNode.value = searchNode.value; renderList(); });
+  mobileSearchNode.addEventListener("input", () => { searchNode.value = mobileSearchNode.value; renderList(); });
+  kindNode.addEventListener("change", () => { updateMobileFilterState(); renderList(); }); availabilityNode.addEventListener("change", () => { updateMobileFilterState(); renderList(); });
+  sortNode.addEventListener("change", () => { mobileSortNode.value = sortNode.value; renderList(); }); mobileSortNode.addEventListener("change", () => { sortNode.value = mobileSortNode.value; renderList(); });
+  mobileFilterNodes.forEach(button => button.addEventListener("click", () => { kindNode.value = button.dataset.kind; availabilityNode.value = button.dataset.availability; updateMobileFilterState(); renderList(); }));
+  let scrollFrame = 0; window.addEventListener("scroll", () => { if (scrollFrame) return; scrollFrame = requestAnimationFrame(() => { document.querySelector(".topbar").classList.toggle("is-condensed", scrollY > 90); scrollFrame = 0; }); }, { passive:true });
+  window.addEventListener("hashchange", render);
   detailNode.addEventListener("click", event => { if (event.target === detailNode) closeDetail(); });
   document.addEventListener("keydown", event => {
     if (activePhotoViewer && event.key === "Escape") { closePhotoViewer(); return; }

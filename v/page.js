@@ -280,7 +280,7 @@
   }
   async function load() {
     const [storeCode] = location.hash.slice(1).split("/");
-    if (!storeCode) {
+    if (!storeCode || storeCode === demoCatalog.storeCode) {
       catalog = demoCatalog;
       applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.querySelector("#status").textContent = "Mostruário demonstrativo · dados ilustrativos"; document.querySelector("#catalog-mode").hidden = false; document.querySelector("#hero-description").textContent = "Conheça a experiência da vitrine pública. Os aparelhos abaixo são exemplos e não representam estoque real."; document.title = "Mostruário de vitrine — Assistência Simplificada"; renderBestSeller(); render(); return;
     }

@@ -16,7 +16,7 @@
   const percent = basisPoints => `${new Intl.NumberFormat("pt-BR", { maximumFractionDigits:2 }).format(Number(basisPoints || 0) / 100)}%`;
   const priceHtml = item => item.discountPriceCents ? `<small class="previous-price">${money(item.priceCents)}</small><div class="price">${money(item.discountPriceCents)}</div>` : `<div class="price">${money(item.priceCents)}</div>`;
   const esc = value => String(value || "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
-  const imageUrl = value => `${API}${String(value || "").startsWith("/") ? value : `/${value}`}`;
+  const imageUrl = value => String(value || "").startsWith("/v/") ? String(value) : `${API}${String(value || "").startsWith("/") ? value : `/${value}`}`;
   const rgb = hex => [1,3,5].map(index => Number.parseInt(hex.slice(index,index + 2),16));
   const formatCapacity = value => /^\d+$/.test(String(value || "").trim()) ? `${value} GB` : String(value || "");
   const formatBattery = value => /^\d+$/.test(String(value || "").trim()) ? `${value}%` : String(value || "");
@@ -27,6 +27,14 @@
   const availabilityLabel = item => item.availability === "order" ? "Sob encomenda" : "Pronta entrega";
   const shareContent = (title, text, url) => ({ title, text, url });
   const copyShare = async (title, text, url) => navigator.clipboard.writeText(`${title}\n${text}\n${url}`);
+  const demoCatalog = {
+    storeCode: "mostruario", storeName: "Mostruário Assistência Simplificada", storePhone: "", primaryColor: "#176bb5", logoUrl: "", updatedAt: new Date().toISOString(),
+    items: [
+      { code: "demo-iphone", title: "Apple iPhone 15", description: "Exemplo de anúncio com fotos, condição, pagamento e disponibilidade.", brand: "Apple", model: "iPhone 15", deviceType: "Celular", purchaseKind: "Novo", condition: "Novo", color: "Preto", storage: "128", ram: "6", batteryHealth: "100", warranty: "90 dias", priceCents: 399900, discountPriceCents: 379900, conditionDetails: "Exemplo de descrição do aparelho.", includedItems: "Caixa e cabo", acceptedPaymentMethods: ["Pix", "Cartão de crédito"], cashDiscountBasisPoints: 500, cashDiscountMethods: ["Pix"], cashPriceCents: 360905, paymentMachineName: "Padrão", interestFreeInstallments: 10, maxInstallments: 12, availability: "ready", orderLeadTime: "", specsUrl: "https://www.apple.com/br/iphone-15/specs/", interestInstallment: null, featured: true, salesCount: 12, imageUrls: ["/v/demo-iphone.svg"], updatedAt: "2026-09-16T12:00:00.000Z" },
+      { code: "demo-samsung", title: "Samsung Galaxy A55", description: "Modelo ilustrativo para mostrar como o catálogo apresenta um aparelho.", brand: "Samsung", model: "Galaxy A55", deviceType: "Celular", purchaseKind: "Novo", condition: "Novo", color: "Azul", storage: "256", ram: "8", batteryHealth: "100", warranty: "12 meses", priceCents: 229900, discountPriceCents: null, conditionDetails: "Exemplo de descrição do aparelho.", includedItems: "Caixa, cabo e nota", acceptedPaymentMethods: ["Pix", "Dinheiro", "Cartão de crédito"], cashDiscountBasisPoints: 0, cashDiscountMethods: [], cashPriceCents: 229900, paymentMachineName: "Padrão", interestFreeInstallments: 10, maxInstallments: 12, availability: "order", orderLeadTime: "Consulte o prazo com a loja", specsUrl: "https://www.samsung.com/br/smartphones/galaxy-a/galaxy-a55-5g/", interestInstallment: null, featured: false, salesCount: 5, imageUrls: ["/v/demo-samsung.svg"], updatedAt: "2026-09-15T12:00:00.000Z" },
+      { code: "demo-motorola", title: "Motorola Edge 50", description: "Mostruário de vitrine com condição, memória e forma de pagamento.", brand: "Motorola", model: "Edge 50", deviceType: "Celular", purchaseKind: "Usado", condition: "Seminovo", color: "Verde", storage: "256", ram: "8", batteryHealth: "94", warranty: "90 dias", priceCents: 189900, discountPriceCents: 174900, conditionDetails: "Exemplo de detalhes do estado.", includedItems: "Aparelho e cabo", acceptedPaymentMethods: ["Pix", "Cartão de crédito"], cashDiscountBasisPoints: 300, cashDiscountMethods: ["Pix"], cashPriceCents: 169653, paymentMachineName: "Padrão", interestFreeInstallments: 6, maxInstallments: 10, availability: "ready", orderLeadTime: "", specsUrl: "https://www.motorola.com.br/", interestInstallment: null, featured: false, salesCount: 3, imageUrls: ["/v/demo-motorola.svg"], updatedAt: "2026-09-14T12:00:00.000Z" },
+    ],
+  };
   const factIcons = { "Condição":"📱", "Armazenamento":"💾", "Cor":"🎨", "Garantia":"🛡️", "Bateria":"🔋", "Memória RAM":"🧠", "Itens inclusos":"📦", "Detalhes do estado":"🔎" };
   function applyStoreBranding() {
     const primary = /^#[0-9a-f]{6}$/i.test(catalog.primaryColor || "") ? catalog.primaryColor : "#E1BD00";
@@ -151,11 +159,15 @@
   }
   async function load() {
     const [storeCode] = location.hash.slice(1).split("/");
+    if (!storeCode) {
+      catalog = demoCatalog;
+      applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.querySelector("#status").textContent = "Mostruário demonstrativo · dados ilustrativos"; document.querySelector("#catalog-mode").hidden = false; document.querySelector("#hero-description").textContent = "Conheça a experiência da vitrine pública. Os aparelhos abaixo são exemplos e não representam estoque real."; document.title = "Mostruário de vitrine — Assistência Simplificada"; renderBestSeller(); render(); return;
+    }
     if (!/^[A-Za-z0-9_-]{12}$/.test(storeCode || "")) throw new Error("link_invalid");
     const response = await fetch(`${API}/public/${encodeURIComponent(storeCode)}`);
     const body = await response.json();
     if (!response.ok || !body.catalog) throw new Error("not_found");
-    catalog = body.catalog; applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.title = `Vitrine — ${catalog.storeName}`; renderBestSeller(); render();
+    catalog = body.catalog; document.querySelector("#catalog-mode").hidden = true; document.querySelector("#hero-description").textContent = "Consulte os modelos disponíveis e chame nossa equipe para confirmar a compra."; applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.title = `Vitrine — ${catalog.storeName}`; renderBestSeller(); render();
   }
   searchNode.addEventListener("input", renderList); kindNode.addEventListener("change", renderList); availabilityNode.addEventListener("change", renderList); sortNode.addEventListener("change", renderList); window.addEventListener("hashchange", render);
   detailNode.addEventListener("click", event => { if (event.target === detailNode) closeDetail(); });

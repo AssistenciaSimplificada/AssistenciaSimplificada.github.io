@@ -27,6 +27,8 @@ body.detail-open{overflow:hidden}.detail{position:fixed;z-index:20;inset:0;overf
 @media(max-width:760px){.best-price{grid-column:1 / -1;text-align:left}.best-seller button{grid-column:1 / -1;width:100%}}
 footer{display:grid;gap:6px;place-items:center}footer strong{color:#42586a;font-size:.68rem;font-weight:750}
 
+.hero .catalog-mode{display:inline-flex;margin-top:12px;padding:6px 9px;border:1px solid color-mix(in srgb,var(--store-contrast) 38%,transparent);border-radius:999px;color:var(--store-contrast);font-size:.68rem;letter-spacing:.02em;opacity:.95}
+
 /* Densidade e controles da vitrine */
 .summary{grid-template-columns:repeat(4,minmax(0,1fr))}
 .toolbar{grid-template-columns:minmax(260px,1fr) repeat(3,minmax(150px,180px))}

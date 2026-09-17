@@ -145,9 +145,9 @@ export const resourceGroups: ResourceGroup[] = [
     id: "operacao",
     kicker: "Oficina",
     title: "Técnicos, manutenção e peças",
-    summary: "Acompanhe o trabalho em andamento, o que aguarda análise e as peças que ainda precisam ser encontradas.",
+    summary: "Acompanhe a manutenção e encontre peças no estoque por modelo, com vínculo opcional ao orçamento.",
     icon: "bi-tools",
-    items: ["Agenda integrada à Visão geral com entradas, aprovações e retiradas", "Painel principal local e convite individual protegido por 24 horas", "Senha opcional de 4 a 12 dígitos, nunca incluída no link", "Resposta aplicada somente após revisão e preparada para envio ao cliente", "Ciclo de peças da procura ao recebimento, incompatibilidade ou devolução", "Estoque com custo, movimentação e reserva por orçamento"],
+    items: ["Agenda integrada à Visão geral com entradas, aprovações e retiradas", "Painel principal local e convite individual protegido por 24 horas", "Senha opcional de 4 a 12 dígitos, nunca incluída no link", "Resposta aplicada somente após revisão e preparada para envio ao cliente", "Ciclo de peças da procura ao recebimento, incompatibilidade ou devolução", "Estoque de peças dentro de Pesquisa de peças, com indicação por modelo no orçamento", "Vínculo opcional: reserva ao salvar, baixa ao iniciar manutenção e devolução automática no cancelamento"],
   },
   {
     id: "garantias",

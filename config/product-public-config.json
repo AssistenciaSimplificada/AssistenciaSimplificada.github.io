@@ -42,7 +42,7 @@
     "customerApi": "https://sqfnxcpjgzjtxuccbeci.supabase.co/functions/v1/customer-quote"
   },
   "productName": "Assistência Simplificada",
-  "version": "9.5.3",
+  "version": "9.5.4",
   "description": "Aplicativo multiempresa para orçamentos e ordens de serviço.",
   "authorName": "Gabriel Schmeisk"
 }

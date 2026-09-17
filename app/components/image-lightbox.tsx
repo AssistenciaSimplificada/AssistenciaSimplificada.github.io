@@ -56,8 +56,8 @@ export function ImageLightbox({ image, onClose }: { image: LightboxImage | null;
     <div className="lightbox" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <div ref={panelRef} className="lightbox-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descriptionId}>
         <button ref={closeRef} type="button" className="lightbox-close" aria-label="Fechar imagem" onClick={onClose}><i className="bi bi-x-lg" /></button>
-        <div className="lightbox-image"><Image src={image.src} width={1400} height={1000} alt={image.title} /></div>
-        <div className="lightbox-caption"><strong id={titleId}>{image.title}</strong><p id={descriptionId}>{image.description}</p></div>
+        <div className="lightbox-image"><Image src={image.src} width={2880} height={1800} unoptimized alt={image.title} /></div>
+        <div className="lightbox-caption"><strong id={titleId}>{image.title}</strong><p id={descriptionId}>{image.description}</p><a href={image.src} target="_blank" rel="noopener noreferrer">Ver imagem em resolução original</a></div>
       </div>
     </div>
   );

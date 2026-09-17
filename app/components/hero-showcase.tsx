@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { assetPath, PRODUCT } from "../../lib/site-data";
+import { assetPath, CURRENT_RELEASE, PRODUCT } from "../../lib/site-data";
 
 const scenes = [
   {
@@ -16,12 +16,12 @@ const scenes = [
   },
   {
     id: "atendimento",
-    label: "Atendimento",
+    label: "Atendimentos",
     icon: "bi-wrench-adjustable-circle",
-    src: "/assets/img/app/current/atendimento-detalhado.webp",
-    title: "Cada etapa ligada ao mesmo aparelho",
-    detail: "Serviços, equipe, valor, status, documentos e próximas ações.",
-    signal: "Fluxo e histórico preservados",
+    src: "/assets/img/app/current/atendimentos.webp",
+    title: "Histórico completo sem perder registros",
+    detail: "Busca, filtros, indicadores globais e páginas acessíveis em bases extensas.",
+    signal: "Consulta o banco completo",
   },
   {
     id: "orcamento",
@@ -63,6 +63,7 @@ export function HeroShowcase() {
   return (
     <section
       className="as-product-stage"
+      data-motion="hero-stage"
       aria-label="Telas reais do aplicativo"
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={() => setPaused(false)}
@@ -71,28 +72,33 @@ export function HeroShowcase() {
     >
       <div className="as-stage-bar">
         <span><i className="bi bi-windows" /> Aplicativo real</span>
-        <span className="as-stage-version">versão {PRODUCT.version}</span>
+        <span className="as-stage-version">versão {CURRENT_RELEASE.label} {CURRENT_RELEASE.version}</span>
       </div>
       <div className="as-stage-screen" data-scene={active.id}>
-        {scenes.map((scene) => (
-          <Image
-            key={scene.id}
-            className={scene.id === active.id ? "is-active" : ""}
-            src={assetPath(scene.src)}
-            width={1440}
-            height={900}
-            priority
-            sizes="(max-width: 991px) 100vw, 58vw"
-            alt={`Tela real da ${PRODUCT.name}: ${scene.label}`}
-          />
-        ))}
+        <Image
+          key={active.id}
+          className="is-active"
+          src={assetPath(active.src)}
+          width={2880}
+          height={1800}
+          unoptimized
+          priority={active.id === scenes[0].id}
+          loading={active.id === scenes[0].id ? "eager" : "lazy"}
+          sizes="(max-width: 991px) 100vw, 58vw"
+          alt={`Tela real da ${PRODUCT.name}: ${active.label}`}
+        />
+      </div>
+      <div className="as-whatsapp-proof" aria-hidden="true">
+        <span><i className="bi bi-whatsapp" /></span>
+        <div><small>Mensagem pronta para o cliente</small><strong>Olá, Carlos! O serviço foi concluído e seu aparelho está pronto.</strong></div>
+        <i className="bi bi-check2-circle" />
+      </div>
         <div className="as-screen-signal" aria-live="polite">
           <span>{active.signal}</span>
           <strong>{active.title}</strong>
           <small>{active.detail}</small>
+          <a href={assetPath(active.src)} target="_blank" rel="noopener noreferrer">Abrir captura em alta resolução</a>
         </div>
-        <div className="as-screen-scan" aria-hidden="true" />
-      </div>
       <div className="as-stage-tabs" role="tablist" aria-label="Escolha uma tela">
         {scenes.map((scene, index) => (
           <button

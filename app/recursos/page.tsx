@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { FeatureExplorer } from "../components/feature-explorer";
-import { ScrollMotion } from "../components/scroll-motion";
 import { SiteLink as Link } from "../components/site-link";
 import { PRODUCT, resourceGroups } from "../../lib/site-data";
 
@@ -8,11 +7,12 @@ export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: `Recursos da versão ${PRODUCT.version} | ${PRODUCT.name}`,
-  description: "Conheça orçamentos, técnicos, clientes, peças, estoque, garantias, documentos, automações, backup e segurança com telas reais do aplicativo.",
+  description: "Conheça orçamentos, agenda, técnicos, clientes, peças, aparelhos, vitrine, anotações, garantias, documentos, backup e segurança.",
   alternates: { canonical: "/recursos" },
 };
 
 const guideLinks: Record<string, string> = {
+  layouts: "layouts",
   orcamentos: "novo-orcamento",
   clientes: "clientes",
   operacao: "manutencao",
@@ -26,12 +26,11 @@ const guideLinks: Record<string, string> = {
 export default function RecursosPage() {
   return (
     <main className="as-resources-page">
-      <ScrollMotion />
       <header className="as-resource-intro">
         <div className="container" data-motion="signal">
           <span className="as-kicker"><i className="bi bi-grid-1x2" /> Versão {PRODUCT.version}</span>
           <h1>Uma assistência inteira, conectada pelo mesmo atendimento.</h1>
-          <p>Explore as áreas do aplicativo com capturas reais. Cada recurso abaixo existe na versão atual e foi conferido contra o fluxo instalado.</p>
+          <p>Explore as áreas do aplicativo com capturas da versão atual, em modo escuro e com dados fictícios.</p>
           <div className="as-hero-actions">
             <a className="btn btn-primary btn-lg" href="#explorar">Explorar recursos</a>
             <Link className="btn btn-outline-light btn-lg" href="/guia">Abrir o guia</Link>

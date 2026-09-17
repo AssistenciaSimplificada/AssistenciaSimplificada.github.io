@@ -41,7 +41,9 @@ async function resolvePublicFile(urlPath) {
 }
 
 createServer(async (request, response) => {
-  const file = await resolvePublicFile(request.url || "/");
+  let file;
+  try { file = await resolvePublicFile(request.url || "/"); }
+  catch { response.writeHead(400); response.end("Endereço inválido"); return; }
   const isNotFound = path.basename(file) === "404.html";
   response.writeHead(isNotFound ? 404 : 200, {
     "Content-Type": contentTypes.get(path.extname(file)) || "application/octet-stream",

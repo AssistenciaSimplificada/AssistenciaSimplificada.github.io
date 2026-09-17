@@ -7,7 +7,7 @@ const localConfigPath = path.join(root, "config", "product-public-config.json");
 const fallback = JSON.parse(fs.readFileSync(localConfigPath, "utf8"));
 const appRoot = path.resolve(
   process.env.ASSISTENCIA_APP_SOURCE ||
-    path.join(root, "..", "Assistencia-Simplificada-Source"),
+    path.join(root, "..", "Assistencia-Simplificada-Layout-Selecionavel"),
 );
 
 const readJson = (target) => JSON.parse(fs.readFileSync(target, "utf8"));
@@ -50,6 +50,13 @@ if (
     (supabaseUrl
       ? `${String(supabaseUrl).replace(/\/+$/, "")}/functions/v1/technician-quote`
       : fallback.urls.technicianApi);
+  const customerApi =
+    process.env.NEXT_PUBLIC_CUSTOMER_TRACKING_API_URL ||
+    (supabase?.customerTrackingApiUrl
+      ? `${String(supabase.customerTrackingApiUrl).replace(/\/+$/, "")}/functions/v1/customer-quote`
+      : supabaseUrl
+        ? `${String(supabaseUrl).replace(/\/+$/, "")}/functions/v1/customer-quote`
+      : fallback.urls.customerApi);
   generated = {
     ...shared,
     productName: metadata.productName,
@@ -61,6 +68,7 @@ if (
       officialWebsite:
         process.env.NEXT_PUBLIC_SITE_URL || shared.urls.officialWebsite,
       technicianApi,
+      customerApi,
     },
   };
 }
@@ -80,8 +88,14 @@ generated.urls.legacyPublicOrigins.forEach((origin, index) =>
 );
 const website = httpsUrl(generated.urls.officialWebsite, "urls.officialWebsite");
 const technicianApi = httpsUrl(generated.urls.technicianApi, "urls.technicianApi");
+const customerApi = httpsUrl(generated.urls.customerApi, "urls.customerApi");
 const technicianPortal = new URL(generated.urls.technicianPath, `${website}/`).toString();
+const customerPortal = new URL(
+  generated.urls.customerTrackingPath,
+  `${website}/`,
+).toString();
 const apiOrigin = new URL(technicianApi).origin;
+const customerApiOrigin = new URL(customerApi).origin;
 
 writeChanged(localConfigPath, `${JSON.stringify(generated, null, 2)}\n`);
 
@@ -100,6 +114,14 @@ writeChanged(
   path.join(root, "public", "tecnico", "config.js"),
   `window.__ASSISTENCIA_PUBLIC_CONFIG__ = Object.freeze(${JSON.stringify(technicianRuntime)});`,
 );
+const customerRuntime = {
+  apiUrl: customerApi,
+  productName: generated.productName,
+};
+writeChanged(
+  path.join(root, "public", "acompanhar", "config.js"),
+  `window.__ASSISTENCIA_CUSTOMER_CONFIG__ = Object.freeze(${JSON.stringify(customerRuntime)});`,
+);
 
 const template = fs.readFileSync(
   path.join(root, "public", "tecnico", "index.template.html"),
@@ -115,6 +137,29 @@ if (/{{[A-Z0-9_]+}}/.test(technicianHtml))
 writeChanged(
   path.join(root, "public", "tecnico", "index.html"),
   `<!-- ARQUIVO GERADO por tools/sync-public-config.mjs. -->\n${technicianHtml}`,
+);
+writeChanged(
+  path.join(root, "public", "t", "index.html"),
+  `<!-- ROTA CURTA GERADA por tools/sync-public-config.mjs. -->\n${technicianHtml}`,
+);
+
+const customerTemplate = fs.readFileSync(
+  path.join(root, "public", "acompanhar", "index.template.html"),
+  "utf8",
+);
+const customerHtml = customerTemplate
+  .replaceAll("{{PRODUCT_NAME}}", generated.productName)
+  .replaceAll("{{CUSTOMER_PORTAL_URL}}", customerPortal)
+  .replaceAll("{{CUSTOMER_API_ORIGIN}}", customerApiOrigin);
+if (/{{[A-Z0-9_]+}}/.test(customerHtml))
+  throw new Error("O template de acompanhamento contém marcadores não preenchidos.");
+writeChanged(
+  path.join(root, "public", "acompanhar", "index.html"),
+  `<!-- ARQUIVO GERADO por tools/sync-public-config.mjs. -->\n${customerHtml}`,
+);
+writeChanged(
+  path.join(root, "public", "a", "index.html"),
+  `<!-- ROTA CURTA GERADA por tools/sync-public-config.mjs. -->\n${customerHtml}`,
 );
 
 writeChanged(path.join(root, "public", "CNAME"), `${new URL(website).hostname}\n`);

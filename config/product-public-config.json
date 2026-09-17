@@ -26,7 +26,8 @@
   },
   "urls": {
     "officialWebsite": "https://assistenciasimplificada.site",
-    "technicianPath": "/tecnico/",
+    "technicianPath": "/t/",
+    "customerTrackingPath": "/a/",
     "documentationPath": "/guia",
     "supportPath": "/faq#suporte",
     "termsPath": "/termos",
@@ -37,10 +38,11 @@
     "creatorInstagram": "https://www.instagram.com/bielschmeisk/",
     "creatorInstagramHandle": "@bielschmeisk",
     "releaseRepository": "AssistenciaSimplificada/Orcamentos-Atualizacoes",
-    "technicianApi": "https://nbyezzdvxjcmlcejiiak.supabase.co/functions/v1/technician-quote"
+    "technicianApi": "https://nbyezzdvxjcmlcejiiak.supabase.co/functions/v1/technician-quote",
+    "customerApi": "https://sqfnxcpjgzjtxuccbeci.supabase.co/functions/v1/customer-quote"
   },
   "productName": "Assistência Simplificada",
-  "version": "9.1.5",
+  "version": "9.5.2",
   "description": "Aplicativo multiempresa para orçamentos e ordens de serviço.",
   "authorName": "Gabriel Schmeisk"
 }

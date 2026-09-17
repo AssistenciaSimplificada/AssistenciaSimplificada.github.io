@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import "./styles/bootstrap-icons-subset.css";
 import "./globals.css";
 import "./marketing-refresh.css";
 import { BackToTop } from "./components/back-to-top";
 import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
+import { ScrollMotion } from "./components/scroll-motion";
 import { PRODUCT, SITE_URL } from "../lib/site-data";
 import { SITE_COMMERCIAL_CONFIG } from "../lib/product-config";
 
@@ -103,5 +104,5 @@ const structuredData = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="pt-BR"><body><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} /><SiteHeader />{children}<SiteFooter /><BackToTop /></body></html>;
+  return <html lang="pt-BR"><body><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} /><SiteHeader /><ScrollMotion />{children}<SiteFooter /><BackToTop /></body></html>;
 }

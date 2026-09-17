@@ -5,6 +5,7 @@ import { useState } from "react";
 import { assetPath, resourceGroups } from "../../lib/site-data";
 
 const screenByResource: Record<string, string> = {
+  layouts: "/assets/img/app/current/escolha-layout.webp",
   orcamentos: "/assets/img/app/current/atendimento-detalhado.webp",
   clientes: "/assets/img/app/current/clientes.webp",
   operacao: "/assets/img/app/current/tecnicos.webp",
@@ -51,11 +52,12 @@ export function FeatureExplorer() {
             src={assetPath(screenByResource[active.id])}
             width={1440}
             height={900}
+            unoptimized
             loading="lazy"
             sizes="(max-width: 991px) 100vw, 52vw"
             alt={`Tela real do recurso ${active.title}`}
           />
-          <span><i className="bi bi-check2-circle" /> Interface real da versão atual</span>
+          <span><i className="bi bi-check2-circle" /> Interface estável · dados fictícios</span>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { SiteLink as Link } from "./site-link";
-import { assetPath, PRODUCT } from "../../lib/site-data";
+import { assetPath, CURRENT_RELEASE, PRODUCT } from "../../lib/site-data";
 
 export function SiteFooter() {
   const currentYear = new Date().getFullYear();
@@ -22,7 +22,7 @@ export function SiteFooter() {
               />
             </Link>
             <p>Orçamentos, bancada, peças, clientes, documentos, retirada e garantia conectados em um aplicativo Windows.</p>
-            <span className="version-chip">Site atualizado para {PRODUCT.version}</span>
+            <span className="version-chip">Versão {CURRENT_RELEASE.label} {PRODUCT.version} · imagens atuais</span>
           </div>
           <div><h2>Conheça</h2><Link href="/recursos">Recursos</Link><Link href="/planos">Planos</Link><Link href="/faq">Perguntas frequentes</Link></div>
           <div><h2>Aprenda</h2><Link href="/guia">Guia completo</Link><Link href="/guia#novo-orcamento">Criar orçamento</Link><Link href="/guia#automacoes">Automações e alertas</Link><Link href="/guia#backup">Backup e segurança</Link></div>

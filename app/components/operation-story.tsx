@@ -19,7 +19,7 @@ const stages = [
     number: "02",
     eyebrow: "Avaliar",
     title: "O técnico responde só o que precisa.",
-    text: "Convite individual válido por 8 horas, senha opcional e revogação automática após edição. Diagnóstico, resultado e múltiplas peças ou valores voltam para revisão da loja.",
+    text: "Convite individual válido por 24 horas, senha opcional e revogação após edição salva. A revisão atual pode gerar um novo link imediatamente; diagnóstico, resultado e múltiplas peças ou valores voltam para conferência da loja.",
     src: "/assets/img/app/current/tecnicos.webp",
     bullets: ["Senha de 4 a 12 dígitos", "Link temporário e revogável", "Resposta revisada pela loja"],
   },
@@ -85,6 +85,7 @@ export function OperationStory() {
               src={assetPath(stage.src)}
               width={1440}
               height={900}
+              unoptimized
               loading="lazy"
               sizes="(max-width: 991px) 100vw, 52vw"
               alt={`Tela real do fluxo: ${stage.eyebrow}`}

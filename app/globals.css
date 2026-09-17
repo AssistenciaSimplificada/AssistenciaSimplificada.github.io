@@ -347,3 +347,15 @@ h1 { max-width:13ch; margin:1rem 0 1.2rem; font-size:clamp(2.8rem,5.8vw,5.4rem);
   *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
   .motion-ready [data-reveal] { opacity:1; transform:none; }
 }
+
+/* Shared shell refresh: the internal pages use the same calm workshop palette as the home. */
+.site-header { background: rgba(7, 22, 28, .9); border-bottom-color: rgba(94, 212, 209, .2); box-shadow: 0 10px 35px rgba(4, 18, 22, .12); }
+.site-header .navbar { min-height: 78px; }
+.site-header .nav-link { border-radius: 10px; padding: .62rem .78rem; color: #d4e3e0; }
+.site-header .nav-link:hover, .site-header .nav-link.active { background: rgba(94, 212, 209, .1); color: #7be0d9; }
+.site-header .btn { border-radius: 11px; }
+.site-footer { background: #08191f; border-top-color: #23454b; }
+.footer-grid>div:first-child p { color: #9bb4b1; }
+.footer-grid>div:not(:first-child) a:hover { color: #70ddd5; }
+.version-chip { border-color: #31595c; color: #a9c4bf; }
+.back-to-top { border-color: #3d7778; background: #12383c; }

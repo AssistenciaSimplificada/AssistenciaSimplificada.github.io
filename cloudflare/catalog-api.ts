@@ -122,6 +122,7 @@ type CatalogItem = {
   model: string;
   deviceType: string;
   purchaseKind: "Novo" | "Usado";
+  payJoyEnabled?: boolean;
   condition: string;
   color: string;
   availableColors: string[];
@@ -196,6 +197,7 @@ const snapshot = (input: unknown): Omit<CatalogItem, "code" | "imageUrls"> => {
   const item = {
     title: clean(value.title, 120), description: cleanMultiline(value.description, 700),
     brand: clean(value.brand, 80), model: clean(value.model, 120), deviceType: clean(value.deviceType, 40),
+    payJoyEnabled: value.payJoyEnabled !== false,
     purchaseKind: value.purchaseKind === "Novo" ? "Novo" as const : "Usado" as const,
     condition: clean(value.condition, 100), color: clean(value.color, 80), availableColors: [...new Set((Array.isArray(value.availableColors) ? value.availableColors : [value.color]).map((entry) => clean(entry, 40)).filter(Boolean))].slice(0, 8), storage: clean(value.storage, 40),
     ram: clean(value.ram, 40), batteryHealth: clean(value.batteryHealth, 80), warranty: clean(value.warranty, 120),
@@ -203,8 +205,8 @@ const snapshot = (input: unknown): Omit<CatalogItem, "code" | "imageUrls"> => {
     conditionDetails: cleanMultiline(value.conditionDetails, 300), includedItems: cleanMultiline(value.includedItems, 240),
     acceptedPaymentMethods, cashDiscountBasisPoints, cashDiscountMethods, cashPriceCents,
     paymentMachineName: clean(value.paymentMachineName, 40), interestFreeInstallments, maxInstallments, interestInstallment: interestInstallments.at(-1) || null, interestInstallments,
-    availability: value.availability === "order" ? "order" as const : value.availability === "unavailable" ? "unavailable" as const : "ready" as const,
-    orderLeadTime: value.availability === "order" ? clean(value.orderLeadTime, 80) : "",
+    availability: value.purchaseKind === "Novo" && value.availability === "order" ? "order" as const : value.availability === "unavailable" ? "unavailable" as const : "ready" as const,
+    orderLeadTime: value.purchaseKind === "Novo" && value.availability === "order" ? clean(value.orderLeadTime, 80) : "",
     specsUrl: /^https:\/\/[A-Za-z0-9.-]+\/[A-Za-z0-9._~!$&'()*+,;=:@%/#?-]*$/.test(String(value.specsUrl || "")) ? String(value.specsUrl) : null,
     featured: value.featured === true,
     salesCount: Math.max(0, Math.min(1_000_000, Math.trunc(Number(value.salesCount) || 0))),
@@ -251,8 +253,8 @@ async function readManifest(env: Env, storeCode: string, storeName = ""): Promis
     item.availability !== "unavailable" || Date.parse(String(item.updatedAt || "")) >= recentUnavailableCutoff,
   ).map((item) => ({
     ...item,
-    availability: (item.availability === "order" ? "order" : item.availability === "unavailable" ? "unavailable" : "ready") as Manifest["items"][number]["availability"],
-    orderLeadTime: item.availability === "order" ? clean(item.orderLeadTime, 80) : "",
+    availability: (item.purchaseKind === "Novo" && item.availability === "order" ? "order" : item.availability === "unavailable" ? "unavailable" : "ready") as Manifest["items"][number]["availability"],
+    orderLeadTime: item.purchaseKind === "Novo" && item.availability === "order" ? clean(item.orderLeadTime, 80) : "",
     availableColors: Array.isArray(item.availableColors) && item.availableColors.length ? item.availableColors.slice(0, 8) : (item.color ? [item.color] : []),
   })) : [];
   return { storeCode, storeName: clean(parsed.storeName || storeName, 160), storePhone: clean(parsed.storePhone, 24), primaryColor: /^#[0-9a-f]{6}$/i.test(parsed.primaryColor || "") ? parsed.primaryColor : "#E1BD00", logoUrl: /^\/media\/[A-Za-z0-9_/-]+\.webp$/.test(parsed.logoUrl || "") ? parsed.logoUrl : "", updatedAt: parsed.updatedAt, items };

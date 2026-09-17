@@ -324,3 +324,18 @@ test("vitrine enquadra a foto inteira e apresenta dados claros sem tingir preço
   await expect(page.locator(".photo-viewer")).toHaveCount(0);
   await page.screenshot({ path: "test-results/vitrine-zoom-celular.png" });
 });
+
+test("PayJoy desativada desaparece do cartão e dos detalhes", async ({ page }) => {
+  await page.route("https://catalogo.assistenciasimplificada.site/public/**", route => route.fulfill({json:{catalog:{
+    storeCode:"TESTSTORE123",storeName:"Loja teste",storePhone:"",updatedAt:new Date().toISOString(),
+    items:[{code:"TESTPHONE1",title:"Celular novo",brand:"Teste",model:"Modelo",purchaseKind:"Novo",
+    payJoyEnabled:false,availability:"ready",priceCents:100000,acceptedPaymentMethods:["Pix"],
+    imageUrls:[],updatedAt:new Date().toISOString()}]
+  }}}));
+  await page.goto("/v/#TESTSTORE123");
+  await expect(page.locator(".card")).toBeVisible();
+  await expect(page.locator(".card")).not.toContainText("PayJoy");
+  await page.locator(".card").click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("dialog")).not.toContainText("PayJoy");
+});

@@ -237,6 +237,20 @@ test("vitrine aceita preço promocional e usa o valor efetivo em todos os contat
   assert.match(pageStyle, /\.previous-price/);
 });
 
+test("vitrine filtra memória RAM e armazenamento, e o editor copia os nomes", async () => {
+  const [catalog, pageScript, priceEditor] = await Promise.all([
+    read("public/v/index.html"),
+    read("public/v/page.js"),
+    read("public/v/precos/page.js"),
+  ]);
+  assert.match(catalog, /id="storage"/);
+  assert.match(catalog, /id="ram"/);
+  assert.match(pageScript, /populateMemoryFilters/);
+  assert.match(pageScript, /String\(item\.storage\) === storageNode\.value/);
+  assert.match(pageScript, /String\(item\.ram\) === ramNode\.value/);
+  assert.match(priceEditor, /copyNamesNode/);
+  assert.match(priceEditor, /navigator\.clipboard\.writeText\(names\)/);
+});
 test("vitrine mantém fotos dentro dos cartões e abre detalhes em modal", async () => {
   const [pageScript, pageStyle] = await Promise.all([
     read("public/v/page.js"),

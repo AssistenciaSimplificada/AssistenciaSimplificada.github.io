@@ -10,6 +10,7 @@
   const itemsNode = document.querySelector("#items");
   const searchNode = document.querySelector("#search");
   const saveNode = document.querySelector("#save");
+  const copyNamesNode = document.querySelector("#copy-names");
   const countNode = document.querySelector("#count");
   const messageNode = document.querySelector("#message");
   let pin = "";
@@ -82,6 +83,12 @@
     try { await open(); } catch (error) { errorNode.textContent = error.message === "editor_locked" ? "Muitas tentativas. Aguarde 15 minutos." : error.message === "editor_expired" ? "Este acesso venceu. Peça um novo link à loja." : "Link ou código incorreto."; }
   });
   searchNode.addEventListener("input", render);
+  copyNamesNode.addEventListener("click", async () => {
+    const names = items.map(item => item.title.trim()).filter(Boolean).join("\n");
+    if (!names) return notify("Não há aparelhos para copiar.", true);
+    try { await navigator.clipboard.writeText(names); notify(`${items.length} nome${items.length === 1 ? " copiado" : "s copiados"}.`); }
+    catch { notify("Não foi possível copiar. Selecione os nomes manualmente.", true); }
+  });
   saveNode.addEventListener("click", async () => {
     const changes = items.filter(changed);
     if (!changes.length) return;

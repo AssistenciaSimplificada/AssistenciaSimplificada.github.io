@@ -7,6 +7,8 @@
   const searchNode = document.querySelector("#search");
   const kindNode = document.querySelector("#kind");
   const availabilityNode = document.querySelector("#availability");
+  const storageNode = document.querySelector("#storage");
+  const ramNode = document.querySelector("#ram");
   const sortNode = document.querySelector("#sort");
   const mobileSearchNode = document.querySelector("#mobile-search");
   const mobileSortNode = document.querySelector("#mobile-sort");
@@ -29,6 +31,18 @@
   const formatCapacity = value => /^\d+$/.test(String(value || "").trim()) ? `${value} GB` : String(value || "");
   const formatBattery = value => /^\d+$/.test(String(value || "").trim()) ? `${value}%` : String(value || "");
   const displayCondition = value => value === "Usado" ? "Seminovo" : String(value || "");
+  const populateMemoryFilters = () => {
+    const values = key => [...new Set(catalog.items.map(item => String(item[key] || "").trim()).filter(Boolean))]
+      .sort((a,b) => (Number(a.replace(/\D/g,"")) || 0) - (Number(b.replace(/\D/g,"")) || 0) || a.localeCompare(b,"pt-BR"));
+    const fill = (node, key, placeholder) => {
+      const selected = node.value;
+      const options = values(key);
+      node.innerHTML = `<option value="">${placeholder}</option>${options.map(value => `<option value="${esc(value)}">${esc(formatCapacity(value))}</option>`).join("")}`;
+      node.value = options.includes(selected) ? selected : "";
+    };
+    fill(storageNode,"storage","Todo armazenamento");
+    fill(ramNode,"ram","Toda memória RAM");
+  };
   const offerPercent = item => item.discountPriceCents && Number(item.priceCents) > Number(item.discountPriceCents) ? Math.round((1 - Number(item.discountPriceCents) / Number(item.priceCents)) * 100) : 0;
   const slug = value => String(value || "aparelho").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 64) || "aparelho";
   const productRouteKey = item => `${slug(item.title)}--${String(item.code || "item").slice(-6).toLowerCase()}`;
@@ -87,7 +101,7 @@
   });
   function filtered() {
     const query = searchNode.value.trim().toLocaleLowerCase("pt-BR");
-    const items = catalog.items.filter(item => (!kindNode.value || item.purchaseKind === kindNode.value) && (!availabilityNode.value || item.availability === availabilityNode.value) && (!query || [item.title,item.brand,item.model,item.storage,item.color].join(" ").toLocaleLowerCase("pt-BR").includes(query)));
+    const items = catalog.items.filter(item => (!kindNode.value || item.purchaseKind === kindNode.value) && (!availabilityNode.value || item.availability === availabilityNode.value) && (!storageNode.value || String(item.storage) === storageNode.value) && (!ramNode.value || String(item.ram) === ramNode.value) && (!query || [item.title,item.brand,item.model,item.storage,item.ram,item.color].join(" ").toLocaleLowerCase("pt-BR").includes(query)));
     const availabilityRank = item => item.availability === "ready" ? 0 : item.availability === "order" ? 1 : 2;
     return items.sort((a,b) => sortNode.value === "lowest" ? salePrice(a)-salePrice(b) : sortNode.value === "highest" ? salePrice(b)-salePrice(a) : sortNode.value === "recent" ? b.updatedAt.localeCompare(a.updatedAt) : availabilityRank(a)-availabilityRank(b) || Number(b.salesCount || 0)-Number(a.salesCount || 0) || Number(b.featured)-Number(a.featured) || b.updatedAt.localeCompare(a.updatedAt));
   }
@@ -284,18 +298,18 @@
   async function load() {
     const [storeCode] = location.hash.slice(1).split("/");
     if (!storeCode || storeCode === demoCatalog.storeCode) {
-      catalog = demoCatalog;
+      catalog = demoCatalog; populateMemoryFilters();
       applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#store-subtitle").textContent = "Demonstração · dados ilustrativos"; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.querySelector("#status").textContent = "Mostruário demonstrativo · dados ilustrativos"; document.querySelector("#catalog-mode").hidden = false; document.querySelector("#hero-description").textContent = "Conheça a experiência da vitrine pública. Os aparelhos abaixo são exemplos e não representam estoque real."; document.title = "Mostruário de vitrine — Assistência Simplificada"; renderBestSeller(); render(); return;
     }
     if (!/^[A-Za-z0-9_-]{12}$/.test(storeCode || "")) throw new Error("link_invalid");
     const response = await fetch(`${API}/public/${encodeURIComponent(storeCode)}?v=${Date.now()}`, { cache: "no-store" });
     const body = await response.json();
     if (!response.ok || !body.catalog) throw new Error("not_found");
-    catalog = body.catalog; document.querySelector("#catalog-mode").hidden = true; document.querySelector("#store-subtitle").textContent = "Catálogo de aparelhos"; document.querySelector("#hero-description").textContent = "Consulte os modelos disponíveis e chame nossa equipe para confirmar a compra."; applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.title = `Vitrine — ${catalog.storeName}`; renderBestSeller(); render();
+    catalog = body.catalog; populateMemoryFilters(); document.querySelector("#catalog-mode").hidden = true; document.querySelector("#store-subtitle").textContent = "Catálogo de aparelhos"; document.querySelector("#hero-description").textContent = "Consulte os modelos disponíveis e chame nossa equipe para confirmar a compra."; applyStoreBranding(); document.querySelector("#store-name").textContent = catalog.storeName; document.querySelector("#total-items").textContent = catalog.items.length; document.querySelector("#ready-items").textContent = catalog.items.filter(item => item.availability !== "order").length; document.querySelector("#order-items").textContent = catalog.items.filter(item => item.availability === "order").length; document.querySelector("#used-items").textContent = catalog.items.filter(item => item.purchaseKind === "Usado").length; document.title = `Vitrine — ${catalog.storeName}`; renderBestSeller(); render();
   }
   searchNode.addEventListener("input", () => { mobileSearchNode.value = searchNode.value; renderList(); });
   mobileSearchNode.addEventListener("input", () => { searchNode.value = mobileSearchNode.value; renderList(); });
-  kindNode.addEventListener("change", () => { updateMobileFilterState(); renderList(); }); availabilityNode.addEventListener("change", () => { updateMobileFilterState(); renderList(); });
+  kindNode.addEventListener("change", () => { updateMobileFilterState(); renderList(); }); availabilityNode.addEventListener("change", () => { updateMobileFilterState(); renderList(); }); storageNode.addEventListener("change", renderList); ramNode.addEventListener("change", renderList);
   sortNode.addEventListener("change", () => { mobileSortNode.value = sortNode.value; renderList(); }); mobileSortNode.addEventListener("change", () => { sortNode.value = mobileSortNode.value; renderList(); });
   mobileFilterNodes.forEach(button => button.addEventListener("click", () => { kindNode.value = button.dataset.kind; availabilityNode.value = button.dataset.availability; updateMobileFilterState(); renderList(); }));
   let scrollFrame = 0; window.addEventListener("scroll", () => { if (scrollFrame) return; scrollFrame = requestAnimationFrame(() => { document.querySelector(".topbar").classList.toggle("is-condensed", scrollY > 90); scrollFrame = 0; }); }, { passive:true });

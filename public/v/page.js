@@ -112,7 +112,7 @@
     catalogNode.innerHTML = items.length ? items.map(card).join("") : '<div class="empty"><h2>Nenhum aparelho encontrado</h2><p>Tente outra busca ou fale com a loja.</p></div>';
     catalogNode.querySelectorAll(".card").forEach(node => {
       const item = items.find(entry => entry.code === node.dataset.code);
-      if (item?.purchaseKind === "Novo") node.querySelector(".card-payment")?.insertAdjacentHTML("beforeend", '<small class="payjo-card-note">🧾 Boleto parcelado via PayJoy · consulte condições</small>');
+      if (item?.purchaseKind === "Novo" && item.payJoyEnabled !== false) node.querySelector(".card-payment")?.insertAdjacentHTML("beforeend", '<small class="payjo-card-note">🧾 Boleto parcelado via PayJoy · consulte condições</small>');
     });
     bindCards();
   }
@@ -134,7 +134,7 @@
     if (item.availability === "unavailable") {
       detailNode.querySelector(".detail-shell").classList.add("unavailable");
     }
-    if (item.purchaseKind === "Novo") {
+    if (item.purchaseKind === "Novo" && item.payJoyEnabled !== false) {
       const anchor = detailNode.querySelector(".payment-box") || detailNode.querySelector(".detail-pricebox");
       anchor.insertAdjacentHTML("afterend", '<section class="payjo-box"><strong>🧾 Parcelamento no boleto via PayJoy</strong><span>Disponível para aparelhos novos. Consulte prazos e condições diretamente com a loja.</span></section>');
     }

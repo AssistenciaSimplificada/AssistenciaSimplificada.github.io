@@ -160,6 +160,19 @@
       </footer>
     </article>
   </main>
+  <dialog id="evaluation-dialog" aria-labelledby="evaluation-title">
+    <form method="dialog" id="evaluation-form" class="evaluation-form">
+      <small>ANTES DE CONTINUAR</small><h2 id="evaluation-title">Como foi seu atendimento?</h2>
+      <p>Responda rapidamente para liberar o acompanhamento. A resposta é enviada com segurança à assistência e fica registrada somente no aplicativo da loja.</p>
+      <div class="evaluation-choices" role="group" aria-label="Avaliação do atendimento">
+        <label><input type="checkbox" name="good" value="Fui bem atendido"> Fui bem atendido</label>
+        <label><input type="checkbox" name="fast" value="Serviço foi rápido"> Serviço foi rápido</label>
+        <label><input type="checkbox" name="clear" value="Recebi explicações claras"> Recebi explicações claras</label>
+      </div>
+      <label>Nota geral <select id="evaluation-stars" required><option value="">Escolha de 1 a 5 estrelas</option><option value="1">★ 1 estrela</option><option value="2">★ 2 estrelas</option><option value="3">★ 3 estrelas</option><option value="4">★ 4 estrelas</option><option value="5">★ 5 estrelas</option></select></label>
+      <button id="evaluation-submit" type="submit">Enviar avaliação e abrir atendimento</button>
+    </form>
+  </dialog>
   <dialog id="photo-dialog" aria-labelledby="photo-title">
     <header><h2 id="photo-title">Foto do aparelho</h2><button id="close-photo" type="button">Fechar</button></header>
     <img id="photo-large" alt="">

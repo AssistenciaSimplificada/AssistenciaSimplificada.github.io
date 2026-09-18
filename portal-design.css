@@ -562,6 +562,54 @@ input:disabled, textarea:disabled, select:disabled {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition: none !important; }
 }
 
+/* Contraste garantido no tema claro: alguns cartões ainda recebem estilos
+   legados do tema escuro, então as cores legíveis ficam explícitas aqui. */
+[data-portal-theme="light"] .customer-portal .device-details-card,
+[data-portal-theme="light"] .customer-portal .approval-card,
+[data-portal-theme="light"] .customer-portal .revision-card {
+  background: var(--portal-surface) !important;
+  color: var(--portal-text) !important;
+}
+[data-portal-theme="light"] .customer-portal .detail-card p,
+[data-portal-theme="light"] .customer-portal .detail-card li > small,
+[data-portal-theme="light"] .customer-portal .device-details-grid small,
+[data-portal-theme="light"] .customer-portal .device-details-note,
+[data-portal-theme="light"] .customer-portal .approval-summary span,
+[data-portal-theme="light"] .customer-portal .approval-footnote,
+[data-portal-theme="light"] .customer-portal .timeline-item span,
+[data-portal-theme="light"] .customer-portal .tracking footer p {
+  color: var(--portal-muted) !important;
+}
+[data-portal-theme="light"] .customer-portal .device-details-grid > div,
+[data-portal-theme="light"] .customer-portal .detail-card li,
+[data-portal-theme="light"] .customer-portal .revision-values > div {
+  background: var(--portal-surface-2) !important;
+  color: var(--portal-text) !important;
+  border-color: var(--portal-line) !important;
+}
+[data-portal-theme="light"] .customer-portal .device-details-grid strong,
+[data-portal-theme="light"] .customer-portal .detail-card li > span,
+[data-portal-theme="light"] .customer-portal .approval-summary strong,
+[data-portal-theme="light"] .customer-portal .approval-summary small,
+[data-portal-theme="light"] .customer-portal .revision-values strong,
+[data-portal-theme="light"] .customer-portal .revision-warning {
+  color: var(--portal-text) !important;
+}
+[data-portal-theme="light"] .technician-portal .service,
+[data-portal-theme="light"] .technician-portal .service-option,
+[data-portal-theme="light"] .technician-portal .price-wrap,
+[data-portal-theme="light"] .technician-portal .evaluation-metrics {
+  background: var(--portal-surface-2) !important;
+  color: var(--portal-text) !important;
+  border-color: var(--portal-line) !important;
+}
+[data-portal-theme="light"] .technician-portal .service p,
+[data-portal-theme="light"] .technician-portal .submission-note,
+[data-portal-theme="light"] .technician-portal .muted,
+[data-portal-theme="light"] .technician-portal .service-option small {
+  color: var(--portal-muted) !important;
+}
+
 /* Fluxo contínuo no computador: elimina lacunas entre cartões de alturas diferentes. */
 @media (min-width: 1041px) {
   .customer-portal .shell { width: min(980px, calc(100% - 48px)); }

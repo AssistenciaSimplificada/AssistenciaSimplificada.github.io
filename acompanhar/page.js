@@ -122,7 +122,7 @@
       else scheduleStatusRefresh();
     }, 60_000);
   };
-  const api = async (action = "read", decision = "", signature = null, note = "") => {
+  const api = async (action = "read", decision = "", signature = null, note = "", feedback = null) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     try {
@@ -137,7 +137,8 @@
         action,
         token: state.token,
         pin: state.pin,
-        ...(action !== "read" ? { decision, signature, note } : {}),
+        ...(action === "approve" ? { decision, signature, note } : {}),
+        ...(action === "feedback" && feedback ? feedback : {}),
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -470,8 +471,15 @@
     show("loading", false);
     show("pin-form", false);
     show("error", false);
-    show("tracking");
-    scheduleStatusRefresh();
+    const pickupRecorded = Boolean(snapshot.deliveredAt);
+    if (pickupRecorded && tracking.evaluationSubmitted !== true) {
+      show("tracking", false);
+      const dialog = $("evaluation-dialog");
+      if (!dialog.open) dialog.showModal();
+    } else {
+      show("tracking");
+      scheduleStatusRefresh();
+    }
   };
   const load = async () => {
     if (state.loading) return;
@@ -494,6 +502,24 @@
       } else fail(error.message, error.retryable === true);
     } finally { state.loading = false; }
   };
+  $("evaluation-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const stars = $("evaluation-stars").value;
+    if (!stars || !state.token) return;
+    const choices = [...document.querySelectorAll("#evaluation-form input:checked")].map((input) => input.value);
+    const submit = $("evaluation-submit");
+    submit.disabled = true;
+    submit.textContent = "Enviando avaliação…";
+    try {
+      render(await api("feedback", "", null, "", { stars: Number(stars), tags: choices }));
+      $("evaluation-dialog").close();
+    } catch (error) {
+      window.alert(error?.message || "Não foi possível enviar sua avaliação. Tente novamente.");
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Enviar avaliação e abrir atendimento";
+    }
+  });
   $("close-photo").addEventListener("click", () => $("photo-dialog").close());
   $("photo-dialog").addEventListener("close", () => $("photo-large").removeAttribute("src"));
   $("retry").addEventListener("click", async () => {

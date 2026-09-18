@@ -100,6 +100,7 @@
     show("pin-form", false);
     show("tracking", false);
     show("approval-card", false);
+    show("labor-notice-card", false);
     show("revision-card", false);
     $("photo-gallery").replaceChildren();
     $("services").replaceChildren();
@@ -221,6 +222,18 @@
     const snapshot = tracking.snapshot || {};
     const approvalState = String(tracking.approvalState || snapshot.approvalState || "not_applicable");
     const approvalMode = snapshot.portalMode === "approval" || tracking.accessKind === "approval";
+    const laborService = (Array.isArray(snapshot.services) ? snapshot.services : []).find(
+      (service) => /^mão de obra\s*[—–-]/i.test(String(service?.name || "")),
+    );
+    const laborCondition = String(laborService?.description || "").split("\n")[0].trim();
+    const laborNotice = /^O valor de mão de obra corresponde à abertura do aparelho\./.test(laborCondition)
+      ? laborCondition
+      : "O valor de mão de obra corresponde à abertura do aparelho. Após a abertura, esse valor será cobrado mesmo que a peça fornecida pelo cliente apresente defeito e não possa ser instalada.";
+    const showLaborNotice = Boolean(laborService) && approvalState !== "rejected";
+    show("labor-notice-card", showLaborNotice);
+    $("labor-notice-text").textContent = showLaborNotice ? laborNotice : "";
+    show("approval-labor-notice", showLaborNotice && approvalMode && snapshot.status === "Aguardando aprovação" && approvalState === "pending");
+    $("approval-labor-notice").textContent = showLaborNotice ? laborNotice : "";
     const revision = snapshot.revisionSummary && typeof snapshot.revisionSummary === "object"
       ? snapshot.revisionSummary : null;
     const revisionValuesValid = revision
@@ -437,9 +450,10 @@
               : money(item.totalCents);
             li.append(value);
           }
-          if (typeof item.description === "string" && item.description.trim()) {
+          const serviceDescription = String(item.description || "").replace(laborNotice, "").trim();
+          if (serviceDescription) {
             const description = document.createElement("small");
-            description.textContent = item.description.trim();
+            description.textContent = serviceDescription;
             li.append(description);
           }
           return li;

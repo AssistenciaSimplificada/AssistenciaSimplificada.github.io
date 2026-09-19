@@ -171,7 +171,7 @@
         <label><input type="checkbox" name="fast" value="Serviço foi rápido"> Serviço foi rápido</label>
         <label><input type="checkbox" name="clear" value="Recebi explicações claras"> Recebi explicações claras</label>
       </div>
-      <fieldset class="evaluation-rating"><legend>Nota geral</legend><input id="evaluation-stars" type="hidden" required><div class="evaluation-stars" role="radiogroup" aria-label="Escolha de 1 a 5 estrelas"><button type="button" data-evaluation-star="1" role="radio" aria-label="1 estrela" aria-checked="false">★</button><button type="button" data-evaluation-star="2" role="radio" aria-label="2 estrelas" aria-checked="false">★</button><button type="button" data-evaluation-star="3" role="radio" aria-label="3 estrelas" aria-checked="false">★</button><button type="button" data-evaluation-star="4" role="radio" aria-label="4 estrelas" aria-checked="false">★</button><button type="button" data-evaluation-star="5" role="radio" aria-label="5 estrelas" aria-checked="false">★</button></div></fieldset>
+      <label>Nota geral <select id="evaluation-stars" required><option value="">Escolha de 1 a 5 estrelas</option><option value="1">★ 1 estrela</option><option value="2">★ 2 estrelas</option><option value="3">★ 3 estrelas</option><option value="4">★ 4 estrelas</option><option value="5">★ 5 estrelas</option></select></label>
       <button id="evaluation-submit" type="submit">Enviar avaliação e abrir atendimento</button>
     </form>
   </dialog>

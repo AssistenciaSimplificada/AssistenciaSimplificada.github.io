@@ -4,7 +4,7 @@
   if (!API_URL) throw new Error("A configuração pública não foi carregada.");
   const $ = (id) => document.getElementById(id);
   const state = { token: "", pin: "", tracking: null, timer: null, expiryTimer: null, statusTimer: null, loading: false, approving: false, signatureDrawn: false, signatureMode: "disabled" };
-  const TOKEN_PATTERN = /^(?:[A-Za-z0-9_-]{43}|[A-F0-9]{5}\.[A-Za-z0-9_-]{22})$/;
+  const TOKEN_PATTERN = /^(?:[A-Za-z0-9_-]{43}|[A-F0-9]{5}\.[A-Za-z0-9_-]{22})$/i;
   const statusIndex = (status) =>
     status === "Aguardando técnico"
       ? 2
@@ -18,6 +18,11 @@
               ? 6
               : 0;
   const statusHelp = (status, detail) => {
+    if (status === "Em manutenção" && String(detail || "")
+      .toLocaleLowerCase("pt-BR")
+      .includes("cliente")) {
+      return "O aparelho está com o cliente e o serviço aguarda a entrada do equipamento na assistência.";
+    }
     if (
       status === "Em manutenção" && String(detail || "")
         .toLocaleLowerCase("pt-BR")
@@ -309,7 +314,7 @@
     $("number").textContent = tracking.publicNumber || "Atendimento";
     $("status").textContent = snapshot.statusDetail || snapshot.status;
     $("status-detail").textContent = snapshot.statusDetail || snapshot.status;
-    $("status-help").textContent = statusHelp(
+    $("status-help").textContent = snapshot.statusHelp || statusHelp(
       snapshot.status,
       snapshot.statusDetail,
     );
@@ -533,6 +538,27 @@
       submit.disabled = false;
       submit.textContent = "Enviar avaliação e abrir atendimento";
     }
+  });
+  document.querySelectorAll("[data-evaluation-star]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const value = Number(button.dataset.evaluationStar || 0);
+      if (!Number.isInteger(value) || value < 1 || value > 5) return;
+      $("evaluation-stars").value = String(value);
+      document.querySelectorAll("[data-evaluation-star]").forEach((item) => {
+        const active = Number(item.dataset.evaluationStar || 0) <= value;
+        item.classList.toggle("selected", active);
+        item.setAttribute("aria-checked", active && Number(item.dataset.evaluationStar || 0) === value ? "true" : "false");
+      });
+    });
+    button.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+        event.preventDefault();
+        button.previousElementSibling?.focus();
+      } else if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+        event.preventDefault();
+        button.nextElementSibling?.focus();
+      }
+    });
   });
   $("close-photo").addEventListener("click", () => $("photo-dialog").close());
   $("photo-dialog").addEventListener("close", () => $("photo-large").removeAttribute("src"));

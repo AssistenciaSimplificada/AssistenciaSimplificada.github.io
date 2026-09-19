@@ -93,7 +93,7 @@
     const modal = document.createElement("div"); modal.className = "device-helper-modal"; modal.setAttribute("role", "dialog"); modal.setAttribute("aria-modal", "true"); modal.setAttribute("aria-label", `Ajuda sobre ${item.title}`);
     modal.innerHTML = `<section class="device-helper-card"><header><div><small>AJUDA RÁPIDA</small><h2>Assistente da vitrine</h2><p>Respostas automáticas sobre <strong>${esc(item.title)}</strong>, usando as informações deste anúncio.</p></div><button type="button" data-helper-close aria-label="Fechar ajuda">×</button></header><div class="device-helper-questions">${helperQuestions.map(([key,label]) => `<button type="button" data-helper-question="${key}">${label}</button>`).join("")}</div><div class="device-helper-answer" aria-live="polite"><strong>Escolha uma dúvida acima</strong><p>Você verá uma explicação curta e fácil de entender.</p></div><small class="device-helper-note">Esta ajuda é automática. Para confirmar preço, prazo, estoque ou condições, fale com a loja.</small></section>`;
     const answer = modal.querySelector(".device-helper-answer");
-    modal.querySelectorAll("[data-helper-question]").forEach(button => button.addEventListener("click", () => { modal.querySelectorAll("[data-helper-question]").forEach(entry => entry.classList.toggle("active", entry === button)); answer.innerHTML = `<strong>${button.textContent}</strong><p>${helperAnswer(item, button.dataset.helperQuestion)}</p>`; }));
+    modal.querySelectorAll("[data-helper-question]").forEach(button => button.addEventListener("click", () => { modal.querySelectorAll("[data-helper-question]").forEach(entry => entry.classList.toggle("active", entry === button)); answer.innerHTML = `<strong>${button.textContent}</strong><p>${helperAnswer(item, button.dataset.helperQuestion)}</p>`; answer.scrollIntoView({ behavior: "smooth", block: "center" }); }));
     modal.querySelector("[data-helper-close]").addEventListener("click", closeDeviceHelper); modal.addEventListener("click", event => { if (event.target === modal) closeDeviceHelper(); }); document.body.append(modal); modal.querySelector("[data-helper-close]").focus();
   };
   function applyStoreBranding() {
@@ -137,7 +137,7 @@
     const query = searchNode.value.trim().toLocaleLowerCase("pt-BR");
     const items = catalog.items.filter(item => (!kindNode.value || item.purchaseKind === kindNode.value) && (!availabilityNode.value || item.availability === availabilityNode.value) && (!storageNode.value || String(item.storage) === storageNode.value) && (!ramNode.value || String(item.ram) === ramNode.value) && (!query || [item.title,item.brand,item.model,item.storage,item.ram,item.color].join(" ").toLocaleLowerCase("pt-BR").includes(query)));
     const availabilityRank = item => item.availability === "ready" ? 0 : item.availability === "order" ? 1 : 2;
-    return items.sort((a,b) => sortNode.value === "lowest" ? salePrice(a)-salePrice(b) : sortNode.value === "highest" ? salePrice(b)-salePrice(a) : sortNode.value === "recent" ? b.updatedAt.localeCompare(a.updatedAt) : availabilityRank(a)-availabilityRank(b) || Number(b.salesCount || 0)-Number(a.salesCount || 0) || Number(b.featured)-Number(a.featured) || b.updatedAt.localeCompare(a.updatedAt));
+    return items.sort((a,b) => sortNode.value === "lowest" ? salePrice(a)-salePrice(b) : sortNode.value === "highest" ? salePrice(b)-salePrice(a) : sortNode.value === "ram" ? (Number(b.ram || 0)-Number(a.ram || 0) || Number(b.storage || 0)-Number(a.storage || 0) || availabilityRank(a)-availabilityRank(b)) : sortNode.value === "recent" ? b.updatedAt.localeCompare(a.updatedAt) : availabilityRank(a)-availabilityRank(b) || Number(b.salesCount || 0)-Number(a.salesCount || 0) || Number(b.featured)-Number(a.featured) || b.updatedAt.localeCompare(a.updatedAt));
   }
   function renderList() {
     closePhotoViewer();
@@ -346,7 +346,7 @@
   const finishMobileSearch = () => { searchNode.value = mobileSearchNode.value; renderList(); mobileSearchNode.blur(); };
   searchNode.addEventListener("input", () => { mobileSearchNode.value = searchNode.value; syncMobileSearchControls(); renderList(); });
   mobileSearchNode.addEventListener("input", () => { searchNode.value = mobileSearchNode.value; syncMobileSearchControls(); renderList(); });
-  mobileSearchClearNode?.addEventListener("click", () => { mobileSearchNode.value = ""; searchNode.value = ""; syncMobileSearchControls(); renderList(); mobileSearchNode.focus(); });
+  mobileSearchClearNode?.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); mobileSearchNode.value = ""; searchNode.value = ""; syncMobileSearchControls(); renderList(); mobileSearchNode.focus(); });
   mobileSearchSubmitNode?.addEventListener("click", finishMobileSearch);
   syncMobileSearchControls();
   kindNode.addEventListener("change", () => { updateMobileFilterState(); renderList(); }); availabilityNode.addEventListener("change", () => { updateMobileFilterState(); renderList(); }); storageNode.addEventListener("change", renderList); ramNode.addEventListener("change", renderList);
@@ -364,6 +364,7 @@
   document.querySelector("#share").addEventListener("click", async () => { const title = `Vitrine — ${catalog?.storeName || "Loja"}`; const text = `Confira os aparelhos disponíveis na vitrine de ${catalog?.storeName || "nossa loja"}.`; const url = catalogShareUrl(); try { if (navigator.share) await navigator.share(shareContent(title,text,url)); else await copyShare(title,text,url); } catch {} });
   load().catch(error => { statusNode.textContent = error.message === "link_invalid" ? "Este endereço de vitrine está incompleto." : "Esta vitrine não está disponível no momento."; catalogNode.innerHTML = '<div class="empty"><h2>Vitrine indisponível</h2><p>Peça à loja um novo endereço.</p></div>'; });
 })();
+
 
 
 
